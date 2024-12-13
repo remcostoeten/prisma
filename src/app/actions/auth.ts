@@ -1,29 +1,48 @@
 'use server'
 
-import { PrismaClient } from '@prisma/client'
 import { SignJWT, jwtVerify } from 'jose'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { v4 as uuidv4 } from 'uuid'
+import bcrypt from 'bcryptjs'
+import prisma from '@/server/db'
 
-const prisma = new PrismaClient()
 const secretKey = new TextEncoder().encode(process.env.JWT_SECRET || 'your-secret-key')
 
-async function createSession(userId: number) {
-  const token = await new SignJWT({ userId })
+async function createSession(userId: number): Promise<void> {
+  const sessionToken = uuidv4()
+  const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+
+  await prisma.session.create({
+    data: {
+      id: sessionToken,
+      userId,
+      expiresAt,
+    },
+  })
+
+  const payload: Auth.JWTPayload = {
+    userId,
+    sessionToken,
+    type: 'session'
+  }
+
+  const token = await new SignJWT(payload)
     .setProtectedHeader({ alg: 'HS256' })
-    .setExpirationTime('1h')
+    .setExpirationTime(expiresAt.getTime() / 1000)
     .sign(secretKey)
 
-  ;(await cookies()).set('token', token, { httpOnly: true })
+  ;(await cookies()).set('token', token, { httpOnly: true, expires: expiresAt })
 }
 
-export async function register(formData: FormData) {
+export async function register(formData: FormData): Promise<Auth.AuthResponse> {
   const email = formData.get('email') as string
   const password = formData.get('password') as string
+  const firstName = formData.get('firstName') as string
+  const lastName = formData.get('lastName') as string
 
-  if (!email || !password) {
-    return { error: 'Email and password are required' }
+  if (!email || !password || !firstName || !lastName) {
+    return { error: 'All fields are required' }
   }
 
   try {
@@ -32,22 +51,27 @@ export async function register(formData: FormData) {
       return { error: 'User already exists' }
     }
 
+    const hashedPassword = await bcrypt.hash(password, 10)
+
     const user = await prisma.user.create({
       data: {
         email,
-        password, // In a real application, you should hash the password
+        password: hashedPassword,
+        firstName,
+        lastName,
+        name: `${firstName} ${lastName}`,
       },
     })
 
     await createSession(user.id)
-    return { success: true }
+    return { success: true, user }
   } catch (error) {
     console.error('Registration error:', error)
     return { error: 'Registration failed' }
   }
 }
 
-export async function login(formData: FormData) {
+export async function login(formData: FormData): Promise<Auth.AuthResponse> {
   const email = formData.get('email') as string
   const password = formData.get('password') as string
 
@@ -58,68 +82,69 @@ export async function login(formData: FormData) {
   try {
     const user = await prisma.user.findUnique({ where: { email } })
 
-    if (!user || user.password !== password) { // In a real app, you'd compare hashed passwords
+    if (!user || !(await bcrypt.compare(password, user.password))) {
       return { error: 'Invalid credentials' }
     }
 
     await createSession(user.id)
-    return { success: true }
+    return { success: true, user }
   } catch (error) {
     console.error('Login error:', error)
     return { error: 'Login failed' }
   }
 }
 
-export async function googleLogin() {
-  const state = uuidv4()
-  ;(await cookies()).set('oauth_state', state, { httpOnly: true })
-  
-  const params = new URLSearchParams({
-    client_id: process.env.GOOGLE_CLIENT_ID!,
-    redirect_uri: `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/google/callback`,
-    response_type: 'code',
-    scope: 'openid email profile',
-    state,
-  })
+export async function logout(): Promise<void> {
+  const token = (await cookies()).get('token')?.value
 
-  redirect(`https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`)
-}
+  if (token) {
+    try {
+      const { payload } = await jwtVerify(token, secretKey)
+      if (payload && typeof payload === 'object' && 'sessionToken' in payload) {
+        await prisma.session.delete({ where: { id: payload.sessionToken as string } })
+      }
+    } catch (error) {
+      console.error('Logout error:', error)
+    }
+  }
 
-export async function githubLogin() {
-  const state = uuidv4()
-  ;(await cookies()).set('oauth_state', state, { httpOnly: true })
-  
-  const params = new URLSearchParams({
-    client_id: process.env.GITHUB_CLIENT_ID!,
-    redirect_uri: `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/github/callback`,
-    scope: 'user:email',
-    state,
-  })
-
-  redirect(`https://github.com/login/oauth/authorize?${params.toString()}`)
-}
-
-export async function logout() {
-  (await cookies()).delete('token')
+  ;(await cookies()).delete('token')
   redirect('/login')
 }
 
-export async function getUser() {
+export async function getUser(): Promise<Partial<Auth.User> | null> {
   const token = (await cookies()).get('token')?.value
 
-  if (!token) {
-    return null
-  }
+  if (!token) return null
 
   try {
-    const verified = await jwtVerify(token, secretKey)
-    const user = await prisma.user.findUnique({
-      where: { id: verified.payload.userId as number },
-      select: { id: true, email: true, name: true, image: true, provider: true },
-    })
-    return user
+    const { payload } = await jwtVerify(token, secretKey)
+    if (payload && typeof payload === 'object' && 'userId' in payload) {
+      return await prisma.user.findUnique({
+        where: { id: payload.userId as number },
+        select: { id: true, email: true, firstName: true, lastName: true, name: true, image: true, provider: true },
+      })
+    }
+    return null
   } catch (error) {
     console.error('Get user error:', error)
+    return null
+  }
+}
+
+export async function getSession(): Promise<Auth.Session | null> {
+  const token = (await cookies()).get('token')?.value
+
+  if (!token) return null
+
+  try {
+    const { payload } = await jwtVerify(token, secretKey)
+    if (payload && typeof payload === 'object' && 'sessionToken' in payload) {
+      return await prisma.session.findUnique({ where: { id: payload.sessionToken as string } })
+    }
+    return null
+  } catch (error) {
+    console.error('Get session error:', error)
     return null
   }
 }

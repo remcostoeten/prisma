@@ -14,6 +14,15 @@ export default function Register() {
   const router = useRouter()
 
   async function handleSubmit(formData: FormData) {
+    const password = formData.get('password') as string
+    const verifyPassword = formData.get('verifyPassword') as string
+
+    if (password !== verifyPassword) {
+      setError('Passwords do not match')
+      toast.error('Passwords do not match')
+      return
+    }
+
     const result = await register(formData)
     if (result?.error) {
       setError(result.error)
@@ -21,21 +30,34 @@ export default function Register() {
     } else if (result?.success) {
       toast.success('Registered successfully')
       router.push('/dashboard')
+      router.refresh() // Refresh to update the header
     }
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+    <div className="flex items-center justify-center min-h-screen bg-neutral-900 text-neutral-200">
       <div className="p-8 bg-white rounded shadow-md w-96">
         <h1 className="mb-4 text-2xl font-bold text-center">Register</h1>
         <form action={handleSubmit}>
           <div className="mb-4">
+            <Label htmlFor="firstName">First Name</Label>
+            <Input type="text" id="firstName" name="firstName" required />
+          </div>
+          <div className="mb-4">
+            <Label htmlFor="lastName">Last Name</Label>
+            <Input type="text" id="lastName" name="lastName" required />
+          </div>
+          <div className="mb-4">
             <Label htmlFor="email">Email</Label>
             <Input type="email" id="email" name="email" required />
           </div>
-          <div className="mb-6">
+          <div className="mb-4">
             <Label htmlFor="password">Password</Label>
             <Input type="password" id="password" name="password" required />
+          </div>
+          <div className="mb-6">
+            <Label htmlFor="verifyPassword">Verify Password</Label>
+            <Input type="password" id="verifyPassword" name="verifyPassword" required />
           </div>
           <Button type="submit" className="w-full">Register</Button>
         </form>

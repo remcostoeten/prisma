@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { login, googleLogin, githubLogin } from '../actions/auth'
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { login } from '../actions/auth'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -12,14 +12,6 @@ import { toast } from 'sonner'
 export default function Login() {
   const [error, setError] = useState('')
   const router = useRouter()
-  const searchParams = useSearchParams()
-
-  useEffect(() => {
-    const error = searchParams.get('error')
-    if (error) {
-      toast.error(error)
-    }
-  }, [searchParams])
 
   async function handleSubmit(formData: FormData) {
     const result = await login(formData)
@@ -29,6 +21,7 @@ export default function Login() {
     } else if (result?.success) {
       toast.success('Logged in successfully')
       router.push('/dashboard')
+      router.refresh() // Refresh to update the header
     }
   }
 
@@ -47,20 +40,9 @@ export default function Login() {
           </div>
           <Button type="submit" className="w-full">Login</Button>
         </form>
-        <div className="mt-4">
-          <p className="text-center mb-2">Or login with:</p>
-          <div className="flex justify-center space-x-4">
-            <Button onClick={() => googleLogin()} className="bg-red-500 hover:bg-red-600">
-              Google
-            </Button>
-            <Button onClick={() => githubLogin()} className="bg-gray-800 hover:bg-gray-900">
-              GitHub
-            </Button>
-          </div>
-        </div>
         {error && <p className="mt-4 text-red-500 text-center">{error}</p>}
         <p className="mt-4 text-center">
-          Don&apos;t have an account? <Link href="/register" className="text-blue-500 hover:underline">Register</Link>
+          Don &apos;t have an account? <Link href="/register" className="text-blue-500 hover:underline">Register</Link>
         </p>
       </div>
     </div>

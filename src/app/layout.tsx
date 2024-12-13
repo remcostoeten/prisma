@@ -1,8 +1,7 @@
+import { Header } from '@/components/layout/header'
 import './globals.css'
 import { Inter } from 'next/font/google'
-import Link from 'next/link'
 import { Toaster } from 'sonner'
-
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
@@ -16,21 +15,14 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        <nav className="bg-gray-800 text-white p-4">
-          <div className="container mx-auto flex justify-between">
-            <Link href="/" className="font-bold">Auth Project</Link>
-            <div>
-              <Link href="/login" className="mr-4">Login</Link>
-              <Link href="/register">Register</Link>
-            </div>
-          </div>
-        </nav>
+    <html lang="en" className="dark" color-scheme="dark">
+      <body className={`${inter.className} bg-neutral-950 text-white`}>
+        <Header />
         <Toaster />
-        {children}
+        <main className="container mx-auto px-4 py-8">
+          {children}
+        </main>
       </body>
     </html>
   )
 }
-
