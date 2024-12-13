@@ -1,6 +1,7 @@
 export type User = {
   id: number
   email: string
+  password: string | null
   firstName: string | null
   lastName: string | null
   name: string | null
@@ -9,14 +10,10 @@ export type User = {
   emailVerified: Date | null
 }
 
-export type Session = {
-  id: string
-  userId: number
-  expiresAt: Date
-}
+export type UserResponse = Pick<User, 'id' | 'email' | 'firstName' | 'lastName' | 'name' | 'image' | 'provider'>
 
 export type AuthResponse = {
   success?: boolean
   error?: string
   user?: User
-}
+} 

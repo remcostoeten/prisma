@@ -8,11 +8,6 @@ const envSchema = z.object({
   // Database
   DATABASE_URL: z.string().url(),
 
-  // Redis (for rate limiting)
-  REDIS_HOST: z.string().default('localhost'),
-  REDIS_PORT: z.string().default('6379'),
-  REDIS_PASSWORD: z.string().optional(),
-
   // Auth
   JWT_SECRET: z.string().min(32),
 

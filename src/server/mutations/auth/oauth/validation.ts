@@ -16,4 +16,4 @@ export const oauthConfigSchema = z.object({
 })
 
 export type OAuthState = z.infer<typeof oauthStateSchema>
-export type OAuthConfig = z.infer<typeof oauthConfigSchema>
+export type OAuthConfig = z.infer<typeof oauthConfigSchema> 

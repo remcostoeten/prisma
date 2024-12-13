@@ -200,6 +200,126 @@ function useAnimationVariant(variant: AnimationVariant = 'trace') {
 			containerVariants: {},
 			pathVariants: {},
 			segmentVariants: {}
+		},
+		glassmorphic: {
+			containerVariants: {},
+			pathVariants: {},
+			segmentVariants: {},
+			className: undefined
+		},
+		neon: {
+			containerVariants: {},
+			pathVariants: {},
+			segmentVariants: {},
+			className: undefined
+		},
+		rainbow: {
+			containerVariants: {},
+			pathVariants: {},
+			segmentVariants: {},
+			className: undefined
+		},
+		crystal: {
+			containerVariants: {},
+			pathVariants: {},
+			segmentVariants: {},
+			className: undefined
+		},
+		retro: {
+			containerVariants: {},
+			pathVariants: {},
+			segmentVariants: {},
+			className: undefined
+		},
+		morph: {
+			containerVariants: {},
+			pathVariants: {},
+			segmentVariants: {},
+			className: undefined
+		},
+		'3d': {
+			containerVariants: {},
+			pathVariants: {},
+			segmentVariants: {},
+			className: undefined
+		},
+		glitch: {
+			containerVariants: {},
+			pathVariants: {},
+			segmentVariants: {},
+			className: undefined
+		},
+		liquid: {
+			containerVariants: {},
+			pathVariants: {},
+			segmentVariants: {},
+			className: undefined
+		},
+		magnetic: {
+			containerVariants: {},
+			pathVariants: {},
+			segmentVariants: {},
+			className: undefined
+		},
+		'stagger-triangles': {
+			containerVariants: {},
+			pathVariants: {},
+			segmentVariants: {},
+			className: undefined
+		},
+		'rotate-segments': {
+			containerVariants: {},
+			pathVariants: {},
+			segmentVariants: {},
+			className: undefined
+		},
+		wave: {
+			containerVariants: {},
+			pathVariants: {},
+			segmentVariants: {},
+			className: undefined
+		},
+		pulse: {
+			containerVariants: {},
+			pathVariants: {},
+			segmentVariants: {},
+			className: undefined
+		},
+		'hover-lift': {
+			containerVariants: {},
+			pathVariants: {},
+			segmentVariants: {},
+			className: undefined
+		},
+		'hover-glow': {
+			containerVariants: {},
+			pathVariants: {},
+			segmentVariants: {},
+			className: undefined
+		},
+		'hover-rotate': {
+			containerVariants: {},
+			pathVariants: {},
+			segmentVariants: {},
+			className: undefined
+		},
+		'tooltip-fade': {
+			containerVariants: {},
+			pathVariants: {},
+			segmentVariants: {},
+			className: undefined
+		},
+		'tooltip-scale': {
+			containerVariants: {},
+			pathVariants: {},
+			segmentVariants: {},
+			className: undefined
+		},
+		'tooltip-slide': {
+			containerVariants: {},
+			pathVariants: {},
+			segmentVariants: {},
+			className: undefined
 		}
 	}
 

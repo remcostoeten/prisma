@@ -1,9 +1,9 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { login } from '../actions/auth'
+import { login } from '@/server/mutations/auth'
 import { toast } from 'sonner'
 import { Button } from "@/shared/components/ui/button"
 import { Input } from "@/shared/components/ui/input"
@@ -11,7 +11,21 @@ import { Label } from "@/shared/components/ui/label"
 import { useUser } from '@/contexts/user-context'
 import { Github } from 'lucide-react'
 import { useOAuth } from '@/shared/hooks/use-oauth'
+import Spinner from '@/shared/components/effects/spinner'
+
 export default function Login() {
+  return (
+    <Suspense fallback={
+      <div className="flex min-h-screen items-center justify-center">
+        <Spinner size="lg" />
+      </div>
+    }>
+      <LoginForm />
+    </Suspense>
+  )
+}
+
+function LoginForm() {
   const [loading, setLoading] = useState(false)
   const router = useRouter()
   const searchParams = useSearchParams()

@@ -1,2 +1,4 @@
-export * from './login/index.ts'
-export * from './logout/index.ts' 
+export * from './login'
+export * from './logout'
+export * from './register'
+export * from './oauth'

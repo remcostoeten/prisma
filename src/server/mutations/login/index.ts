@@ -1,2 +1,2 @@
-export { login } from './login.ts'
-export type { LoginResponse } from './types.ts' 
+export { login } from './login'
+export type { LoginResponse } from './types' 

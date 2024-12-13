@@ -1,23 +1,14 @@
 'use client'
 
 import { createContext, useContext, useState, useEffect } from 'react'
-import { getUser } from '@/app/actions/auth'
-import { logout as logoutMutation } from '@/server/mutations/logout'
+import { getUser, logout } from '@/server/mutations/auth'
+import type { UserResponse } from '@/server/mutations/auth'
 import { useRouter } from 'next/navigation'
-
-type User = {
-  id: number
-  email: string
-  firstName: string | null
-  lastName: string | null
-  name: string | null
-  image: string | null
-  provider: string | null
-}
+import { toast } from 'sonner'
 
 type UserContextType = {
-  user: User | null
-  setUser: (user: User | null) => void
+  user: UserResponse | null
+  setUser: (user: UserResponse | null) => void
   isLoading: boolean
   logout: () => Promise<void>
 }
@@ -25,7 +16,7 @@ type UserContextType = {
 const UserContext = createContext<UserContextType | undefined>(undefined)
 
 export default function UserProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null)
+  const [user, setUser] = useState<UserResponse | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
 
@@ -53,18 +44,21 @@ export default function UserProvider({ children }: { children: React.ReactNode }
     fetchUser()
   }, [router])
 
-  const logout = async () => {
+  const handleLogout = async () => {
     try {
-      const result = await logoutMutation()
+      const result = await logout()
 
       if (!result.success) {
+        toast.error(result.error || 'Logout failed')
         throw new Error(result.error || 'Logout failed')
       }
 
       setUser(null)
+      toast.success('Successfully logged out')
       router.push('/login')
     } catch (error) {
       console.error('Logout error:', error)
+      toast.error('An error occurred during logout')
       throw error
     }
   }
@@ -73,7 +67,7 @@ export default function UserProvider({ children }: { children: React.ReactNode }
     user,
     setUser,
     isLoading,
-    logout,
+    logout: handleLogout,
   }
 
   return (

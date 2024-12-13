@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client'
-import type { User } from '@/features/auth/types'
+import { User } from '../mutations/auth/user/types'
 
 const prisma = new PrismaClient()
 

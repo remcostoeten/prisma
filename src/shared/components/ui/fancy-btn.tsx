@@ -30,6 +30,8 @@ export const FancyButton = React.forwardRef<HTMLButtonElement, FancyButtonProps>
 
   const buttonStyle: CSSProperties = {
     all: 'unset',
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
     '--coord-y': `${coords.y}px`,
     '--coord-x': `${coords.x}px`,
     '--button-shadow-opacity': '0',
@@ -119,6 +121,7 @@ export const FancyButton = React.forwardRef<HTMLButtonElement, FancyButtonProps>
         e.currentTarget.style.setProperty('--button-after-opacity', '0');
         e.currentTarget.style.setProperty('--button-bg-opacity', '0');
       }}
+      className={className}
       {...props}
     >
       <div style={innerStyle}>

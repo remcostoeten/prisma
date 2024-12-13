@@ -43,4 +43,4 @@ export class ConfigError extends AuthError {
     )
     this.name = 'ConfigError'
   }
-}
+} 

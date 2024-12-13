@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
-import { PrismaClient } from '@prisma/client'
 import { SignJWT } from 'jose'
+import prisma from '@/server/db'
 
-const prisma = new PrismaClient()
 const secretKey = new TextEncoder().encode(process.env.JWT_SECRET || 'your-secret-key')
 
 export async function GET(request: NextRequest) {
@@ -69,7 +68,9 @@ export async function GET(request: NextRequest) {
       .sign(secretKey)
 
     // Set cookie and redirect
-    cookies().set('token', token, { httpOnly: true })
+    ;(await
+      // Set cookie and redirect
+      cookies()).set('token', token, { httpOnly: true })
     return NextResponse.redirect(`${process.env.NEXT_PUBLIC_APP_URL}/dashboard`)
   } catch (error) {
     console.error('Google auth error:', error)

@@ -1,2 +1,2 @@
-export { getUser } from './get-user.ts'
-export type { UserResponse } from './types.ts' 
+export { getUser } from './get-user'
+export type { UserResponse } from './types.d' 

@@ -1,8 +1,8 @@
 'use client'
 
+import { OAuthProvider } from '@/server/mutations/oauth'
 import { useState } from 'react'
 import { toast } from 'sonner'
-import type { OAuthProvider } from '@/lib/auth/types'
 
 export function useOAuth() {
   const [loading, setLoading] = useState(false)
@@ -13,7 +13,6 @@ export function useOAuth() {
       setLoading(true)
       setError(null)
       
-      // Start OAuth flow
       window.location.href = `/api/auth/${provider}`
     } catch (error) {
       console.error(`${provider} login failed:`, error)

@@ -24,4 +24,4 @@ export const OAUTH_ENDPOINTS = {
     USER_INFO: 'https://api.github.com/user',
     USER_EMAILS: 'https://api.github.com/user/emails',
   },
-} as const
+} as const 

@@ -2,21 +2,12 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { getUser, login as loginAction, logout as logoutAction } from '@/app/actions/auth'
+import { getUser, login, logout } from '@/server/mutations/auth'
+import type { UserResponse } from '@/server/mutations/auth'
 import { toast } from 'sonner'
 
-type User = {
-  id: number
-  email: string
-  firstName: string | null
-  lastName: string | null
-  name: string | null
-  image: string | null
-  provider: string | null
-}
-
 export function useAuth() {
-  const [user, setUser] = useState<User | null>(null)
+  const [user, setUser] = useState<UserResponse | null>(null)
   const [loading, setLoading] = useState(true)
   const router = useRouter()
 
@@ -25,7 +16,7 @@ export function useAuth() {
       try {
         const userData = await getUser()
         if (userData) {
-          setUser(userData as User)
+          setUser(userData)
         } else {
           setUser(null)
         }
@@ -40,9 +31,9 @@ export function useAuth() {
     fetchUser()
   }, [])
 
-  const login = async (formData: FormData) => {
+  const handleLogin = async (formData: FormData) => {
     try {
-      const result = await loginAction(formData)
+      const result = await login(formData)
       if (result.error) {
         toast.error(result.error)
         return false
@@ -50,7 +41,7 @@ export function useAuth() {
       
       const userData = await getUser()
       if (userData) {
-        setUser(userData as User)
+        setUser(userData)
         toast.success('Logged in successfully')
         router.push('/dashboard')
         return true
@@ -63,9 +54,13 @@ export function useAuth() {
     }
   }
 
-  const logout = async () => {
+  const handleLogout = async () => {
     try {
-      await logoutAction()
+      const result = await logout()
+      if (!result.success) {
+        toast.error(result.error || 'Logout failed')
+        return
+      }
       setUser(null)
       toast.success('Logged out successfully')
       router.push('/login')
@@ -78,8 +73,8 @@ export function useAuth() {
   return {
     user,
     loading,
-    login,
-    logout,
+    login: handleLogin,
+    logout: handleLogout,
     isAuthenticated: !!user
   }
 }

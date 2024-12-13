@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
-import { prisma } from '@/lib/prisma'
 import { SignJWT } from 'jose'
-
+import prisma from '@/server/db'
 const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID
 const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'

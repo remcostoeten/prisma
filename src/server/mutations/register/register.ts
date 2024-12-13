@@ -5,28 +5,39 @@ import { SignJWT } from 'jose'
 import { v4 as uuidv4 } from 'uuid'
 import bcrypt from 'bcryptjs'
 import prisma from '@/server/db'
-import type { LoginResponse } from './types'
+import type { RegisterResponse } from './types'
 
-export async function login(formData: FormData): Promise<LoginResponse> {
+export async function register(formData: FormData): Promise<RegisterResponse> {
   try {
     const email = formData.get('email') as string
     const password = formData.get('password') as string
+    const firstName = formData.get('firstName') as string
+    const lastName = formData.get('lastName') as string
 
     if (!email || !password) {
       return { success: false, error: 'Email and password are required' }
     }
 
-    const user = await prisma.user.findUnique({ where: { email } })
-
-    if (!user || !user.password) {
-      return { success: false, error: 'Invalid credentials' }
+    // Check if user already exists
+    const existingUser = await prisma.user.findUnique({ where: { email } })
+    if (existingUser) {
+      return { success: false, error: 'Email already registered' }
     }
 
-    const isValid = await bcrypt.compare(password, user.password)
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10)
 
-    if (!isValid) {
-      return { success: false, error: 'Invalid credentials' }
-    }
+    // Create user
+    const user = await prisma.user.create({
+      data: {
+        email,
+        password: hashedPassword,
+        firstName: firstName || null,
+        lastName: lastName || null,
+        name: firstName && lastName ? `${firstName} ${lastName}` : null,
+        provider: 'credentials'
+      },
+    })
 
     // Create session
     const sessionToken = uuidv4()
@@ -72,7 +83,7 @@ export async function login(formData: FormData): Promise<LoginResponse> {
       }
     }
   } catch (error) {
-    console.error('Login error:', error)
-    return { success: false, error: 'An error occurred during login' }
+    console.error('Registration error:', error)
+    return { success: false, error: 'An error occurred during registration' }
   }
 } 

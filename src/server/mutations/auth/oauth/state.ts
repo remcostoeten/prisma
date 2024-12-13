@@ -1,3 +1,5 @@
+'use server'
+
 import { cookies } from 'next/headers'
 import { OAUTH_STATE_COOKIE_NAME } from './constants'
 
@@ -20,4 +22,4 @@ export async function getOAuthState() {
 
 export async function clearOAuthState() {
   (await cookies()).delete(OAUTH_STATE_COOKIE_NAME)
-}
+} 
