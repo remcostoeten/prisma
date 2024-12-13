@@ -56,9 +56,9 @@ export function Header() {
   }
 
   return (
-    <header className="bg-white shadow-sm">
+    <header className="bg-background border-b border-border">
       <nav className="container mx-auto px-4 py-3 flex justify-between items-center">
-        <Link href="/" className="text-xl font-bold">
+        <Link href="/" className="text-foreground text-xl font-bold">
           Auth Project
         </Link>
         <div>
@@ -71,25 +71,27 @@ export function Header() {
                       src={user.image || undefined} 
                       alt={user.name || undefined} 
                     />
-                    <AvatarFallback>{user.firstName?.[0]}{user.lastName?.[0]}</AvatarFallback>
+                    <AvatarFallback className="bg-secondary text-secondary-foreground">
+                      {user.firstName?.[0]}{user.lastName?.[0]}
+                    </AvatarFallback>
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56" align="end" forceMount>
+              <DropdownMenuContent className="w-56 bg-popover text-popover-foreground" align="end" forceMount>
                 <DropdownMenuLabel className="font-normal">
                   <div className="flex flex-col space-y-1">
                     <p className="text-sm font-medium leading-none">{user.firstName} {user.lastName}</p>
                     <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
                   </div>
                 </DropdownMenuLabel>
-                <DropdownMenuSeparator />
+                <DropdownMenuSeparator className="bg-border" />
                 <DropdownMenuItem asChild>
                   <Link href="/dashboard">Dashboard</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link href="/profile">Profile</Link>
                 </DropdownMenuItem>
-                <DropdownMenuSeparator />
+                <DropdownMenuSeparator className="bg-border" />
                 <DropdownMenuItem onClick={handleLogout}>
                   Log out
                 </DropdownMenuItem>
@@ -97,8 +99,8 @@ export function Header() {
             </DropdownMenu>
           ) : (
             <div className="space-x-4">
-              <Link href="/login" className="text-blue-600 hover:text-blue-800">Login</Link>
-              <Link href="/register" className="text-blue-600 hover:text-blue-800">Register</Link>
+              <Link href="/login" className="text-primary hover:text-primary/80">Login</Link>
+              <Link href="/register" className="text-primary hover:text-primary/80">Register</Link>
             </div>
           )}
         </div>

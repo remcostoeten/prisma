@@ -1,8 +1,6 @@
 import { Header } from '@/components/layout/header'
 import './globals.css'
-import { Inter } from 'next/font/google'
 import { Toaster } from 'sonner'
-const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
   title: 'Auth Project',
@@ -15,8 +13,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className="dark" color-scheme="dark">
-      <body className={`${inter.className} bg-neutral-950 text-white`}>
+    <html lang="en" className="dark">
+      <body className="min-h-screen bg-background text-foreground">
         <Header />
         <Toaster />
         <main className="container mx-auto px-4 py-8">

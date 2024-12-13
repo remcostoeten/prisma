@@ -6,6 +6,23 @@ import { SignJWT } from 'jose'
 const prisma = new PrismaClient()
 const secretKey = new TextEncoder().encode(process.env.JWT_SECRET || 'your-secret-key')
 
+// Replace the 'any' type with a proper type for the GitHub profile
+type GitHubProfile = {
+  id: number
+  email: string | null
+  name: string | null
+  avatar_url: string | null
+  login: string
+}
+
+// Add type for GitHub email response
+type GitHubEmail = {
+  email: string
+  primary: boolean
+  verified: boolean
+  visibility: string | null
+}
+
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams
   const code = searchParams.get('code')
@@ -50,7 +67,7 @@ export async function GET(request: NextRequest) {
       throw new Error('Failed to fetch user info')
     }
 
-    const userData = await userResponse.json()
+    const userData = await userResponse.json() as GitHubProfile
 
     // Get user email
     const emailResponse = await fetch('https://api.github.com/user/emails', {
@@ -64,8 +81,8 @@ export async function GET(request: NextRequest) {
       throw new Error('Failed to fetch user email')
     }
 
-    const emailData = await emailResponse.json()
-    const primaryEmail = emailData.find((email: any) => email.primary)?.email
+    const emailData = await emailResponse.json() as GitHubEmail[]
+    const primaryEmail = emailData.find((email) => email.primary)?.email
 
     if (!primaryEmail) {
       throw new Error('No primary email found')
@@ -81,6 +98,7 @@ export async function GET(request: NextRequest) {
           name: userData.name || userData.login,
           image: userData.avatar_url,
           provider: 'github',
+          password: null,
         },
       })
     }

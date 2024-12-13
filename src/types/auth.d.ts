@@ -1,16 +1,4 @@
 declare namespace Auth {
-  export type User = {
-    id: number
-    email: string
-    password: string
-    firstName: string
-    lastName: string
-    name: string
-    image?: string
-    provider?: string
-    createdAt: Date
-    updatedAt: Date
-  }
 
   export type Session = {
     id: string
@@ -20,11 +8,24 @@ declare namespace Auth {
     updatedAt: Date
   }
 
-  export type AuthResponse = {
-    error?: string
-    success?: boolean
-    user?: Partial<User>
+  export type User = {
+    id: number
+    email: string
+    password: string
+    firstName: string | null
+    lastName: string | null
+    name: string | null
+    image: string | null
+    provider: string | null
+    emailVerified: Date | null
   }
+  
+  export type AuthResponse = {
+    success?: boolean
+    error?: string
+    user?: User
+  }
+  
 
   export type JWTPayload = {
     userId: number

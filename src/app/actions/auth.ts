@@ -9,6 +9,32 @@ import prisma from '@/server/db'
 
 const secretKey = new TextEncoder().encode(process.env.JWT_SECRET || 'your-secret-key')
 
+type User = {
+  id: number
+  email: string
+  password: string | null
+  firstName: string | null
+  lastName: string | null
+  name: string | null
+  image: string | null
+  provider: string | null
+  emailVerified: Date | null
+}
+
+type AuthResponse = {
+  success?: boolean
+  error?: string
+  user?: User
+}
+
+type UserResponse = Pick<User, 'id' | 'email' | 'firstName' | 'lastName' | 'name' | 'image' | 'provider'>
+
+type SessionResponse = {
+  id: string
+  userId: number
+  expiresAt: Date
+}
+
 async function createSession(userId: number): Promise<void> {
   const sessionToken = uuidv4()
   const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
@@ -35,7 +61,7 @@ async function createSession(userId: number): Promise<void> {
   ;(await cookies()).set('token', token, { httpOnly: true, expires: expiresAt })
 }
 
-export async function register(formData: FormData): Promise<Auth.AuthResponse> {
+export async function register(formData: FormData): Promise<AuthResponse> {
   const email = formData.get('email') as string
   const password = formData.get('password') as string
   const firstName = formData.get('firstName') as string
@@ -71,7 +97,7 @@ export async function register(formData: FormData): Promise<Auth.AuthResponse> {
   }
 }
 
-export async function login(formData: FormData): Promise<Auth.AuthResponse> {
+export async function login(formData: FormData): Promise<AuthResponse> {
   const email = formData.get('email') as string
   const password = formData.get('password') as string
 
@@ -112,7 +138,7 @@ export async function logout(): Promise<void> {
   redirect('/login')
 }
 
-export async function getUser(): Promise<Partial<Auth.User> | null> {
+export async function getUser(): Promise<UserResponse | null> {
   const token = (await cookies()).get('token')?.value
 
   if (!token) return null
@@ -132,7 +158,7 @@ export async function getUser(): Promise<Partial<Auth.User> | null> {
   }
 }
 
-export async function getSession(): Promise<Auth.Session | null> {
+export async function getSession(): Promise<SessionResponse | null> {
   const token = (await cookies()).get('token')?.value
 
   if (!token) return null

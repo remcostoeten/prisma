@@ -1,70 +1,104 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { register } from '../actions/auth'
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import Link from 'next/link'
 import { toast } from 'sonner'
 
 export default function Register() {
-  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
   const router = useRouter()
 
   async function handleSubmit(formData: FormData) {
-    const password = formData.get('password') as string
-    const verifyPassword = formData.get('verifyPassword') as string
-
-    if (password !== verifyPassword) {
-      setError('Passwords do not match')
-      toast.error('Passwords do not match')
-      return
-    }
-
-    const result = await register(formData)
-    if (result?.error) {
-      setError(result.error)
-      toast.error(result.error)
-    } else if (result?.success) {
-      toast.success('Registered successfully')
-      router.push('/dashboard')
-      router.refresh() // Refresh to update the header
+    setLoading(true)
+    try {
+      const result = await register(formData)
+      if (result.error) {
+        toast.error(result.error)
+      } else {
+        toast.success('Registration successful')
+        router.push('/dashboard')
+      }
+    } catch (error) {
+      console.error('Registration error:', error)
+      toast.error('Registration failed')
+    } finally {
+      setLoading(false)
     }
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-neutral-900 text-neutral-200">
-      <div className="p-8 bg-white rounded shadow-md w-96">
-        <h1 className="mb-4 text-2xl font-bold text-center">Register</h1>
-        <form action={handleSubmit}>
-          <div className="mb-4">
-            <Label htmlFor="firstName">First Name</Label>
-            <Input type="text" id="firstName" name="firstName" required />
+    <div className="flex min-h-screen flex-col items-center justify-center bg-background">
+      <div className="w-full max-w-md space-y-8 rounded-lg border border-border bg-card p-8 shadow-lg">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">Register</h1>
+        </div>
+        <form action={handleSubmit} className="space-y-6">
+          <div>
+            <label htmlFor="firstName" className="block text-sm font-medium text-muted-foreground">
+              First Name
+            </label>
+            <input
+              id="firstName"
+              name="firstName"
+              type="text"
+              required
+              className="mt-1 block w-full rounded-md border border-input bg-background px-3 py-2 text-foreground shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+            />
           </div>
-          <div className="mb-4">
-            <Label htmlFor="lastName">Last Name</Label>
-            <Input type="text" id="lastName" name="lastName" required />
+          <div>
+            <label htmlFor="lastName" className="block text-sm font-medium text-muted-foreground">
+              Last Name
+            </label>
+            <input
+              id="lastName"
+              name="lastName"
+              type="text"
+              required
+              className="mt-1 block w-full rounded-md border border-input bg-background px-3 py-2 text-foreground shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+            />
           </div>
-          <div className="mb-4">
-            <Label htmlFor="email">Email</Label>
-            <Input type="email" id="email" name="email" required />
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-muted-foreground">
+              Email
+            </label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              required
+              className="mt-1 block w-full rounded-md border border-input bg-background px-3 py-2 text-foreground shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+            />
           </div>
-          <div className="mb-4">
-            <Label htmlFor="password">Password</Label>
-            <Input type="password" id="password" name="password" required />
+          <div>
+            <label htmlFor="password" className="block text-sm font-medium text-muted-foreground">
+              Password
+            </label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              required
+              className="mt-1 block w-full rounded-md border border-input bg-background px-3 py-2 text-foreground shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+            />
           </div>
-          <div className="mb-6">
-            <Label htmlFor="verifyPassword">Verify Password</Label>
-            <Input type="password" id="verifyPassword" name="verifyPassword" required />
+          <div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="flex w-full justify-center rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50"
+            >
+              {loading ? 'Registering...' : 'Register'}
+            </button>
           </div>
-          <Button type="submit" className="w-full">Register</Button>
         </form>
-        {error && <p className="mt-4 text-red-500 text-center">{error}</p>}
-        <p className="mt-4 text-center">
-          Already have an account? <Link href="/login" className="text-blue-500 hover:underline">Login</Link>
-        </p>
+        <div className="text-center text-sm text-muted-foreground">
+          Already have an account?{' '}
+          <Link href="/login" className="font-semibold text-primary hover:text-primary/80">
+            Login
+          </Link>
+        </div>
       </div>
     </div>
   )
