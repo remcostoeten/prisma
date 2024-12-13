@@ -10,11 +10,20 @@ export function ThemeProvider({
   children,
   ...props
 }: React.ComponentProps<typeof NextThemesProvider>) {
-  return <NextThemesProvider {...props}>
-    <Toaster/>
-    <TooltipProvider delayDuration={50}>
-      {children}
-      <SessionIndicator/>
-    </TooltipProvider>
+  return (
+    <NextThemesProvider
+      attribute="class"
+      defaultTheme="dark"
+      forcedTheme="dark"
+      {...props}
+    >
+      <Toaster />
+      <TooltipProvider delayDuration={50}>
+        <div className="min-h-screen bg-background text-foreground">
+          {children}
+          <SessionIndicator />
+        </div>
+      </TooltipProvider>
     </NextThemesProvider>
+  )
 }

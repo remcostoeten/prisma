@@ -1,5 +1,5 @@
 'use client'
-
+  
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -8,10 +8,12 @@ import { toast } from 'sonner'
 import { Button } from "@/shared/components/ui/button"
 import { Input } from "@/shared/components/ui/input"
 import { Label } from "@/shared/components/ui/label"
+import { useUser } from '@/contexts/user-context'
 
 export default function Register() {
   const [loading, setLoading] = useState(false)
   const router = useRouter()
+  const { setUser } = useUser()
 
   async function handleSubmit(formData: FormData) {
     setLoading(true)
@@ -19,7 +21,8 @@ export default function Register() {
       const result = await register(formData)
       if (result.error) {
         toast.error(result.error)
-      } else {
+      } else if (result.success && result.user) {
+        setUser(result.user)
         toast.success('Registration successful')
         router.push('/dashboard')
       }
@@ -33,11 +36,14 @@ export default function Register() {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-background">
-      <div className="w-full max-w-md space-y-8 rounded-lg border border-border bg-card p-8 shadow-lg">
+      <div className="w-full max-w-md space-y-6 rounded-lg border border-border bg-card p-8 shadow-lg">
         <div className="text-center">
-          <h1 className="text-2xl font-bold tracking-tight text-foreground">Register</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">Create an Account</h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Enter your details to get started
+          </p>
         </div>
-        <form action={handleSubmit} className="space-y-6">
+        <form action={handleSubmit} className="space-y-4">
           <div>
             <Label htmlFor="firstName">First Name</Label>
             <Input
@@ -45,6 +51,7 @@ export default function Register() {
               name="firstName"
               type="text"
               required
+              className="mt-1"
             />
           </div>
           <div>
@@ -54,6 +61,7 @@ export default function Register() {
               name="lastName"
               type="text"
               required
+              className="mt-1"
             />
           </div>
           <div>
@@ -63,6 +71,7 @@ export default function Register() {
               name="email"
               type="email"
               required
+              className="mt-1"
             />
           </div>
           <div>
@@ -72,24 +81,24 @@ export default function Register() {
               name="password"
               type="password"
               required
+              className="mt-1"
             />
           </div>
           <Button
             type="submit"
             disabled={loading}
-            className="w-full"
+            className="w-full mt-6"
           >
-            {loading ? 'Registering...' : 'Register'}
+            {loading ? 'Creating account...' : 'Create account'}
           </Button>
         </form>
         <div className="text-center text-sm text-muted-foreground">
           Already have an account?{' '}
           <Link href="/login" className="font-semibold text-primary hover:text-primary/80">
-            Login
+            Sign in
           </Link>
         </div>
       </div>
     </div>
   )
 }
-

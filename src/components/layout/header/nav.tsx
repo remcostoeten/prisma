@@ -1,5 +1,5 @@
 'use client'
-
+  
 import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -7,6 +7,7 @@ import { Logo } from '@/components/theme/logo'
 import { useUser } from '@/contexts/user-context'
 import UserMenu from '@/components/layout/header/user-menu'
 import { Button } from '@/shared/components/ui/button'
+
 export default function Nav() {
   const pathname = usePathname()
   const { user, isLoading } = useUser()
@@ -23,25 +24,27 @@ export default function Nav() {
   }
 
   return (
-    <header className="flex h-16 items-center justify-between border-b border-zinc-800 px-6">
+    <header className="flex h-16 items-center justify-between border-b border-border px-6">
       <div className="flex items-center gap-6">
         <Link href={user ? "/dashboard" : "/"} className="transition-opacity hover:opacity-80">
-          <Logo hasLink={true} />
+          <Logo hasLink={false} />
         </Link>
-        <Link 
-          href="/docs" 
-          className="text-sm text-zinc-400 hover:text-zinc-100 transition-colors"
-        >
-          Documentation
-        </Link>
+        {user && (
+          <Link 
+            href="/dashboard" 
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            Dashboard
+          </Link>
+        )}
       </div>
       <div className="flex items-center gap-4">
         {user ? (
-          <UserMenu />
+          <UserMenu user={user} />
         ) : (
           <Button
             variant="ghost"
-            className="text-sm text-zinc-400 hover:text-zinc-100"
+            className="text-sm text-muted-foreground hover:text-foreground"
             asChild
           >
             <Link href="/login">Sign in</Link>
@@ -51,4 +54,3 @@ export default function Nav() {
     </header>
   )
 }
-

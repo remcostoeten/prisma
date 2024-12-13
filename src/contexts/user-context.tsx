@@ -1,55 +1,70 @@
-'use client';
+'use client'
 
-import { createContext, useContext, useState, type ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react'
+import { getUser } from '@/app/actions/auth'
 
 type User = {
-    id: string;
-    email: string;
-    name?: string;
-    image?: string;
-};
+  id: number
+  email: string
+  firstName: string | null
+  lastName: string | null
+  name: string | null
+  image: string | null
+  provider: string | null
+}
 
 type UserContextType = {
-    user: User | null;
-    setUser: (user: User | null) => void;
-    isLoading: boolean;
-    logout: () => Promise<void>;
-};
+  user: User | null
+  setUser: (user: User | null) => void
+  isLoading: boolean
+  logout: () => Promise<void>
+}
 
-type UserProviderProps = {
-    children: ReactNode;
-};
+const UserContext = createContext<UserContextType | undefined>(undefined)
 
-const UserContext = createContext<UserContextType | undefined>(undefined);
+export default function UserProvider({ children }: { children: React.ReactNode }) {
+  const [user, setUser] = useState<User | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
 
-export default function UserProvider({ children }: UserProviderProps) {
-    const [user, setUser] = useState<User | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    async function fetchUser() {
+      try {
+        const userData = await getUser()
+        if (userData) {
+          setUser(userData)
+        }
+      } catch (error) {
+        console.error('Error fetching user:', error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
 
-    const logout = async () => {
-        setUser(null);
-    };
+    fetchUser()
+  }, [])
 
-    const value = {
-        user,
-        setUser,
-        isLoading,
-        logout,
-    };
+  const logout = async () => {
+    setUser(null)
+  }
 
-    return (
-        <UserContext.Provider value={value}>
-            {children}
-        </UserContext.Provider>
-    );
+  const value = {
+    user,
+    setUser,
+    isLoading,
+    logout,
+  }
+
+  return (
+    <UserContext.Provider value={value}>
+      {children}
+    </UserContext.Provider>
+  )
 }
 
 export function useUser() {
-    const context = useContext(UserContext);
-    
-    if (context === undefined) {
-        throw new Error('useUser must be used within a UserProvider');
-    }
-    
-    return context;
-} 
+  const context = useContext(UserContext)
+  if (context === undefined) {
+    throw new Error('useUser must be used within a UserProvider')
+  }
+  return context
+}

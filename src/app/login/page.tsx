@@ -8,27 +8,30 @@ import { Input } from "@/shared/components/ui/input"
 import { Label } from "@/shared/components/ui/label"
 import Link from 'next/link'
 import { toast } from 'sonner'
+import { useUser } from '@/contexts/user-context'
 
 export default function Login() {
   const [error, setError] = useState('')
   const router = useRouter()
+  const { setUser } = useUser()
 
   async function handleSubmit(formData: FormData) {
     const result = await login(formData)
     if (result?.error) {
       setError(result.error)
       toast.error(result.error)
-    } else if (result?.success) {
+    } else if (result?.success && result.user) {
+      setUser(result.user)
       toast.success('Logged in successfully')
       router.push('/dashboard')
-      router.refresh() // Refresh to update the header
+      router.refresh()
     }
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="p-8 bg-white rounded shadow-md w-96">
-        <h1 className="mb-4 text-2xl font-bold text-center">Login</h1>
+    <div className="flex items-center justify-center min-h-screen bg-background">
+      <div className="p-8 bg-card rounded-lg border border-border shadow-lg w-96">
+        <h1 className="mb-4 text-2xl font-bold text-center text-foreground">Login</h1>
         <form action={handleSubmit}>
           <div className="mb-4">
             <Label htmlFor="email">Email</Label>
@@ -40,12 +43,11 @@ export default function Login() {
           </div>
           <Button type="submit" className="w-full">Login</Button>
         </form>
-        {error && <p className="mt-4 text-red-500 text-center">{error}</p>}
-        <p className="mt-4 text-center">
-          Don &apos;t have an account? <Link href="/register" className="text-blue-500 hover:underline">Register</Link>
+        {error && <p className="mt-4 text-destructive text-center">{error}</p>}
+        <p className="mt-4 text-center text-muted-foreground">
+          Don&apos;t have an account? <Link href="/register" className="text-primary hover:text-primary/80 font-semibold">Register</Link>
         </p>
       </div>
     </div>
   )
 }
-

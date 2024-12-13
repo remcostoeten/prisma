@@ -1,53 +1,61 @@
 'use client'
 
-import React, { createContext, useContext, useState, useEffect } from 'react'
+import { createContext, useContext, useState, useEffect } from 'react'
+import { getUser } from '@/app/actions/auth'
 
 type User = {
-  name?: string
-  email?: string
-  image?: string
+  id: number
+  email: string
+  firstName: string | null
+  lastName: string | null
+  name: string | null
+  image: string | null
+  provider: string | null
 }
 
 type UserContextType = {
   user: User | null
+  setUser: (user: User | null) => void
   isLoading: boolean
-  login: (user: User) => void
   logout: () => Promise<void>
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined)
 
-export function UserProvider({ children }: { children: React.ReactNode }) {
+export default function UserProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    // Simulate fetching user data
-    const fetchUser = async () => {
-      setIsLoading(true)
-      // Replace this with actual API call
-      const userData = localStorage.getItem('user')
-      if (userData) {
-        setUser(JSON.parse(userData))
+    async function fetchUser() {
+      try {
+        const userData = await getUser()
+        if (userData) {
+          setUser(userData)
+        }
+      } catch (error) {
+        console.error('Error fetching user:', error)
+      } finally {
+        setIsLoading(false)
       }
-      setIsLoading(false)
     }
 
     fetchUser()
   }, [])
 
-  const login = (userData: User) => {
-    setUser(userData)
-    localStorage.setItem('user', JSON.stringify(userData))
-  }
-
   const logout = async () => {
     setUser(null)
-    localStorage.removeItem('user')
+  }
+
+  const value = {
+    user,
+    setUser,
+    isLoading,
+    logout,
   }
 
   return (
-    <UserContext.Provider value={{ user, isLoading, login, logout }}>
+    <UserContext.Provider value={value}>
       {children}
     </UserContext.Provider>
   )
@@ -60,4 +68,3 @@ export function useUser() {
   }
   return context
 }
-
