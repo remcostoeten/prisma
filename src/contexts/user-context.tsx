@@ -1,7 +1,7 @@
 'use client'
 
 import { createContext, useContext, useState, useEffect } from 'react'
-import { getUser } from '@/server/queries/get-user'
+import { getUser } from '@/app/actions/auth'
 import { logout as logoutMutation } from '@/server/mutations/logout'
 import { useRouter } from 'next/navigation'
 
