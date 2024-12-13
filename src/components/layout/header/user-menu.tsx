@@ -36,7 +36,7 @@ export default function UserMenu({ user }: UserMenuProps) {
   const handleLogout = async () => {
     try {
       await logout()
-      router.push('/login')
+      console.log('Logout successful')
     } catch (error) {
       console.error('Logout failed:', error)
     }

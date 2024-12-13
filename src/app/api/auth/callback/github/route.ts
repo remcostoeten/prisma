@@ -1,10 +1,12 @@
 import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 import { prisma } from '@/lib/prisma'
+import { SignJWT } from 'jose'
 
 const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID
 const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+const secretKey = new TextEncoder().encode(process.env.JWT_SECRET || 'your-secret-key')
 
 interface GithubOAuthToken {
   access_token: string
@@ -179,20 +181,26 @@ export async function GET(request: Request) {
         },
       })
 
-      // Clear the oauth state cookie
-      ;(await
-            // Clear the oauth state cookie
-            cookieStore).delete('github_oauth_state')
+      // Create JWT with session info
+      const token = await new SignJWT({ 
+        userId: user.id,
+        sessionToken: session.id,
+        type: 'session'
+      })
+        .setProtectedHeader({ alg: 'HS256' })
+        .setExpirationTime(session.expiresAt.getTime() / 1000)
+        .sign(secretKey)
 
-      // Set session cookie
-      ;(await
-            // Set session cookie
-            cookieStore).set('session_id', session.id, {
+      // Clear the oauth state cookie
+      ;(await cookieStore).delete('github_oauth_state')
+
+      // Set token cookie
+      ;(await cookieStore).set('token', token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax',
         path: '/',
-        maxAge: 60 * 60 * 24 * 7, // 1 week
+        expires: session.expiresAt,
       })
 
       return NextResponse.redirect(new URL('/dashboard', APP_URL))

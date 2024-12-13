@@ -2,13 +2,14 @@
 
 import React, { useState, useRef, CSSProperties } from 'react';
 
-interface FancyButtonProps {
+interface FancyButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
   shortcut?: string;
   variant?: 'light' | 'dark';
 }
 
-export const FancyButton: React.FC<FancyButtonProps> = ({ children, shortcut, variant = 'light' }) => {
+export const FancyButton = React.forwardRef<HTMLButtonElement, FancyButtonProps>(
+  ({ children, shortcut, variant = 'light', className, ...props }, ref) => {
   const [coords, setCoords] = useState({ x: 0, y: 0 });
   const buttonRef = useRef<HTMLButtonElement>(null);
 
@@ -102,7 +103,7 @@ export const FancyButton: React.FC<FancyButtonProps> = ({ children, shortcut, va
 
   return (
     <button
-      ref={buttonRef}
+      ref={ref}
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}
       style={buttonStyle}
@@ -118,6 +119,7 @@ export const FancyButton: React.FC<FancyButtonProps> = ({ children, shortcut, va
         e.currentTarget.style.setProperty('--button-after-opacity', '0');
         e.currentTarget.style.setProperty('--button-bg-opacity', '0');
       }}
+      {...props}
     >
       <div style={innerStyle}>
         {children}
@@ -126,4 +128,6 @@ export const FancyButton: React.FC<FancyButtonProps> = ({ children, shortcut, va
       <div style={afterStyle} />
     </button>
   );
-};
+})
+
+FancyButton.displayName = 'FancyButton';

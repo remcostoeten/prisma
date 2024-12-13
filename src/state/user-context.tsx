@@ -1,7 +1,8 @@
 'use client'
 
 import { createContext, useContext, useState, useEffect } from 'react'
-import { getUser } from '@/app/actions/auth'
+import { getUser, logout as logoutAction } from '@/app/actions/auth'
+import { useRouter } from 'next/navigation'
 
 type User = {
   id: number
@@ -25,6 +26,7 @@ const UserContext = createContext<UserContextType | undefined>(undefined)
 export default function UserProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const router = useRouter()
 
   useEffect(() => {
     async function fetchUser() {
@@ -44,7 +46,13 @@ export default function UserProvider({ children }: { children: React.ReactNode }
   }, [])
 
   const logout = async () => {
-    setUser(null)
+    try {
+      await logoutAction()
+      setUser(null)
+      router.push('/login')
+    } catch (error) {
+      console.error('Logout error:', error)
+    }
   }
 
   const value = {

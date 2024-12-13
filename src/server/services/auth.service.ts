@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
   const state = searchParams.get('state')
 
   // Verify state
-  const storedState = request.cookies.get('github_oauth_state')?.value
+  const storedState = request.cookies.get('oauth_state')?.value
   if (state !== storedState) {
     return NextResponse.redirect(`${process.env.NEXT_PUBLIC_APP_URL}/login?error=Invalid state`)
   }
@@ -80,7 +80,7 @@ export async function GET(request: NextRequest) {
     }
 
     const emailData = await emailResponse.json() as GitHubEmail[]
-    const primaryEmail = emailData.find((email) => email.primary && email.verified)?.email
+    const primaryEmail = emailData.find((email) => email.primary)?.email
 
     if (!primaryEmail) {
       throw new Error('No primary email found')
@@ -104,17 +104,6 @@ export async function GET(request: NextRequest) {
           image: userData.avatar_url,
           provider: 'github',
           password: null,
-          emailVerified: new Date(),
-        },
-      })
-    } else {
-      // Update existing user with latest GitHub info
-      user = await prisma.user.update({
-        where: { id: user.id },
-        data: {
-          name: userData.name || userData.login,
-          image: userData.avatar_url,
-          provider: 'github',
           emailVerified: new Date(),
         },
       })
@@ -151,7 +140,7 @@ export async function GET(request: NextRequest) {
       expires: session.expiresAt,
       path: '/'
     })
-    response.cookies.delete('github_oauth_state', { path: '/' })
+    response.cookies.delete('oauth_state')
 
     return response
   } catch (error) {

@@ -1,11 +1,10 @@
 import { NextResponse } from 'next/server'
 
 const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID
-const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
 
 export async function GET() {
-  if (!GITHUB_CLIENT_ID || !GITHUB_CLIENT_SECRET) {
+  if (!GITHUB_CLIENT_ID) {
     return NextResponse.redirect(new URL('/login?error=OAuth configuration error', APP_URL))
   }
 
@@ -20,12 +19,15 @@ export async function GET() {
     allow_signup: 'true',
   })
 
-  // Store state in cookie for verification in callback
+  // Create response with GitHub OAuth URL
   const response = NextResponse.redirect(`https://github.com/login/oauth/authorize?${params.toString()}`)
+
+  // Set state cookie with proper configuration
   response.cookies.set('github_oauth_state', state, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
+    path: '/',
     maxAge: 60 * 5, // 5 minutes
   })
 

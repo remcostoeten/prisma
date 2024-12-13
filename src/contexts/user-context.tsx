@@ -1,7 +1,9 @@
 'use client'
 
 import { createContext, useContext, useState, useEffect } from 'react'
-import { getUser } from '@/app/actions/auth'
+import { getUser } from '@/server/queries/get-user'
+import { logout as logoutMutation } from '@/server/mutations/logout'
+import { useRouter } from 'next/navigation'
 
 type User = {
   id: number
@@ -25,6 +27,7 @@ const UserContext = createContext<UserContextType | undefined>(undefined)
 export default function UserProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const router = useRouter()
 
   useEffect(() => {
     async function fetchUser() {
@@ -32,19 +35,38 @@ export default function UserProvider({ children }: { children: React.ReactNode }
         const userData = await getUser()
         if (userData) {
           setUser(userData)
+        } else {
+          setUser(null)
+          // If we're on a protected route and there's no user, redirect to login
+          if (window.location.pathname.startsWith('/dashboard')) {
+            router.push('/login')
+          }
         }
       } catch (error) {
         console.error('Error fetching user:', error)
+        setUser(null)
       } finally {
         setIsLoading(false)
       }
     }
 
     fetchUser()
-  }, [])
+  }, [router])
 
   const logout = async () => {
-    setUser(null)
+    try {
+      const result = await logoutMutation()
+
+      if (!result.success) {
+        throw new Error(result.error || 'Logout failed')
+      }
+
+      setUser(null)
+      router.push('/login')
+    } catch (error) {
+      console.error('Logout error:', error)
+      throw error
+    }
   }
 
   const value = {

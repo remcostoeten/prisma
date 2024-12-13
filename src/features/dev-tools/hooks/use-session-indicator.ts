@@ -1,12 +1,11 @@
-
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useAuth } from '@/shared/hooks/use-auth'
+import { useUser } from '@/contexts/user-context'
 import { isFeatureEnabled, FeatureFlag } from '@/core/config/feature-flags'
 
 export function useSessionIndicator() {
-  const { user } = useAuth()
+  const { user, isLoading } = useUser()
   const [isHovered, setIsHovered] = useState(false)
   const [isVisible, setIsVisible] = useState(false)
   const [mounted, setMounted] = useState(false)
@@ -21,6 +20,7 @@ export function useSessionIndicator() {
 
   return {
     user,
+    isLoading,
     isHovered,
     isVisible,
     mounted,

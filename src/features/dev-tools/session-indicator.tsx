@@ -1,6 +1,6 @@
 'use client'
 
-import { cn } from 'helpers'
+import { cn } from '@/shared/helpers/utils'
 import { useSessionIndicator } from '@/features/dev-tools/hooks/use-session-indicator'
 
 type SessionIndicatorProps = {
@@ -23,7 +23,7 @@ export default function SessionIndicator({ className }: SessionIndicatorProps) {
     <div
       className={cn(
         'fixed bottom-4 right-4 z-50',
-        'transition-transform duration-300 ease-in-out',
+        'transition-transform duration-1000 ease-in-out',
         isHovered ? 'scale-105' : '',
         className
       )}
@@ -31,11 +31,10 @@ export default function SessionIndicator({ className }: SessionIndicatorProps) {
       onMouseLeave={handleMouseLeave}
     >
       <div className="relative">
-        {/* Status Indicator */}
         <div
           className={cn(
-            'h-4 w-4 rounded-full',
-            'transition-all duration-300 ease-in-out',
+            'h-2 w-2 opacity-50 rounded-full',
+            'transition-all duration-1000 ease-in-out',
             'shadow-lg',
             user ? 'bg-green-500' : 'bg-red-500',
             {
