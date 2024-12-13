@@ -5,6 +5,9 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { register } from '../actions/auth'
 import { toast } from 'sonner'
+import { Button } from "@/shared/components/ui/button"
+import { Input } from "@/shared/components/ui/input"
+import { Label } from "@/shared/components/ui/label"
 
 export default function Register() {
   const [loading, setLoading] = useState(false)
@@ -36,62 +39,48 @@ export default function Register() {
         </div>
         <form action={handleSubmit} className="space-y-6">
           <div>
-            <label htmlFor="firstName" className="block text-sm font-medium text-muted-foreground">
-              First Name
-            </label>
-            <input
+            <Label htmlFor="firstName">First Name</Label>
+            <Input
               id="firstName"
               name="firstName"
               type="text"
               required
-              className="mt-1 block w-full rounded-md border border-input bg-background px-3 py-2 text-foreground shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
             />
           </div>
           <div>
-            <label htmlFor="lastName" className="block text-sm font-medium text-muted-foreground">
-              Last Name
-            </label>
-            <input
+            <Label htmlFor="lastName">Last Name</Label>
+            <Input
               id="lastName"
               name="lastName"
               type="text"
               required
-              className="mt-1 block w-full rounded-md border border-input bg-background px-3 py-2 text-foreground shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
             />
           </div>
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-muted-foreground">
-              Email
-            </label>
-            <input
+            <Label htmlFor="email">Email</Label>
+            <Input
               id="email"
               name="email"
               type="email"
               required
-              className="mt-1 block w-full rounded-md border border-input bg-background px-3 py-2 text-foreground shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
             />
           </div>
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-muted-foreground">
-              Password
-            </label>
-            <input
+            <Label htmlFor="password">Password</Label>
+            <Input
               id="password"
               name="password"
               type="password"
               required
-              className="mt-1 block w-full rounded-md border border-input bg-background px-3 py-2 text-foreground shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
             />
           </div>
-          <div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="flex w-full justify-center rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50"
-            >
-              {loading ? 'Registering...' : 'Register'}
-            </button>
-          </div>
+          <Button
+            type="submit"
+            disabled={loading}
+            className="w-full"
+          >
+            {loading ? 'Registering...' : 'Register'}
+          </Button>
         </form>
         <div className="text-center text-sm text-muted-foreground">
           Already have an account?{' '}

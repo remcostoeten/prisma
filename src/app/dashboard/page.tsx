@@ -50,8 +50,8 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <div className="p-8 bg-white rounded shadow-md">
+    <div className="flex flex-col items-center justify-center min-h-screen text-foreground ">
+      <div className="p-8  rounded shadow-md">
         <h1 className="mb-4 text-2xl font-bold">Welcome to your Dashboard</h1>
         <p className="mb-2">Name: {user.name}</p>
         <p className="mb-2">Email: {user.email}</p>

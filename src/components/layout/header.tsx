@@ -4,8 +4,8 @@ import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { getUser, logout } from "@/app/actions/auth"
-import { Button } from "@/components/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Button } from "@/shared/components/ui/button"
+import { Avatar, AvatarFallback, AvatarImage } from "@/shared/components/ui/avatar"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,7 +13,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/shared/components/ui/dropdown-menu"
 import { toast } from 'sonner'
 
 type User = {

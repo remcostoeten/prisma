@@ -1,3 +1,4 @@
+
 {
   "$schema": "https://ui.shadcn.com/schema.json",
   "style": "new-york",
@@ -11,11 +12,11 @@
     "prefix": ""
   },
   "aliases": {
-    "components": "@/components",
-    "utils": "@/lib/utils",
-    "ui": "@/components/ui",
-    "lib": "@/lib",
-    "hooks": "@/hooks"
+    "components": "src/shared/components",
+    "utils": "src/shared/helpers",
+    "ui": "src/shared/components/ui",
+    "lib": "src/shared/helpers",
+    "hooks": "src/shared/hooks"
   },
   "iconLibrary": "lucide"
 }
