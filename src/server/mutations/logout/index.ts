@@ -1,2 +1,2 @@
 export { logout } from './logout'
-export type { LogoutResponse } from './types' 
+export type { LogoutResponse } from './types'

@@ -8,76 +8,93 @@ import { env } from '@/env'
 const secretKey = new TextEncoder().encode(env.JWT_SECRET)
 
 export async function middleware(request: NextRequest) {
-  const response = NextResponse.next()
+	const response = NextResponse.next()
 
-  // Apply rate limiting to all API routes
-  if (request.nextUrl.pathname.startsWith('/api/')) {
-    const ip = request.headers.get('x-forwarded-for') || 
-               request.nextUrl.searchParams.get('ip') || 
-               'anonymous'
-    
-    const routeLimit = await getRateLimit(request.nextUrl.pathname)
+	// Apply rate limiting to all API routes
+	if (request.nextUrl.pathname.startsWith('/api/')) {
+		const ip =
+			request.headers.get('x-forwarded-for') ||
+			request.nextUrl.searchParams.get('ip') ||
+			'anonymous'
 
-    try {
-      const { remaining, reset } = await rateLimit(`${ip}:${request.nextUrl.pathname}`, routeLimit)
+		const routeLimit = await getRateLimit(request.nextUrl.pathname)
 
-      // Set rate limit headers
-      response.headers.set('X-RateLimit-Limit', routeLimit.maxRequests.toString())
-      response.headers.set('X-RateLimit-Remaining', remaining.toString())
-      response.headers.set('X-RateLimit-Reset', reset.toString())
-      response.headers.set('X-RateLimit-Policy', `${routeLimit.maxRequests} requests per ${routeLimit.interval} seconds`)
+		try {
+			const { remaining, reset } = await rateLimit(
+				`${ip}:${request.nextUrl.pathname}`,
+				routeLimit
+			)
 
-    } catch (error) {
-      if (error instanceof Error && 'reset' in error && 'remaining' in error) {
-        return new NextResponse(
-          JSON.stringify({
-            error: 'Too Many Requests',
-            message: `Rate limit exceeded. Please try again later.`,
-            retryAfter: (error as { reset: number }).reset
-          }),
-          {
-            status: 429,
-            headers: {
-              'Content-Type': 'application/json',
-              'Retry-After': Math.ceil(((error as { reset: number }).reset - Date.now() / 1000)).toString()
-            }
-          }
-        )
-      }
-      
-      return new NextResponse(
-        JSON.stringify({ error: 'Internal Server Error' }),
-        { status: 500 }
-      )
-    }
-  }
+			// Set rate limit headers
+			response.headers.set(
+				'X-RateLimit-Limit',
+				routeLimit.maxRequests.toString()
+			)
+			response.headers.set('X-RateLimit-Remaining', remaining.toString())
+			response.headers.set('X-RateLimit-Reset', reset.toString())
+			response.headers.set(
+				'X-RateLimit-Policy',
+				`${routeLimit.maxRequests} requests per ${routeLimit.interval} seconds`
+			)
+		} catch (error) {
+			if (
+				error instanceof Error &&
+				'reset' in error &&
+				'remaining' in error
+			) {
+				return new NextResponse(
+					JSON.stringify({
+						error: 'Too Many Requests',
+						message: `Rate limit exceeded. Please try again later.`,
+						retryAfter: (error as { reset: number }).reset
+					}),
+					{
+						status: 429,
+						headers: {
+							'Content-Type': 'application/json',
+							'Retry-After': Math.ceil(
+								(error as { reset: number }).reset -
+									Date.now() / 1000
+							).toString()
+						}
+					}
+				)
+			}
 
-  // Protect dashboard routes
-  if (request.nextUrl.pathname.startsWith('/dashboard')) {
-    const token = request.cookies.get(AUTH_COOKIE_NAME)?.value
+			return new NextResponse(
+				JSON.stringify({ error: 'Internal Server Error' }),
+				{ status: 500 }
+			)
+		}
+	}
 
-    if (!token) {
-      return NextResponse.redirect(new URL('/login', request.url))
-    }
+	// Protect dashboard routes
+	if (request.nextUrl.pathname.startsWith('/dashboard')) {
+		const token = request.cookies.get(AUTH_COOKIE_NAME)?.value
 
-    try {
-      const { payload } = await jwtVerify(token, secretKey)
-      
-      if (!payload || typeof payload !== 'object' || !('userId' in payload)) {
-        throw new Error('Invalid token payload')
-      }
-    } catch (error) {
-      console.error('Auth middleware error:', error)
-      return NextResponse.redirect(new URL('/login', request.url))
-    }
-  }
+		if (!token) {
+			return NextResponse.redirect(new URL('/login', request.url))
+		}
 
-  return response
+		try {
+			const { payload } = await jwtVerify(token, secretKey)
+
+			if (
+				!payload ||
+				typeof payload !== 'object' ||
+				!('userId' in payload)
+			) {
+				throw new Error('Invalid token payload')
+			}
+		} catch (error) {
+			console.error('Auth middleware error:', error)
+			return NextResponse.redirect(new URL('/login', request.url))
+		}
+	}
+
+	return response
 }
 
 export const config = {
-  matcher: [
-    '/api/:path*',
-    '/dashboard/:path*'
-  ]
+	matcher: ['/api/:path*', '/dashboard/:path*']
 }

@@ -1,2 +1,2 @@
 export { register } from './register'
-export type { RegisterResponse } from './types' 
+export type { RegisterResponse } from './types'

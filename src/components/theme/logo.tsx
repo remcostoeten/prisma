@@ -333,7 +333,9 @@ function useMountedTheme() {
 
 	React.useEffect(() => {
 		setMounted(true)
-		const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+		const prefersDarkMode = window.matchMedia(
+			'(prefers-color-scheme: dark)'
+		).matches
 		setTheme(prefersDarkMode ? 'dark' : 'light')
 	}, [])
 
@@ -442,4 +444,3 @@ export function Logo({
 		<div className="inline-block">{LogoSVG}</div>
 	)
 }
-

@@ -1,11 +1,11 @@
 export type SessionResponse = {
-  id: string
-  userId: number
-  expiresAt: Date
+	id: string
+	userId: number
+	expiresAt: Date
 }
 
 export type JWTPayload = {
-  userId: number
-  sessionToken: string
-  type: 'session'
-} 
+	userId: number
+	sessionToken: string
+	type: 'session'
+}
