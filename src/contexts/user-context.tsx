@@ -2,15 +2,17 @@
 
 import { createContext, useContext, useState, useEffect } from 'react'
 import { getUser, logout } from '@/server/mutations/auth'
-import type { UserResponse } from '@/server/mutations/auth'
+import type { User } from '@/shared/hooks/use-auth'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
+import { useAuth } from '@/shared/hooks/use-auth'
 
 type UserContextType = {
-	user: UserResponse | null
-	setUser: (user: UserResponse | null) => void
+	user: User | null
+	setUser: (user: User | null) => void
 	isLoading: boolean
 	logout: () => Promise<void>
+	refreshUser: () => Promise<void>
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined)
@@ -20,33 +22,49 @@ export default function UserProvider({
 }: {
 	children: React.ReactNode
 }) {
-	const [user, setUser] = useState<UserResponse | null>(null)
+	const [user, setUser] = useState<User | null>(null)
 	const [isLoading, setIsLoading] = useState(true)
 	const router = useRouter()
+	const { setUser: setAuthUser } = useAuth()
+
+	const fetchUser = async () => {
+		try {
+			const userData = await getUser()
+			if (userData) {
+				setUser(userData)
+				setAuthUser(userData)
+			} else {
+				setUser(null)
+				setAuthUser(null)
+				// If we're on a protected route and there's no user, redirect to login
+				if (window.location.pathname.startsWith('/dashboard')) {
+					router.push('/login')
+				}
+			}
+		} catch (error) {
+			console.error('Error fetching user:', error)
+			setUser(null)
+			setAuthUser(null)
+		} finally {
+			setIsLoading(false)
+		}
+	}
 
 	useEffect(() => {
-		async function fetchUser() {
-			try {
-				const userData = await getUser()
-				if (userData) {
-					setUser(userData)
-				} else {
-					setUser(null)
-					// If we're on a protected route and there's no user, redirect to login
-					if (window.location.pathname.startsWith('/dashboard')) {
-						router.push('/login')
-					}
-				}
-			} catch (error) {
-				console.error('Error fetching user:', error)
-				setUser(null)
-			} finally {
-				setIsLoading(false)
+		fetchUser()
+	}, [])
+
+	// Add a listener for storage events to handle cross-tab synchronization
+	useEffect(() => {
+		const handleStorageChange = (event: StorageEvent) => {
+			if (event.key === 'auth-storage') {
+				fetchUser()
 			}
 		}
 
-		fetchUser()
-	}, [router])
+		window.addEventListener('storage', handleStorageChange)
+		return () => window.removeEventListener('storage', handleStorageChange)
+	}, [])
 
 	const handleLogout = async () => {
 		try {
@@ -58,6 +76,7 @@ export default function UserProvider({
 			}
 
 			setUser(null)
+			setAuthUser(null)
 			toast.success('Successfully logged out')
 			router.push('/login')
 		} catch (error) {
@@ -71,7 +90,8 @@ export default function UserProvider({
 		user,
 		setUser,
 		isLoading,
-		logout: handleLogout
+		logout: handleLogout,
+		refreshUser: fetchUser
 	}
 
 	return <UserContext.Provider value={value}>{children}</UserContext.Provider>

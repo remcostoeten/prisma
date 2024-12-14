@@ -12,31 +12,58 @@ export async function register(formData: FormData): Promise<AuthResponse> {
 	const lastName = formData.get('lastName') as string
 
 	if (!email || !password || !firstName || !lastName) {
-		return { error: 'All fields are required' }
+		return { success: false, error: 'All fields are required' }
 	}
 
 	try {
-		const existingUser = await prisma.user.findUnique({ where: { email } })
+		const existingUser = await prisma.user.findUnique({
+			where: { email },
+			select: { id: true }
+		})
+
 		if (existingUser) {
-			return { error: 'User already exists' }
+			return { success: false, error: 'Email is already registered' }
 		}
 
 		const hashedPassword = await bcrypt.hash(password, 10)
-
 		const user = await prisma.user.create({
 			data: {
 				email,
 				password: hashedPassword,
 				firstName,
 				lastName,
-				name: `${firstName} ${lastName}`
+				name: `${firstName} ${lastName}`,
+				provider: 'credentials'
+			},
+			select: {
+				id: true,
+				email: true,
+				name: true,
+				image: true,
+				provider: true,
+				emailVerified: true,
+				firstName: true,
+				lastName: true
 			}
 		})
 
-		await createSession(user.id)
-		return { success: true, user }
+		await createSession(user.id).catch(console.error)
+
+		return {
+			success: true,
+			user: {
+				...user,
+				image: user.image ?? null,
+				provider: user.provider ?? 'credentials',
+				emailVerified: user.emailVerified ?? null
+			}
+		}
 	} catch (error) {
 		console.error('Registration error:', error)
-		return { error: 'Registration failed' }
+		return {
+			success: false,
+			error:
+				error instanceof Error ? error.message : 'Registration failed'
+		}
 	}
 }

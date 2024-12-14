@@ -1,80 +1,54 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { getUser, login, logout } from '@/server/mutations/auth'
-import type { UserResponse } from '@/server/mutations/auth'
-import { toast } from 'sonner'
+import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
+import type { User, AuthResponse } from '@/server/mutations/auth/user/types'
 
-export function useAuth() {
-	const [user, setUser] = useState<UserResponse | null>(null)
-	const [loading, setLoading] = useState(true)
-	const router = useRouter()
+export type { User, AuthResponse }
 
-	useEffect(() => {
-		async function fetchUser() {
-			try {
-				const userData = await getUser()
-				if (userData) {
-					setUser(userData)
-				} else {
-					setUser(null)
-				}
-			} catch (error) {
-				console.error('Error fetching user:', error)
-				setUser(null)
-			} finally {
-				setLoading(false)
-			}
-		}
-
-		fetchUser()
-	}, [])
-
-	const handleLogin = async (formData: FormData) => {
-		try {
-			const result = await login(formData)
-			if (result.error) {
-				toast.error(result.error)
-				return false
-			}
-
-			const userData = await getUser()
-			if (userData) {
-				setUser(userData)
-				toast.success('Logged in successfully')
-				router.push('/dashboard')
-				return true
-			}
-			return false
-		} catch (error) {
-			console.error('Login error:', error)
-			toast.error('An error occurred during login')
-			return false
-		}
-	}
-
-	const handleLogout = async () => {
-		try {
-			const result = await logout()
-			if (!result.success) {
-				toast.error(result.error || 'Logout failed')
-				return
-			}
-			setUser(null)
-			toast.success('Logged out successfully')
-			router.push('/login')
-		} catch (error) {
-			console.error('Logout error:', error)
-			toast.error('Logout failed')
-		}
-	}
-
-	return {
-		user,
-		loading,
-		login: handleLogin,
-		logout: handleLogout,
-		isAuthenticated: !!user
-	}
+export type LoginCredentials = {
+	email: string
+	password: string
+	remember?: boolean
 }
+
+export type RegisterData = {
+	email: string
+	password: string
+	firstName: string
+	lastName: string
+}
+
+export type AuthError = {
+	message: string
+	code?: string
+	status?: number
+}
+
+interface AuthState {
+	user: User | null
+	isLoading: boolean
+	error: AuthError | null
+	setUser: (user: User | null) => void
+	clearError: () => void
+}
+
+export const useAuth = create<AuthState>()(
+	persist(
+		(set) => ({
+			user: null,
+			isLoading: false,
+			error: null,
+			setUser: (user) => set({ user, error: null }),
+			clearError: () => set({ error: null })
+		}),
+		{
+			name: 'auth-storage',
+			partialize: (state) => ({
+				user: state.user,
+				isLoading: state.isLoading,
+				error: state.error
+			})
+		}
+	)
+)

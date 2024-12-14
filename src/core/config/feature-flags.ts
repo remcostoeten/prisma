@@ -37,7 +37,10 @@ export enum FeatureFlag {
 	DEV_TOOLS = 'DEV_TOOLS',
 
 	/** Enables/disables password strength checker */
-	PASSWORD_STRENGTH_CHECKER = 'PASSWORD_STRENGTH_CHECKER'
+	PASSWORD_STRENGTH_CHECKER = 'PASSWORD_STRENGTH_CHECKER',
+
+	/** Enables/disables forgot password functionality */
+	FORGOT_PASSWORD = 'FORGOT_PASSWORD'
 }
 
 /**
@@ -46,11 +49,12 @@ export enum FeatureFlag {
  * @description
  * Centralized object storing the enabled/disabled state of application features
  */
-export const featureFlags = {
+export const featureFlags: Record<FeatureFlag, boolean> = {
 	[FeatureFlag.SHOW_SESSION_INDICATOR]: true,
 	[FeatureFlag.FONT_SWITCHER]: true,
 	[FeatureFlag.DEV_TOOLS]: true,
-	[FeatureFlag.PASSWORD_STRENGTH_CHECKER]: true
+	[FeatureFlag.PASSWORD_STRENGTH_CHECKER]: true,
+	[FeatureFlag.FORGOT_PASSWORD]: false //ToDo: Implement forgot password. The ui is done. brrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr
 } as const
 
 /**
@@ -79,8 +83,8 @@ export function isFeatureEnabled(feature: FeatureFlag): boolean {
  * console.log(activeFeatures)
  * // Output: ['SHOW_SESSION_INDICATOR', 'FONT_SWITCHER', ...]
  */
-export function getEnabledFeatures(): FeatureFlag[] {
+export default function getEnabledFeatures(): FeatureFlag[] {
 	return Object.entries(featureFlags)
-		.filter(([_, isEnabled]) => isEnabled)
+		.filter(([, isEnabled]) => isEnabled)
 		.map(([feature]) => feature as FeatureFlag)
 }

@@ -68,10 +68,13 @@ export async function middleware(request: NextRequest) {
 		}
 	}
 
+	const token = request.cookies.get(AUTH_COOKIE_NAME)?.value
+	const isAuthPage =
+		request.nextUrl.pathname === '/login' ||
+		request.nextUrl.pathname === '/register'
+
 	// Protect dashboard routes
 	if (request.nextUrl.pathname.startsWith('/dashboard')) {
-		const token = request.cookies.get(AUTH_COOKIE_NAME)?.value
-
 		if (!token) {
 			return NextResponse.redirect(new URL('/login', request.url))
 		}
@@ -92,9 +95,14 @@ export async function middleware(request: NextRequest) {
 		}
 	}
 
+	// Redirect authenticated users away from auth pages
+	if (isAuthPage && token) {
+		return NextResponse.redirect(new URL('/dashboard', request.url))
+	}
+
 	return response
 }
 
 export const config = {
-	matcher: ['/api/:path*', '/dashboard/:path*']
+	matcher: ['/api/:path*', '/dashboard/:path*', '/login', '/register']
 }

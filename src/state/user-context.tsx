@@ -29,7 +29,7 @@ export default function UserProvider({
 			try {
 				const userData = await getUser()
 				if (userData) {
-					setUser(userData)
+					setUser(userData as unknown as UserResponse | null)
 				}
 			} catch (error) {
 				console.error('Error fetching user:', error)
