@@ -1,86 +1,54 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { getUser, login as loginAction, logout as logoutAction } from '@/app/actions/auth'
-import { toast } from 'sonner'
+import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
+import type { User, AuthResponse } from '@/server/mutations/auth/user/types'
 
-type User = {
-  id: number
-  email: string
-  firstName: string | null
-  lastName: string | null
-  name: string | null
-  image: string | null
-  provider: string | null
+export type { User, AuthResponse }
+
+export type LoginCredentials = {
+	email: string
+	password: string
+	remember?: boolean
 }
 
-export function useAuth() {
-  const [user, setUser] = useState<User | null>(null)
-  const [loading, setLoading] = useState(true)
-  const router = useRouter()
-
-  useEffect(() => {
-    async function fetchUser() {
-      try {
-        const userData = await getUser()
-        if (userData) {
-          setUser(userData as User)
-        } else {
-          setUser(null)
-        }
-      } catch (error) {
-        console.error('Error fetching user:', error)
-        setUser(null)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchUser()
-  }, [])
-
-  const login = async (formData: FormData) => {
-    try {
-      const result = await loginAction(formData)
-      if (result.error) {
-        toast.error(result.error)
-        return false
-      }
-      
-      const userData = await getUser()
-      if (userData) {
-        setUser(userData as User)
-        toast.success('Logged in successfully')
-        router.push('/dashboard')
-        return true
-      }
-      return false
-    } catch (error) {
-      console.error('Login error:', error)
-      toast.error('An error occurred during login')
-      return false
-    }
-  }
-
-  const logout = async () => {
-    try {
-      await logoutAction()
-      setUser(null)
-      toast.success('Logged out successfully')
-      router.push('/login')
-    } catch (error) {
-      console.error('Logout error:', error)
-      toast.error('Logout failed')
-    }
-  }
-
-  return {
-    user,
-    loading,
-    login,
-    logout,
-    isAuthenticated: !!user
-  }
+export type RegisterData = {
+	email: string
+	password: string
+	firstName: string
+	lastName: string
 }
 
+export type AuthError = {
+	message: string
+	code?: string
+	status?: number
+}
+
+interface AuthState {
+	user: User | null
+	isLoading: boolean
+	error: AuthError | null
+	setUser: (user: User | null) => void
+	clearError: () => void
+}
+
+export const useAuth = create<AuthState>()(
+	persist(
+		(set) => ({
+			user: null,
+			isLoading: false,
+			error: null,
+			setUser: (user) => set({ user, error: null }),
+			clearError: () => set({ error: null })
+		}),
+		{
+			name: 'auth-storage',
+			partialize: (state) => ({
+				user: state.user,
+				isLoading: state.isLoading,
+				error: state.error
+			})
+		}
+	)
+)
