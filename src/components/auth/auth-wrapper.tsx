@@ -14,7 +14,6 @@ type AuthWrapperProps = {
 export function AuthWrapper({ children, type }: AuthWrapperProps) {
 	const handleGithubLogin = async () => {
 		try {
-			// Redirect to GitHub OAuth endpoint
 			window.location.href = '/api/auth/github'
 		} catch (error) {
 			console.error('GitHub login failed:', error)

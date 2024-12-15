@@ -1,4 +1,5 @@
 import type { Config } from 'tailwindcss'
+import animate from 'tailwindcss-animate'
 
 export default {
 	darkMode: ['class'],
@@ -11,10 +12,10 @@ export default {
 	theme: {
 		extend: {
 			fontFamily: {
-				'geist-mono': ['Geist Mono', 'monospace'],
-				'jetbrains-mono': ['JetBrains Mono', 'monospace'],
-				'ibm-plex-mono': ['IBM Plex Mono', 'monospace'],
-				'inter-mono': ['Inter Mono', 'monospace']
+				'geist-mono': ['var(--font-geist-mono)'],
+				'inter': ['var(--font-inter)'],
+				'jetbrains-mono': ['var(--font-jetbrains-mono)'],
+				'ibm-plex-mono': ['var(--font-ibm-plex-mono)']
 			},
 			colors: {
 				border: 'hsl(var(--border))',
@@ -112,5 +113,5 @@ export default {
 			}
 		}
 	},
-	plugins: [require('tailwindcss-animate')]
+	plugins: [animate]
 } satisfies Config

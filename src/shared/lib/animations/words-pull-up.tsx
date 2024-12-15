@@ -52,7 +52,7 @@ export default function WordsPullUp({
 					animate={isInView ? 'animate' : ''}
 					custom={i}
 					className={cn(
-						'text-xl text-center sm:text-4xl font-bold tracking-tighter md:text-6xl md:leading-[4rem]',
+						'text-xl text-center sm:text-4xl font-bold tracking-tighter md:text-6xl md:leading-[4rem] font-geist-mono',
 						'pr-2',
 						className
 					)}

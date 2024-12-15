@@ -16,7 +16,7 @@ export function ThemeProvider({
 			{...props}
 		>
 			<TooltipProvider delayDuration={50}>
-				<div className="min-h-screen bg-background text-foreground">
+				<div className="min-h-screen max-h-screen bg-background text-foreground">
 					{children}
 				</div>
 			</TooltipProvider>

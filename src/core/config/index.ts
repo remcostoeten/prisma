@@ -20,7 +20,6 @@ export const config = {
 	features: {
 		flags: featureFlags,
 		isEnabled: isFeatureEnabled,
-		FeatureFlag
 	},
 	metadata: {
 		root: rootLayoutMetadata

@@ -4,12 +4,12 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { PasswordStrengthMeter } from './password-strength-meter'
 import { Button } from '@/shared/components/ui/button'
 import { Input } from '@/shared/components/ui/input'
 import { toast } from 'sonner'
 import Spinner from '@/shared/components/effects/spinner'
 import { EyeIcon, EyeOffIcon } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { featureFlags } from '@/core/config'
 
 type AuthFormProps = {
@@ -50,10 +50,29 @@ const registerSchema = z
 		path: ['confirmPassword']
 	})
 
+const inputVariants = {
+	focus: {
+		boxShadow: '0 0 0 2px rgba(62, 207, 142, 0.1)',
+		borderColor: '#3ecf8e',
+		transition: { duration: 0.2 }
+	},
+	blur: {
+		boxShadow: '0 0 0 0px rgba(62, 207, 142, 0)',
+		borderColor: '#2f2f2f',
+		transition: { duration: 0.2 }
+	},
+	error: {
+		boxShadow: '0 0 0 2px rgba(239, 68, 68, 0.1)',
+		borderColor: '#ef4444',
+		transition: { duration: 0.2 }
+	}
+}
+
 export default function AuthForm({ type, action }: AuthFormProps) {
 	const [showPassword, setShowPassword] = useState(false)
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 	const [isLoading, setIsLoading] = useState(false)
+	const [focusedInput, setFocusedInput] = useState<string | null>(null)
 	const forgotPasswordEnabled = featureFlags['FORGOT_PASSWORD']
 
 	const schema = type === 'login' ? loginSchema : registerSchema
@@ -61,7 +80,6 @@ export default function AuthForm({ type, action }: AuthFormProps) {
 	const {
 		register,
 		handleSubmit,
-		watch,
 		formState: { errors }
 	} = useForm({
 		resolver: zodResolver(schema),
@@ -74,10 +92,8 @@ export default function AuthForm({ type, action }: AuthFormProps) {
 						firstName: '',
 						lastName: '',
 						confirmPassword: ''
-					}
+				  }
 	})
-
-	const password = watch('password', '')
 
 	const handleFormSubmit = async (data: z.infer<typeof schema>) => {
 		try {
@@ -101,136 +117,177 @@ export default function AuthForm({ type, action }: AuthFormProps) {
 	return (
 		<form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
 			{type === 'register' && (
-				<div className="grid gap-4 grid-cols-2">
-					<div className="space-y-2">
+				<div className="grid grid-cols-2 gap-4">
+					<motion.div 
+						animate={errors.firstName ? "error" : focusedInput === 'firstName' ? "focus" : "blur"}
+						variants={inputVariants}
+						className="space-y-2"
+					>
 						<Input
 							{...register('firstName')}
-							placeholder="First Name"
+							placeholder="First name"
 							autoComplete="given-name"
-							error={
-								type === 'register'
-									? errors.firstName?.message
-									: undefined
-							}
+							onFocus={() => setFocusedInput('firstName')}
+							onBlur={() => setFocusedInput(null)}
+							className="h-10 bg-[#1f1f1f] border-inherit transition-all placeholder:text-neutral-500 focus:bg-[#2a2a2a]"
+							error={errors.firstName?.message}
 						/>
-					</div>
-					<div className="space-y-2">
+					</motion.div>
+					<motion.div 
+						animate={errors.lastName ? "error" : focusedInput === 'lastName' ? "focus" : "blur"}
+						variants={inputVariants}
+						className="space-y-2"
+					>
 						<Input
 							{...register('lastName')}
-							placeholder="Last Name"
+							placeholder="Last name"
 							autoComplete="family-name"
-							error={
-								type === 'register'
-									? errors.lastName?.message
-									: undefined
-							}
+							onFocus={() => setFocusedInput('lastName')}
+							onBlur={() => setFocusedInput(null)}
+							className="h-10 bg-[#1f1f1f] border-inherit transition-all placeholder:text-neutral-500 focus:bg-[#2a2a2a]"
+							error={errors.lastName?.message}
 						/>
-					</div>
+					</motion.div>
 				</div>
 			)}
 
-			<div className="space-y-2">
+			<motion.div 
+				animate={errors.email ? "error" : focusedInput === 'email' ? "focus" : "blur"}
+				variants={inputVariants}
+				className="space-y-2"
+			>
 				<Input
 					{...register('email')}
 					type="email"
 					placeholder="Email"
 					autoComplete="email"
+					onFocus={() => setFocusedInput('email')}
+					onBlur={() => setFocusedInput(null)}
+					className="h-10 bg-[#1f1f1f] border-inherit transition-all placeholder:text-neutral-500 focus:bg-[#2a2a2a]"
 					error={errors.email?.message}
 				/>
-			</div>
+			</motion.div>
 
-			<div className="space-y-2">
-				<div className="relative">
+			<motion.div 
+				animate={errors.password ? "error" : focusedInput === 'password' ? "focus" : "blur"}
+				variants={inputVariants}
+				className="space-y-2"
+			>
+				<div className="relative group">
 					<Input
 						{...register('password')}
 						type={showPassword ? 'text' : 'password'}
 						placeholder="Password"
-						autoComplete={
-							type === 'login'
-								? 'current-password'
-								: 'new-password'
-						}
+						autoComplete={type === 'login' ? 'current-password' : 'new-password'}
+						onFocus={() => setFocusedInput('password')}
+						onBlur={() => setFocusedInput(null)}
+						className="h-10 bg-[#1f1f1f] border-inherit transition-all placeholder:text-neutral-500 focus:bg-[#2a2a2a] pr-10"
 						error={errors.password?.message}
 					/>
-					<button
+					<motion.button
 						type="button"
 						onClick={() => setShowPassword(!showPassword)}
-						className="absolute right-3 top-1/2 -translate-y-1/2"
+						className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-300 focus:outline-none"
+						whileTap={{ opacity: 0.5 }}
 					>
-						{showPassword ? (
-							<EyeOffIcon className="h-4 w-4" />
-						) : (
-							<EyeIcon className="h-4 w-4" />
-						)}
-					</button>
+						<AnimatePresence mode="wait" initial={false}>
+							{showPassword ? (
+								<motion.div
+									key="eye-off"
+									initial={{ opacity: 0, y: -10 }}
+									animate={{ opacity: 1, y: 0 }}
+									exit={{ opacity: 0, y: 10 }}
+									transition={{ duration: 0.15 }}
+								>
+									<EyeOffIcon className="h-4 w-4" />
+								</motion.div>
+							) : (
+								<motion.div
+									key="eye"
+									initial={{ opacity: 0, y: 10 }}
+									animate={{ opacity: 1, y: 0 }}
+									exit={{ opacity: 0, y: -10 }}
+									transition={{ duration: 0.15 }}
+								>
+									<EyeIcon className="h-4 w-4" />
+								</motion.div>
+							)}
+						</AnimatePresence>
+					</motion.button>
 				</div>
-				{type === 'register' && (
-					<PasswordStrengthMeter password={password} />
-				)}
-			</div>
+			</motion.div>
 
 			{type === 'register' && (
-				<div className="space-y-2">
-					<div className="relative">
+				<motion.div 
+					animate={errors.confirmPassword ? "error" : focusedInput === 'confirmPassword' ? "focus" : "blur"}
+					variants={inputVariants}
+					className="space-y-2"
+				>
+					<div className="relative group">
 						<Input
 							{...register('confirmPassword')}
 							type={showConfirmPassword ? 'text' : 'password'}
 							placeholder="Confirm Password"
 							autoComplete="new-password"
-							error={
-								type === 'register'
-									? errors.confirmPassword?.message
-									: undefined
-							}
+							onFocus={() => setFocusedInput('confirmPassword')}
+							onBlur={() => setFocusedInput(null)}
+							className="h-10 bg-[#1f1f1f] border-inherit transition-all placeholder:text-neutral-500 focus:bg-[#2a2a2a] pr-10"
+							error={errors.confirmPassword?.message}
 						/>
-						<button
+						<motion.button
 							type="button"
-							onClick={() =>
-								setShowConfirmPassword(!showConfirmPassword)
-							}
-							className="absolute right-3 top-1/2 -translate-y-1/2"
+							onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+							className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-300 focus:outline-none"
+							whileTap={{ opacity: 0.5 }}
 						>
-							{showConfirmPassword ? (
-								<EyeOffIcon className="h-4 w-4" />
-							) : (
-								<EyeIcon className="h-4 w-4" />
-							)}
-						</button>
+							<AnimatePresence mode="wait" initial={false}>
+								{showConfirmPassword ? (
+									<motion.div
+										key="eye-off"
+											initial={{ opacity: 0, y: -10 }}
+											animate={{ opacity: 1, y: 0 }}
+											exit={{ opacity: 0, y: 10 }}
+											transition={{ duration: 0.15 }}
+									>
+										<EyeOffIcon className="h-4 w-4" />
+									</motion.div>
+								) : (
+									<motion.div
+										key="eye"
+										initial={{ opacity: 0, y: 10 }}
+										animate={{ opacity: 1, y: 0 }}
+										exit={{ opacity: 0, y: -10 }}
+										transition={{ duration: 0.15 }}
+									>
+										<EyeIcon className="h-4 w-4" />
+									</motion.div>
+								)}
+							</AnimatePresence>
+						</motion.button>
 					</div>
-				</div>
+				</motion.div>
 			)}
 
-			{type === 'login' && (
-				<div className="flex items-center justify-between">
-					<label className="flex items-center space-x-2">
-						<input
-							type="checkbox"
-							{...register('rememberMe')}
-							className="form-checkbox"
-						/>
-						<span>Remember me</span>
-					</label>
-
-					{forgotPasswordEnabled && (
-						<button
-							type="button"
-							className="text-sm text-primary hover:underline"
-							onClick={() => {
-								/* Handle forgot password */
-							}}
-						>
-							Forgot password?
-						</button>
-					)}
-				</div>
-			)}
-
-			<Button type="submit" className="w-full" disabled={isLoading}>
-				{isLoading && <Spinner />}
-				<span className="ml-2">
-					{type === 'login' ? 'Sign In' : 'Create Account'}
-				</span>
-			</Button>
+			<motion.button
+				type="submit"
+				className="relative w-full h-10 bg-emerald-500 text-white rounded font-medium overflow-hidden"
+				disabled={isLoading}
+				whileHover="hover"
+				initial="initial"
+				animate="animate"
+			>
+				<motion.div
+					className="absolute inset-0 bg-emerald-600"
+					initial={{ scaleX: 0 }}
+					animate={{ scaleX: isLoading ? 1 : 0 }}
+					transition={{ duration: 0.5 }}
+					style={{ originX: 0 }}
+				/>
+				<motion.div className="relative flex items-center justify-center gap-2">
+					{isLoading && <Spinner className="text-white" />}
+					<span>{type === 'login' ? 'Sign In' : 'Create Account'}</span>
+				</motion.div>
+			</motion.button>
 		</form>
 	)
 }

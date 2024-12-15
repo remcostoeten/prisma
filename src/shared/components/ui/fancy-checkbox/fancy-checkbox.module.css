@@ -1,0 +1,47 @@
+.container {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: opacity 0.2s ease;
+}
+
+.container:hover {
+  opacity: 0.8;
+}
+
+.container input {
+  display: none;
+}
+
+.container svg {
+  overflow: visible;
+  width: 16px;
+  height: 16px;
+}
+
+.path {
+  fill: none;
+  stroke: rgb(255 255 255 / 0.7);
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: all 0.3s ease;
+  stroke-dasharray: 241 9999999;
+  stroke-dashoffset: 0;
+}
+
+.container:hover .path {
+  stroke: rgb(255 255 255 / 0.9);
+}
+
+.container input:checked ~ svg .path {
+  stroke: rgb(16 185 129); /* emerald-500 */
+  stroke-dasharray: 70.5096664428711 9999999;
+  stroke-dashoffset: -262.2723388671875;
+}
+
+.container input:checked:hover ~ svg .path {
+  stroke: rgb(5 150 105); /* emerald-600 */
+} 

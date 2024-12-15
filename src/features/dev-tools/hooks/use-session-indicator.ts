@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useUser } from '@/contexts/user-context'
-import { isFeatureEnabled, FeatureFlag } from '@/core/config/feature-flags'
+import { isFeatureEnabled } from '@/core/config/feature-flags'
 
 export function useSessionIndicator() {
 	const { user, isLoading } = useUser()
@@ -12,7 +12,7 @@ export function useSessionIndicator() {
 
 	useEffect(() => {
 		setMounted(true)
-		setIsVisible(isFeatureEnabled(FeatureFlag.SHOW_SESSION_INDICATOR))
+		setIsVisible(isFeatureEnabled('SHOW_SESSION_INDICATOR'))
 	}, [])
 
 	const handleMouseEnter = () => setIsHovered(true)

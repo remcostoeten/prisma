@@ -21,7 +21,7 @@ const ibmPlexMono = IBM_Plex_Mono({
 	variable: '--font-ibm-plex-mono'
 })
 
-const interMono = Inter({
+const inter = Inter({
 	subsets: ['latin'],
 	variable: '--font-inter'
 })
@@ -30,14 +30,14 @@ export const fonts = {
 	geistMono,
 	jetbrainsMono,
 	ibmPlexMono,
-	interMono
+	inter
 }
 
 export const fontVariables = `
   ${fonts.geistMono.variable} 
   ${fonts.jetbrainsMono.variable} 
   ${fonts.ibmPlexMono.variable} 
-  ${fonts.interMono.variable}
+  ${fonts.inter.variable}
 `
 
 export const fontOptions = [
@@ -57,9 +57,9 @@ export const fontOptions = [
 		fontObject: fonts.ibmPlexMono
 	},
 	{
-		name: 'Inter Mono',
-		className: 'font-inter-mono',
-		fontObject: fonts.interMono
+		name: 'Inter',
+		className: 'font-inter',
+		fontObject: fonts.inter
 	}
 ]
 

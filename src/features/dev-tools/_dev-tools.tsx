@@ -1,6 +1,6 @@
 import { Toaster } from 'sonner'
 import FontSwitcher from './font-switcher'
-import SessionIndicator from '@/components/session-indicator'
+import SessionIndicator from './session-indicator'
 
 export default function DevTools() {
 	return (

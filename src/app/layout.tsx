@@ -1,35 +1,42 @@
-import '@/styles/globals.css'
-import { ThemeProvider } from '@/components/theme-wrapper'
+import './globals.css'
+import { ThemeProvider } from 'next-themes'
 import Nav from '@/components/layout/header/nav'
 import UserProvider from '@/contexts/user-context'
 import DevTools from '@/features/dev-tools/_dev-tools'
 import { config } from '@/core/config'
+import { isFeatureEnabled } from '@/core/config/feature-flags'
+import { metadata } from './metadata'
 
-export const metadata = config.metadata.root
+export { metadata }
 
-type RootLayoutProps = PageProps
+type RootLayoutProps = {
+	children: React.ReactNode
+}
 
 export default function RootLayout({ children }: RootLayoutProps) {
 	return (
 		<html lang="en" className="dark" suppressHydrationWarning>
 			<body
 				className={`h-screen bg-background text-foreground ${config.fonts.variables} font-geist-mono`}
-				style={{ maxHeight: '100vh', overflow: 'hidden' }}
+				style={{ maxHeight: '100vh'}}
 			>
-				<UserProvider>
-					<ThemeProvider>
+				<ThemeProvider
+					attribute="class"
+					defaultTheme="dark"
+					enableSystem={false}
+					storageKey="theme"
+				>
+					<UserProvider>
 						<Nav positionFixed={true} />
 						<main
-							className="flex-grow overflow-auto"
+							className="flex-grow h-screen overflow-auto"
 							style={{ maxHeight: 'calc(100vh - 64px)' }}
 						>
 							{children}
 						</main>
-						{config.features.isEnabled(
-							config.features.FeatureFlag.DEV_TOOLS
-						) && <DevTools />}
-					</ThemeProvider>
-				</UserProvider>
+						{isFeatureEnabled('DEV_TOOLS') && <DevTools />}
+					</UserProvider>
+				</ThemeProvider>
 			</body>
 		</html>
 	)
