@@ -4,13 +4,13 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Button } from '@/shared/components/ui/button'
 import { Input } from '@/shared/components/ui/input'
 import { toast } from 'sonner'
 import Spinner from '@/shared/components/effects/spinner'
 import { EyeIcon, EyeOffIcon } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { featureFlags } from '@/core/config'
+import { featureFlags } from '@/core/config/feature-flags'
+import Link from 'next/link'
 
 type AuthFormProps = {
 	type: 'login' | 'register'
@@ -92,7 +92,7 @@ export default function AuthForm({ type, action }: AuthFormProps) {
 						firstName: '',
 						lastName: '',
 						confirmPassword: ''
-				  }
+					}
 	})
 
 	const handleFormSubmit = async (data: z.infer<typeof schema>) => {
@@ -110,6 +110,7 @@ export default function AuthForm({ type, action }: AuthFormProps) {
 				error instanceof Error ? error.message : 'Something went wrong'
 			)
 		} finally {
+			toast.success('Success!')
 			setIsLoading(false)
 		}
 	}
@@ -118,8 +119,14 @@ export default function AuthForm({ type, action }: AuthFormProps) {
 		<form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
 			{type === 'register' && (
 				<div className="grid grid-cols-2 gap-4">
-					<motion.div 
-						animate={errors.firstName ? "error" : focusedInput === 'firstName' ? "focus" : "blur"}
+					<motion.div
+						animate={
+							errors.firstName
+								? 'error'
+								: focusedInput === 'firstName'
+									? 'focus'
+									: 'blur'
+						}
 						variants={inputVariants}
 						className="space-y-2"
 					>
@@ -133,8 +140,14 @@ export default function AuthForm({ type, action }: AuthFormProps) {
 							error={errors.firstName?.message}
 						/>
 					</motion.div>
-					<motion.div 
-						animate={errors.lastName ? "error" : focusedInput === 'lastName' ? "focus" : "blur"}
+					<motion.div
+						animate={
+							errors.lastName
+								? 'error'
+								: focusedInput === 'lastName'
+									? 'focus'
+									: 'blur'
+						}
 						variants={inputVariants}
 						className="space-y-2"
 					>
@@ -151,8 +164,14 @@ export default function AuthForm({ type, action }: AuthFormProps) {
 				</div>
 			)}
 
-			<motion.div 
-				animate={errors.email ? "error" : focusedInput === 'email' ? "focus" : "blur"}
+			<motion.div
+				animate={
+					errors.email
+						? 'error'
+						: focusedInput === 'email'
+							? 'focus'
+							: 'blur'
+				}
 				variants={inputVariants}
 				className="space-y-2"
 			>
@@ -168,8 +187,14 @@ export default function AuthForm({ type, action }: AuthFormProps) {
 				/>
 			</motion.div>
 
-			<motion.div 
-				animate={errors.password ? "error" : focusedInput === 'password' ? "focus" : "blur"}
+			<motion.div
+				animate={
+					errors.password
+						? 'error'
+						: focusedInput === 'password'
+							? 'focus'
+							: 'blur'
+				}
 				variants={inputVariants}
 				className="space-y-2"
 			>
@@ -178,7 +203,11 @@ export default function AuthForm({ type, action }: AuthFormProps) {
 						{...register('password')}
 						type={showPassword ? 'text' : 'password'}
 						placeholder="Password"
-						autoComplete={type === 'login' ? 'current-password' : 'new-password'}
+						autoComplete={
+							type === 'login'
+								? 'current-password'
+								: 'new-password'
+						}
 						onFocus={() => setFocusedInput('password')}
 						onBlur={() => setFocusedInput(null)}
 						className="h-10 bg-[#1f1f1f] border-inherit transition-all placeholder:text-neutral-500 focus:bg-[#2a2a2a] pr-10"
@@ -218,8 +247,14 @@ export default function AuthForm({ type, action }: AuthFormProps) {
 			</motion.div>
 
 			{type === 'register' && (
-				<motion.div 
-					animate={errors.confirmPassword ? "error" : focusedInput === 'confirmPassword' ? "focus" : "blur"}
+				<motion.div
+					animate={
+						errors.confirmPassword
+							? 'error'
+							: focusedInput === 'confirmPassword'
+								? 'focus'
+								: 'blur'
+					}
 					variants={inputVariants}
 					className="space-y-2"
 				>
@@ -236,7 +271,9 @@ export default function AuthForm({ type, action }: AuthFormProps) {
 						/>
 						<motion.button
 							type="button"
-							onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+							onClick={() =>
+								setShowConfirmPassword(!showConfirmPassword)
+							}
 							className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-300 focus:outline-none"
 							whileTap={{ opacity: 0.5 }}
 						>
@@ -244,10 +281,10 @@ export default function AuthForm({ type, action }: AuthFormProps) {
 								{showConfirmPassword ? (
 									<motion.div
 										key="eye-off"
-											initial={{ opacity: 0, y: -10 }}
-											animate={{ opacity: 1, y: 0 }}
-											exit={{ opacity: 0, y: 10 }}
-											transition={{ duration: 0.15 }}
+										initial={{ opacity: 0, y: -10 }}
+										animate={{ opacity: 1, y: 0 }}
+										exit={{ opacity: 0, y: 10 }}
+										transition={{ duration: 0.15 }}
 									>
 										<EyeOffIcon className="h-4 w-4" />
 									</motion.div>
@@ -268,6 +305,17 @@ export default function AuthForm({ type, action }: AuthFormProps) {
 				</motion.div>
 			)}
 
+			{forgotPasswordEnabled && (
+				<div className="text-right mt-4">
+					<Link
+						href="/forgot-password"
+						className="text-blue-500 hover:text-blue-700"
+					>
+						Forgot Password?
+					</Link>
+				</div>
+			)}
+
 			<motion.button
 				type="submit"
 				className="relative w-full h-10 bg-emerald-500 text-white rounded font-medium overflow-hidden"
@@ -285,7 +333,9 @@ export default function AuthForm({ type, action }: AuthFormProps) {
 				/>
 				<motion.div className="relative flex items-center justify-center gap-2">
 					{isLoading && <Spinner className="text-white" />}
-					<span>{type === 'login' ? 'Sign In' : 'Create Account'}</span>
+					<span>
+						{type === 'login' ? 'Sign In' : 'Create Account'}
+					</span>
 				</motion.div>
 			</motion.button>
 		</form>

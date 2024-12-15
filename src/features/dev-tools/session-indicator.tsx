@@ -115,8 +115,8 @@ export default function SessionIndicator({ className }: SessionIndicatorProps) {
 									</div>
 								) : (
 									<div className="text-muted-foreground text-xs">
-										No active session. Sign in to see session
-										details.
+										No active session. Sign in to see
+										session details.
 									</div>
 								)}
 							</div>

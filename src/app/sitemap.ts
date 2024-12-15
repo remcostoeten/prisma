@@ -12,10 +12,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
 	const staticRoutes = [
 		'',
 		'/docs',
-		'/guides/client',
-		'/guides/server',
+		'/login',
+		'/register',
 		'/changelog',
-		'/blog'
+		'/documentation',
+		// '/blog'
 	].map((route) => ({
 		url: `${baseUrl}${route}`,
 		lastModified: new Date(),
@@ -25,10 +26,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
 	// Documentation routes - higher priority for SEO
 	const docRoutes = [
-		'/docs/getting-started',
-		'/docs/authentication',
-		'/docs/security',
-		'/docs/customization'
+		// '/docs/getting-started',
+		// '/docs/authentication',
+		// '/docs/security',
+		// '/docs/customization'
+		'/documentation'
 	].map((route) => ({
 		url: `${baseUrl}${route}`,
 		lastModified: new Date(),
@@ -37,17 +39,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
 	}))
 
 	// Blog routes - medium priority, frequently updated
-	const blogRoutes = [
-		'/blog/introduction',
-		'/blog/features',
-		'/blog/security-best-practices'
-	].map((route) => ({
-		url: `${baseUrl}${route}`,
-		lastModified: new Date(),
-		changeFrequency: 'weekly' as const,
-		priority: 0.7
-	}))
+	// const blogRoutes = [
+		// '/blog/introduction',
+		// '/blog/features',
+		// '/blog/security-best-practices'
+	// ].map((route) => ({
+		// url: `${baseUrl}${route}`,
+		// lastModified: new Date(),
+		// changeFrequency: 'weekly' as const,
+		// priority: 0.7
+	// }))
 
 	// Combine all routes
-	return [...staticRoutes, ...docRoutes, ...blogRoutes]
+	return [...staticRoutes, ...docRoutes]
 }
+

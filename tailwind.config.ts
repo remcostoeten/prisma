@@ -7,13 +7,17 @@ export default {
 		'./pages/**/*.{ts,tsx}',
 		'./components/**/*.{ts,tsx}',
 		'./app/**/*.{ts,tsx}',
-		'./src/**/*.{ts,tsx}'
+		'./src/**/*.{ts,tsx}',
+		'./node_modules/fumadocs-ui/dist/**/*.js',
+		'./content/**/*.mdx',
+		'./mdx-components.tsx',
+		'./src/shared/components/**/*.{ts,tsx}'
 	],
 	theme: {
 		extend: {
 			fontFamily: {
 				'geist-mono': ['var(--font-geist-mono)'],
-				'inter': ['var(--font-inter)'],
+				inter: ['var(--font-inter)'],
 				'jetbrains-mono': ['var(--font-jetbrains-mono)'],
 				'ibm-plex-mono': ['var(--font-ibm-plex-mono)']
 			},

@@ -1,29 +1,14 @@
-export * from './fonts'
-export * from './metadata'
-export * from './feature-flags'
-
 import { fonts, fontVariables } from './fonts/font-config'
-import { featureFlags, FeatureFlag, isFeatureEnabled } from './feature-flags'
-import { rootLayoutMetadata } from './metadata'
+import { metadata } from '@/app/metadata'
+import { siteConfig } from './site'
 
-/**
- * Centralized Application Configuration
- *
- * @description
- * Single source of truth for all application configuration settings
- */
 export const config = {
 	fonts: {
-		instances: fonts,
+		...fonts,
 		variables: fontVariables
 	},
-	features: {
-		flags: featureFlags,
-		isEnabled: isFeatureEnabled,
-	},
-	metadata: {
-		root: rootLayoutMetadata
-	}
+	metadata,
+	siteConfig
 } as const
 
 /**

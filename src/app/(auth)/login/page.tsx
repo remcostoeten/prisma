@@ -6,7 +6,7 @@ import { useAuth } from '@/shared/hooks/use-auth'
 import { toast } from 'sonner'
 import { loginAction } from '../actions'
 import { useUser } from '@/contexts/user-context'
-import { AuthLayout } from '@/components/auth/auth-layout'
+import AuthLayout from '@/components/auth/auth-layout'
 import Link from 'next/link'
 
 export default function LoginPage() {
@@ -29,9 +29,10 @@ export default function LoginPage() {
 			toast.success('Successfully logged in')
 			router.replace('/dashboard')
 		} catch (error) {
-			const errorMessage = error instanceof Error
-				? error.message
-				: 'An unexpected error occurred'
+			const errorMessage =
+				error instanceof Error
+					? error.message
+					: 'An unexpected error occurred'
 
 			toast.error(errorMessage)
 			console.error('Login error:', error)
@@ -44,7 +45,10 @@ export default function LoginPage() {
 			subtitle={
 				<>
 					Don&apos;t have an account?{' '}
-					<Link href="/register" className="underline underline-offset-4 hover:text-primary">
+					<Link
+						href="/register"
+						className="underline underline-offset-4 hover:text-primary"
+					>
 						Sign up
 					</Link>
 				</>

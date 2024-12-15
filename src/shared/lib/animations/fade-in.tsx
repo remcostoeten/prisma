@@ -4,12 +4,16 @@ import { motion, Variants } from 'framer-motion'
 import { ReactNode } from 'react'
 
 type FadeInProps = {
-	children: ReactNode,
-	delay: number,
+	children: ReactNode
+	delay: number
 	className?: string
 }
 
-export const FadeIn: React.FC<FadeInProps> = ({ children, delay, className }) => {
+export const FadeIn: React.FC<FadeInProps> = ({
+	children,
+	delay,
+	className
+}) => {
 	const fadeIn: Variants = {
 		initial: {
 			opacity: 0
@@ -31,7 +35,7 @@ export const FadeIn: React.FC<FadeInProps> = ({ children, delay, className }) =>
 	}
 
 	return (
-		<motion.div 
+		<motion.div
 			variants={fadeIn}
 			initial="initial"
 			animate="animate"
@@ -44,7 +48,11 @@ export const FadeIn: React.FC<FadeInProps> = ({ children, delay, className }) =>
 	)
 }
 
-export const FadeInUp: React.FC<FadeInProps> = ({ children, delay, className }) => {
+export const FadeInUp: React.FC<FadeInProps> = ({
+	children,
+	delay,
+	className
+}) => {
 	const fadeInUp: Variants = {
 		initial: {
 			opacity: 0,
@@ -69,7 +77,7 @@ export const FadeInUp: React.FC<FadeInProps> = ({ children, delay, className }) 
 	}
 
 	return (
-		<motion.div 
+		<motion.div
 			variants={fadeInUp}
 			initial="initial"
 			animate="animate"
