@@ -6,7 +6,7 @@ import { useAuth } from '@/shared/hooks/use-auth'
 import { toast } from 'sonner'
 import { loginAction } from '../actions'
 import { useUser } from '@/contexts/user-context'
-import { AuthLayout } from '@/components/auth/auth-layout'
+import AuthLayout from '@/components/auth/auth-layout'
 import Link from 'next/link'
 
 export default function LoginPage() {
@@ -15,25 +15,32 @@ export default function LoginPage() {
 	const { refreshUser } = useUser()
 
 	const handleLogin = async (formData: FormData): Promise<void> => {
+		const toastId = toast.loading('Logging in...')
+		
 		try {
 			const response = await loginAction(formData)
 
 			if (!response?.success || !response?.user) {
-				toast.error(response?.error || 'Authentication failed')
+				toast.error(response?.error || 'Authentication failed', { id: toastId })
 				return
 			}
 
 			setAuthUser(response.user)
+			
 			await refreshUser()
 
-			toast.success('Successfully logged in')
+			toast.success('Successfully logged in', { id: toastId })
+			
+			await new Promise(resolve => setTimeout(resolve, 100))
+			
 			router.replace('/dashboard')
 		} catch (error) {
-			const errorMessage = error instanceof Error
-				? error.message
-				: 'An unexpected error occurred'
+			const errorMessage =
+				error instanceof Error
+					? error.message
+					: 'An unexpected error occurred'
 
-			toast.error(errorMessage)
+			toast.error(errorMessage, { id: toastId })
 			console.error('Login error:', error)
 		}
 	}
@@ -44,7 +51,10 @@ export default function LoginPage() {
 			subtitle={
 				<>
 					Don&apos;t have an account?{' '}
-					<Link href="/register" className="underline underline-offset-4 hover:text-primary">
+					<Link
+						href="/register"
+						className="underline underline-offset-4 hover:text-primary"
+					>
 						Sign up
 					</Link>
 				</>

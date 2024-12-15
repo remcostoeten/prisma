@@ -21,15 +21,14 @@ export default function Nav({ positionFixed = true }: NavProps) {
 		setMounted(true)
 	}, [])
 
-	const isAuthPage = pathname === '/login' || pathname === '/register'
+	if (!mounted) return null
 
-	if (!mounted || isAuthPage || isLoading) {
-		return null
-	}
+	const isAuthPage = pathname === '/login' || pathname === '/register'
+	if (isAuthPage) return null
 
 	return (
 		<header
-			className={`flex h-16 items-center justify-between border-b border-border px-6 ${positionFixed ? 'fixed inset-x-0 top-0' : ''}`}
+			className={`flex h-16 items-center justify-between border-b border-border px-6 ${positionFixed ? 'fixed inset-x-0 top-0 z-50 bg-background' : ''}`}
 		>
 			<div className="flex items-center gap-6">
 				<Link
@@ -48,7 +47,9 @@ export default function Nav({ positionFixed = true }: NavProps) {
 				)}
 			</div>
 			<div className="flex items-center gap-4">
-				{user ? (
+				{isLoading ? (
+					<div className="h-10 w-24 animate-pulse rounded bg-muted" />
+				) : user ? (
 					<UserMenu user={user} />
 				) : (
 					<Button

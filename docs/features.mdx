@@ -162,6 +162,7 @@ type JWTConfig = {
     - Rotation on security events
 
 2. **Security Measures**
+
     ```typescript
     const tokenService = {
     	async createAccessToken(user: User, session: Session) {
@@ -903,6 +904,7 @@ const middlewareChain = [
     - Minimal database queries
 
 3. **Security Layers**
+
     ```typescript
     // Example of layered security
     const securityMiddleware = async (req: NextRequest) => {
@@ -1022,6 +1024,7 @@ const rateLimitStrategies: Record<string, RateLimitStrategy> = {
     - Fixed window for general routes
 
 2. **Redis Implementation**
+
     ```typescript
     // Redis-based rate limiting
     const checkRateLimit = async (key: string, strategy: RateLimitStrategy) => {

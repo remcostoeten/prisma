@@ -6,8 +6,8 @@ import { useAuth } from '@/shared/hooks/use-auth'
 import { toast } from 'sonner'
 import { registerAction, loginAction } from '../actions'
 import { useUser } from '@/contexts/user-context'
-import { AuthLayout } from '@/components/auth/auth-layout'
 import Link from 'next/link'
+import AuthLayout from '@/components/auth/auth-layout'
 
 export default function RegisterPage() {
 	const router = useRouter()
@@ -30,7 +30,9 @@ export default function RegisterPage() {
 			const loginResponse = await loginAction(loginFormData)
 
 			if (!loginResponse?.success || !loginResponse?.user) {
-				toast.error('Registration successful but auto-login failed. Please try logging in manually.')
+				toast.error(
+					'Registration successful but auto-login failed. Please try logging in manually.'
+				)
 				router.replace('/login')
 				return
 			}
@@ -41,22 +43,26 @@ export default function RegisterPage() {
 			toast.success('Successfully registered and logged in')
 			router.replace('/dashboard')
 		} catch (error) {
-			const errorMessage = error instanceof Error
-				? error.message
-				: 'An unexpected error occurred during registration'
+			const errorMessage =
+				error instanceof Error
+					? error.message
+					: 'An unexpected error occurred during registration'
 
 			toast.error(errorMessage)
 			console.error('Registration error:', error)
 		}
 	}
-
+	
 	return (
-		<AuthLayout 
-			title="Create an account" 
+		<AuthLayout
+			title="Create an account"
 			subtitle={
 				<>
 					Already have an account?{' '}
-					<Link href="/login" className="underline underline-offset-4 hover:text-primary">
+					<Link
+						href="/login"
+						className="underline underline-offset-4 hover:text-primary"
+					>
 						Sign in
 					</Link>
 				</>

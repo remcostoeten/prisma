@@ -1,7 +1,7 @@
 'use client'
 
-import { createContext, useContext, useState, useEffect } from 'react'
-import { getUser, logout } from '@/server/mutations/auth'
+import { createContext, useContext, useState, useEffect, useCallback } from 'react'
+import { getUser, logout as logoutMutation } from '@/server/mutations/auth'
 import type { User } from '@/shared/hooks/use-auth'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
@@ -17,84 +17,80 @@ type UserContextType = {
 
 const UserContext = createContext<UserContextType | undefined>(undefined)
 
-export default function UserProvider({
-	children
-}: {
-	children: React.ReactNode
-}) {
+export function UserProvider({ children }: { children: React.ReactNode }) {
 	const [user, setUser] = useState<User | null>(null)
 	const [isLoading, setIsLoading] = useState(true)
 	const router = useRouter()
 	const { setUser: setAuthUser } = useAuth()
 
-	const fetchUser = async () => {
+	const updateUserState = useCallback((newUser: User | null) => {
+		setUser(newUser)
+		setAuthUser(newUser)
+	}, [setAuthUser])
+
+	const refreshUser = useCallback(async () => {
 		try {
+			setIsLoading(true)
 			const userData = await getUser()
-			if (userData) {
-				setUser(userData)
-				setAuthUser(userData)
-			} else {
-				setUser(null)
-				setAuthUser(null)
-				// If we're on a protected route and there's no user, redirect to login
-				if (window.location.pathname.startsWith('/dashboard')) {
-					router.push('/login')
-				}
-			}
+			updateUserState(userData)
 		} catch (error) {
-			console.error('Error fetching user:', error)
-			setUser(null)
-			setAuthUser(null)
+			console.error('Failed to refresh user:', error)
+			updateUserState(null)
 		} finally {
 			setIsLoading(false)
 		}
-	}
+	}, [updateUserState])
 
-	useEffect(() => {
-		fetchUser()
-	}, [])
-
-	// Add a listener for storage events to handle cross-tab synchronization
-	useEffect(() => {
-		const handleStorageChange = (event: StorageEvent) => {
-			if (event.key === 'auth-storage') {
-				fetchUser()
-			}
-		}
-
-		window.addEventListener('storage', handleStorageChange)
-		return () => window.removeEventListener('storage', handleStorageChange)
-	}, [])
-
-	const handleLogout = async () => {
+	const logout = useCallback(async () => {
 		try {
-			const result = await logout()
-
-			if (!result.success) {
-				toast.error(result.error || 'Logout failed')
-				throw new Error(result.error || 'Logout failed')
+			setIsLoading(true)
+			const response = await logoutMutation()
+			
+			if (response.success) {
+				updateUserState(null)
+				toast.success('Successfully logged out')
+				router.replace('/login')
+			} else {
+				toast.error('Failed to logout')
 			}
-
-			setUser(null)
-			setAuthUser(null)
-			toast.success('Successfully logged out')
-			router.push('/login')
 		} catch (error) {
 			console.error('Logout error:', error)
-			toast.error('An error occurred during logout')
-			throw error
+			toast.error('Failed to logout')
+		} finally {
+			setIsLoading(false)
 		}
-	}
+	}, [router, updateUserState])
 
-	const value = {
-		user,
-		setUser,
-		isLoading,
-		logout: handleLogout,
-		refreshUser: fetchUser
-	}
+	// Initial user fetch
+	useEffect(() => {
+		refreshUser()
+	}, [refreshUser])
 
-	return <UserContext.Provider value={value}>{children}</UserContext.Provider>
+	// Refresh user on route change
+	useEffect(() => {
+		const handleRouteChange = () => {
+			refreshUser()
+		}
+
+		window.addEventListener('popstate', handleRouteChange)
+		return () => {
+			window.removeEventListener('popstate', handleRouteChange)
+		}
+	}, [refreshUser])
+
+	return (
+		<UserContext.Provider
+			value={{
+				user,
+				setUser: updateUserState,
+				isLoading,
+				logout,
+				refreshUser,
+			}}
+		>
+			{children}
+		</UserContext.Provider>
+	)
 }
 
 export function useUser() {
