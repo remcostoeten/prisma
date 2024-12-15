@@ -110,7 +110,6 @@ export default function AuthForm({ type, action }: AuthFormProps) {
 				error instanceof Error ? error.message : 'Something went wrong'
 			)
 		} finally {
-			toast.success('Success!')
 			setIsLoading(false)
 		}
 	}

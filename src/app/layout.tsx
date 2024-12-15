@@ -1,12 +1,12 @@
 import { RootProvider } from 'fumadocs-ui/provider'
 import './globals.css'
 import Nav from '@/components/layout/header/nav'
-import UserProvider from '@/contexts/user-context'
 import DevTools from '@/features/dev-tools/_dev-tools'
 import { config } from '@/core/config'
 import { isFeatureEnabled } from '@/core/config/feature-flags'
 import { metadata } from './metadata'
 import { ThemeProvider } from '@/components/theme-wrapper'
+import { UserProvider } from '@/contexts/user-context'
 
 export { metadata }
 
