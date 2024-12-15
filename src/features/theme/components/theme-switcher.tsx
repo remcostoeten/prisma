@@ -7,7 +7,8 @@ import {
   CommandEmpty,
   CommandGroup,
   CommandInput,
-  CommandItem,Popover,
+  CommandItem,
+  Popover,
   PopoverContent,
   PopoverTrigger,
   Button
@@ -40,7 +41,7 @@ export function ThemeSwitcher({ theme, changeTheme }: ThemeSwitcherProps) {
           <CommandInput placeholder="Search theme..." />
           <CommandEmpty>No theme found.</CommandEmpty>
           <CommandGroup>
-            {Object.entries(themes).map(([key, themeValue]) => (
+            {themes && Object.entries(themes).map(([key, themeValue]) => (
               <CommandItem
                 key={key}
                 onSelect={() => {
@@ -63,5 +64,3 @@ export function ThemeSwitcher({ theme, changeTheme }: ThemeSwitcherProps) {
     </Popover>
   )
 }
-
-

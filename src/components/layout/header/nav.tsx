@@ -7,6 +7,8 @@ import { Logo } from '@/components/theme/logo'
 import { useUser } from '@/contexts/user-context'
 import UserMenu from '@/components/layout/header/user-menu'
 import { Button } from '@/shared/components/ui/button'
+import { Palette } from 'lucide-react'
+import { AppearanceDialog } from '@/shared/components/appearance-dialog'
 
 type NavProps = {
 	positionFixed?: boolean
@@ -16,6 +18,7 @@ export default function Nav({ positionFixed = true }: NavProps) {
 	const pathname = usePathname()
 	const { user, isLoading } = useUser()
 	const [mounted, setMounted] = useState(false)
+	const [isAppearanceOpen, setIsAppearanceOpen] = useState(false)
 
 	useEffect(() => {
 		setMounted(true)
@@ -60,7 +63,20 @@ export default function Nav({ positionFixed = true }: NavProps) {
 						<Link href="/login">Sign in</Link>
 					</Button>
 				)}
+				<Button
+					variant="ghost"
+					size="icon"
+					className="ml-2"
+					onClick={() => setIsAppearanceOpen(true)}
+				>
+					<Palette className="w-4 h-4" />
+				</Button>
 			</div>
+
+			<AppearanceDialog
+				isOpen={isAppearanceOpen}
+				onClose={() => setIsAppearanceOpen(false)}
+			/>
 		</header>
 	)
 }

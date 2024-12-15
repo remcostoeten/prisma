@@ -25,3 +25,8 @@ export const OAUTH_ENDPOINTS = {
 		USER_EMAILS: 'https://api.github.com/user/emails'
 	}
 } as const
+
+export const OAUTH_COOKIE_NAMES = {
+	GITHUB: 'github_oauth_state',
+	GOOGLE: 'google_oauth_state'
+} as const

@@ -13,19 +13,29 @@ import { isFeatureEnabled } from '@/core/config/feature-flags'
 import { fontOptions } from '@/core/config/fonts/font-config'
 
 export default function FontSwitcher() {
-	const [currentFont, setCurrentFont] = useState<string>(() => {
-		// Try to get the initial font from the body class
-		if (typeof window !== 'undefined') {
+	const [mounted, setMounted] = useState(false)
+	const [currentFont, setCurrentFont] = useState<string>(fontOptions[0].className)
+
+	// Handle initial font detection after mount
+	useEffect(() => {
+		setMounted(true)
+		try {
 			const bodyClasses = document.body.className.split(' ')
 			const currentFontClass = bodyClasses.find(className => 
 				fontOptions.some(font => font.className === className)
 			)
-			return currentFontClass || fontOptions[0].className
+			if (currentFontClass) {
+				setCurrentFont(currentFontClass)
+			}
+		} catch (error) {
+			console.error('Error detecting initial font:', error)
 		}
-		return fontOptions[0].className
-	})
+	}, [])
 
+	// Handle font changes
 	useEffect(() => {
+		if (!mounted) return
+
 		try {
 			const body = document.body
 			const bodyClasses = body.className.split(' ')
@@ -54,9 +64,9 @@ export default function FontSwitcher() {
 			console.error('Error updating font:', error)
 			toast.error('Failed to update font')
 		}
-	}, [currentFont])
+	}, [currentFont, mounted])
 
-	if (!isFeatureEnabled('FONT_SWITCHER')) {
+	if (!isFeatureEnabled('FONT_SWITCHER') || !mounted) {
 		return null
 	}
 
@@ -66,7 +76,7 @@ export default function FontSwitcher() {
 				<p className="mb-2 text-xs text-muted-foreground">Font Style</p>
 				<Select
 					onValueChange={setCurrentFont}
-					defaultValue={currentFont}
+					value={currentFont}
 				>
 					<SelectTrigger className="w-[180px]">
 						<SelectValue placeholder="Select font" />

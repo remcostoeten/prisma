@@ -1,14 +1,16 @@
+'use client'
+
 import { RootProvider } from 'fumadocs-ui/provider'
 import './globals.css'
 import Nav from '@/components/layout/header/nav'
 import DevTools from '@/features/dev-tools/_dev-tools'
-import { config } from '@/core/config'
 import { isFeatureEnabled } from '@/core/config/feature-flags'
-import { metadata } from './metadata'
 import { ThemeProvider } from '@/components/theme-wrapper'
 import { UserProvider } from '@/contexts/user-context'
+import { fontVariables } from '@/core/config/fonts/font-config'
+import { rootLayoutMetadata } from '@/core/config/metadata'
 
-export { metadata }
+export { rootLayoutMetadata}
 
 type RootLayoutProps = {
 	children: React.ReactNode
@@ -16,9 +18,9 @@ type RootLayoutProps = {
 
 export default function RootLayout({ children }: RootLayoutProps) {
 	return (
-		<html lang="en" className="dark" suppressHydrationWarning>
+		<html lang="en" suppressHydrationWarning className={fontVariables}>
 			<body
-				className={`h-screen bg-background text-foreground ${config.fonts.variables} font-geist-mono`}
+				className="h-screen bg-background text-foreground font-geist-mono"
 				style={{ maxHeight: '100vh' }}
 			>
 				<ThemeProvider
@@ -26,6 +28,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
 					defaultTheme="dark"
 					enableSystem={false}
 					storageKey="theme"
+					themes={['light', 'dark', 'rose', 'green', 'blue']}
 				>
 					<UserProvider>
 						<Nav positionFixed={true} />

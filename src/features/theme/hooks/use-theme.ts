@@ -8,7 +8,7 @@ export const useTheme = () => {
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme') as ThemeName | null
-    if (savedTheme && themes[savedTheme]) {
+    if (savedTheme && themes && themes[savedTheme]) {
       setTheme(savedTheme)
     } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
       setTheme('dark')
@@ -16,17 +16,18 @@ export const useTheme = () => {
   }, [])
 
   useEffect(() => {
-    document.documentElement.classList.remove(...Object.keys(themes))
-    document.documentElement.classList.add(theme)
-    localStorage.setItem('theme', theme)
+    if (themes && theme) {
+      document.documentElement.classList.remove(...Object.keys(themes))
+      document.documentElement.classList.add(theme)
+      localStorage.setItem('theme', theme)
+    }
   }, [theme])
 
   const changeTheme = (newTheme: ThemeName) => {
-    if (themes[newTheme]) {
+    if (themes && themes[newTheme]) {
       setTheme(newTheme)
     }
   }
 
   return { theme, changeTheme }
 }
-
