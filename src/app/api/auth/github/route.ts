@@ -6,7 +6,7 @@ import { OAUTH_ENDPOINTS, OAUTH_SCOPES, OAUTH_COOKIE_NAMES } from '@/server/muta
 const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
 
-export async function GET() {
+export async function GET(): Promise<NextResponse> {
 	if (!GITHUB_CLIENT_ID) {
 		console.error('Missing GitHub client ID')
 		return NextResponse.redirect(

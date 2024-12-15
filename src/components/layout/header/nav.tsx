@@ -75,7 +75,7 @@ export default function Nav({ positionFixed = true }: NavProps) {
 
 			<AppearanceDialog
 				isOpen={isAppearanceOpen}
-				onClose={() => setIsAppearanceOpen(false)}
+				onCloseAction={() => setIsAppearanceOpen(false)}
 			/>
 		</header>
 	)

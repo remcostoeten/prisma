@@ -11,7 +11,7 @@ const secretKey = new TextEncoder().encode(
 	process.env.JWT_SECRET || 'your-secret-key'
 )
 
-interface GithubOAuthToken {
+type GithubOAuthToken = {
 	access_token: string
 	token_type: string
 	scope: string
@@ -19,7 +19,7 @@ interface GithubOAuthToken {
 	error_description?: string
 }
 
-interface GithubUser {
+type GithubUser = {
 	id: number
 	login: string
 	name: string | null
@@ -27,14 +27,14 @@ interface GithubUser {
 	email: string | null
 }
 
-interface GithubEmail {
+type GithubEmail = {
 	email: string
 	primary: boolean
 	verified: boolean
 	visibility: string | null
 }
 
-export async function GET(request: Request) {
+export async function GET(request: Request): Promise<NextResponse> {
 	try {
 		const searchParams = new URL(request.url).searchParams
 		const code = searchParams.get('code')
