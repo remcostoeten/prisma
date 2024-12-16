@@ -1,12 +1,19 @@
 import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 import { generateOAuthState } from '@/server/mutations/auth/oauth/state'
+import { } from '@/server/db'
 import { OAUTH_ENDPOINTS, OAUTH_SCOPES, OAUTH_COOKIE_NAMES } from '@/server/mutations/auth/oauth/constants'
 
 const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
 
 export async function GET(): Promise<NextResponse> {
+	console.log('GitHub OAuth Route: Starting OAuth flow')
+	console.log('Environment check:', {
+		hasClientId: !!GITHUB_CLIENT_ID,
+		appUrl: APP_URL
+	})
+
 	if (!GITHUB_CLIENT_ID) {
 		console.error('Missing GitHub client ID')
 		return NextResponse.redirect(
@@ -16,6 +23,7 @@ export async function GET(): Promise<NextResponse> {
 
 	// Generate state parameter to prevent CSRF attacks
 	const state = generateOAuthState()
+	console.log('Generated OAuth state:', state)
 
 	const params = new URLSearchParams({
 		client_id: GITHUB_CLIENT_ID,
@@ -25,10 +33,11 @@ export async function GET(): Promise<NextResponse> {
 		allow_signup: 'true'
 	})
 
+	const githubUrl = `${OAUTH_ENDPOINTS.GITHUB.AUTH}?${params.toString()}`
+	console.log('GitHub OAuth URL:', githubUrl)
+
 	// Create response with GitHub OAuth URL
-	const response = NextResponse.redirect(
-		`${OAUTH_ENDPOINTS.GITHUB.AUTH}?${params.toString()}`
-	)
+	const response = NextResponse.redirect(githubUrl)
 
 	// Set state cookie with proper configuration
 	cookies().set(OAUTH_COOKIE_NAMES.GITHUB, state, {
@@ -39,5 +48,6 @@ export async function GET(): Promise<NextResponse> {
 		maxAge: 60 * 5 // 5 minutes
 	})
 
+	console.log('OAuth flow initialized, redirecting to GitHub')
 	return response
 }

@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { Github } from 'lucide-react'
 import { Logo } from '../theme/logo'
 import { toast } from 'sonner'
+import { useOAuth } from '@/shared/hooks/use-oauth'
 
 type AuthWrapperProps = {
 	children: ReactNode
@@ -12,9 +13,11 @@ type AuthWrapperProps = {
 }
 
 export function AuthWrapper({ children, type }: AuthWrapperProps) {
+	const { handleOAuthLogin, loading } = useOAuth()
+
 	const handleGithubLogin = async () => {
 		try {
-			window.location.href = '/api/auth/github'
+			await handleOAuthLogin('github')
 		} catch (error) {
 			console.error('GitHub login failed:', error)
 			toast.error('GitHub login failed')
@@ -73,10 +76,11 @@ export function AuthWrapper({ children, type }: AuthWrapperProps) {
 					<button
 						type="button"
 						onClick={handleGithubLogin}
-						className="inline-flex w-full items-center justify-center rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-center text-sm font-medium text-gray-700 hover:bg-gray-100 focus:ring-4 focus:ring-gray-100"
+						disabled={loading}
+						className="inline-flex w-full items-center justify-center rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-center text-sm font-medium text-gray-700 hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
 					>
-						<Github className="mr-2 h-4 w-4" />
-						GitHub
+						<Github className={`mr-2 h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+						{loading ? 'Connecting...' : 'GitHub'}
 					</button>
 				</div>
 			</div>

@@ -77,7 +77,7 @@
 	"workbench.editor.revealIfOpen": true,
 	"workbench.iconTheme": "symbols",
 	"workbench.list.horizontalScrolling": true,
-	"workbench.preferredDarkColorTheme": "Vesper",
+	"workbench.preferredDarkColorTheme": "Vesper Purple Dark",
 	"workbench.startupEditor": "none",
 	"workbench.tips.enabled": false,
 	"workbench.tree.indent": 16,
@@ -141,5 +141,6 @@
 	"dart.flutterSdkPath": "/home/loww/dev/flutter/flutter-sdk",
 	"window.menuBarVisibility": "toggle",
 	"catppuccin-noctis-icons.hidesExplorerArrows": false,
-	"redhat.telemetry.enabled": false
+	"redhat.telemetry.enabled": false,
+	"typescript.tsdk": "node_modules/typescript/lib"
 }

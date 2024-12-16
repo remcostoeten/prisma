@@ -1,7 +1,7 @@
 'use server'
 
 import { cookies } from 'next/headers'
-import prisma from '@/server/db'
+import { prisma } from '@/server/db'
 import type { LogoutResponse } from './types'
 
 export async function logout(): Promise<LogoutResponse> {

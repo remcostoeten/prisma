@@ -2,7 +2,7 @@
 
 import { cookies } from 'next/headers'
 import { jwtVerify } from 'jose'
-import prisma from '@/server/db'
+import { db } from '@/server/db'
 import type { UserResponse } from './types'
 
 export async function getUser(): Promise<UserResponse> {
@@ -18,7 +18,7 @@ export async function getUser(): Promise<UserResponse> {
 		const { payload } = await jwtVerify(token, secretKey)
 
 		if (payload && typeof payload === 'object' && 'userId' in payload) {
-			return await prisma.user.findUnique({
+			return await db.user.findUnique({
 				where: { id: payload.userId as number },
 				select: {
 					id: true,

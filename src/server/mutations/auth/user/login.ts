@@ -4,8 +4,9 @@ import { cookies } from 'next/headers'
 import { SignJWT } from 'jose'
 import { v4 as uuidv4 } from 'uuid'
 import bcrypt from 'bcryptjs'
-import prisma from '@/server/db'
 import { AUTH_COOKIE_NAME, secretKey } from '@/core/config/auth'
+import { db } from '@/server/db'
+import { createSession } from '../session'
 import type { AuthResponse, User } from './types'
 
 export async function login(formData: FormData): Promise<AuthResponse> {
@@ -17,84 +18,47 @@ export async function login(formData: FormData): Promise<AuthResponse> {
 	}
 
 	try {
-		const user = await prisma.user.findUnique({
+		const user = await db.user.findUnique({
 			where: { email },
 			select: {
 				id: true,
 				email: true,
 				password: true,
-				firstName: true,
-				lastName: true,
 				name: true,
 				image: true,
 				provider: true,
-				emailVerified: true
+				emailVerified: true,
+				firstName: true,
+				lastName: true
 			}
 		})
 
-		if (
-			!user?.password ||
-			!(await bcrypt.compare(password, user.password))
-		) {
+		if (!user || !user.password) {
 			return { success: false, error: 'Invalid credentials' }
 		}
 
-		// Create session
-		const sessionToken = uuidv4()
-		const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days
-
-		await prisma.session.create({
-			data: {
-				id: sessionToken,
-				userId: user.id,
-				expiresAt
-			}
-		})
-
-		// Create JWT
-		const token = await new SignJWT({
-			userId: user.id,
-			sessionToken,
-			type: 'session'
-		})
-			.setProtectedHeader({ alg: 'HS256' })
-			.setExpirationTime(expiresAt.getTime() / 1000)
-			.sign(secretKey)
-
-		// Set cookie
-		const cookieStore = await cookies()
-		cookieStore.set(AUTH_COOKIE_NAME, token, {
-			httpOnly: true,
-			expires: expiresAt,
-			secure: process.env.NODE_ENV === 'production',
-			sameSite: 'lax',
-			path: '/'
-		})
-
-		// Return user without sensitive data
-		const userResponse: User = {
-			id: user.id,
-			email: user.email,
-			firstName: user.firstName ?? null,
-			lastName: user.lastName ?? null,
-			name: user.name ?? null,
-			image: user.image ?? null,
-			provider: user.provider ?? 'credentials',
-			emailVerified: user.emailVerified
+		const isValidPassword = await bcrypt.compare(password, user.password)
+		if (!isValidPassword) {
+			return { success: false, error: 'Invalid credentials' }
 		}
+
+		await createSession(user.id).catch(console.error)
 
 		return {
 			success: true,
-			user: userResponse
+			user: {
+				...user,
+				password: undefined,
+				image: user.image ?? null,
+				provider: user.provider ?? 'credentials',
+				emailVerified: user.emailVerified ?? null
+			}
 		}
 	} catch (error) {
 		console.error('Login error:', error)
 		return {
 			success: false,
-			error:
-				error instanceof Error
-					? error.message
-					: 'An unexpected error occurred during login'
+			error: error instanceof Error ? error.message : 'Login failed'
 		}
 	}
 }

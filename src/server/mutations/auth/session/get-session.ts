@@ -2,7 +2,7 @@
 
 import { jwtVerify } from 'jose'
 import { cookies } from 'next/headers'
-import prisma from '@/server/db'
+import { prisma } from '@/server/db'
 import { env } from '@/env'
 import { rateLimit, RATE_LIMITS } from '@/server/lib/rate-limit'
 import type { SessionResponse } from './types'

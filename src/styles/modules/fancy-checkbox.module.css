@@ -1,0 +1,43 @@
+.container {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.path {
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: all 0.3s ease;
+  transform-origin: 50% 50%;
+}
+
+.container input:checked ~ svg .path {
+  animation: check 0.3s ease forwards;
+}
+
+@keyframes check {
+  0% {
+    stroke-dasharray: 0, 75;
+    stroke-dashoffset: 0;
+    fill: transparent;
+  }
+  50% {
+    stroke-dasharray: 75, 75;
+    stroke-dashoffset: 0;
+    fill: transparent;
+  }
+  100% {
+    stroke-dasharray: 75, 75;
+    stroke-dashoffset: 0;
+  }
+}
+

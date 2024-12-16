@@ -7,11 +7,12 @@ import { X, Monitor, Moon, Sun, Palette } from 'lucide-react'
 import { Switch } from "@/shared/components/ui/switch"
 import { Button } from "@/shared/components/ui/button"
 import { Separator } from "@/shared/components/ui/separator"
-import { themes, accentColors } from "../config/themes"
+import { themes } from "@/features/theme/config/theme"
 import { ColorSwatch } from "./color-swatch"
 import { saveThemePreferences, loadThemePreferences } from "../services/theme-service"
 import { cn } from '@/shared/helpers/utils'
 import { Skeleton } from "@/shared/components/ui/skeleton"
+import { accentColors } from "@/shared/config/themes"
 
 type AppearanceDialogProps = {
   isOpen: boolean
@@ -26,6 +27,11 @@ const themeIcons = {
   green: Palette,
   blue: Palette,
 } as const
+
+const themeOptions = Object.entries(themes).map(([value, theme]) => ({
+  value,
+  name: theme.name,
+}))
 
 export function AppearanceDialog({ isOpen, onCloseAction }: AppearanceDialogProps) {
   const { theme: currentTheme, setTheme, resolvedTheme } = useTheme()
@@ -147,10 +153,10 @@ export function AppearanceDialog({ isOpen, onCloseAction }: AppearanceDialogProp
               <div>
                 <h3 className={`text-sm font-medium ${actualTheme === 'dark' ? 'text-white/90' : 'text-black/90'} mb-4`}>Theme</h3>
                 <div className="grid grid-cols-2 gap-4">
-                  {themes.length === 0 ? (
+                  {themeOptions.length === 0 ? (
                     <Skeleton className="h-12 w-full rounded-lg" />
                   ) : (
-                    themes.map((theme) => (
+                    themeOptions.map((theme) => (
                       <button
                         key={theme.value}
                         onClick={() => handleThemeChange(theme.value)}
@@ -176,14 +182,13 @@ export function AppearanceDialog({ isOpen, onCloseAction }: AppearanceDialogProp
 
               <Separator className="bg-[#2f2f2f]" />
 
-              {/* Accent Color */}
               <div>
                 <h3 className={`text-sm font-medium ${actualTheme === 'dark' ? 'text-white/90' : 'text-black/90'} mb-4`}>Accent Color</h3>
                 <div className="grid grid-cols-6 gap-2">
-                  {accentColors.map((color) => (
+                  {Object.values(accentColors).map((color) => (
                     <ColorSwatch
-                      key={color.value}
-                      color={color.value}
+                      key={color.value as string}
+                      color={color.value as string}
                       isSelected={accentColor === color.value}
                       onClick={() => handleAccentColorChange(color.value)}
                     />

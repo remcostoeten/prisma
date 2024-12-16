@@ -1,7 +1,7 @@
 'use server'
 
 import bcrypt from 'bcryptjs'
-import prisma from '@/server/db'
+import { db } from '@/server/db'
 import { createSession } from '../session'
 import type { AuthResponse } from './types'
 
@@ -16,7 +16,7 @@ export async function register(formData: FormData): Promise<AuthResponse> {
 	}
 
 	try {
-		const existingUser = await prisma.user.findUnique({
+		const existingUser = await db.user.findUnique({
 			where: { email },
 			select: { id: true }
 		})
@@ -26,7 +26,7 @@ export async function register(formData: FormData): Promise<AuthResponse> {
 		}
 
 		const hashedPassword = await bcrypt.hash(password, 10)
-		const user = await prisma.user.create({
+		const user = await db.user.create({
 			data: {
 				email,
 				password: hashedPassword,

@@ -1,11 +1,12 @@
 'use client'
 
 import { createContext, useContext, useState, useEffect, useCallback } from 'react'
-import { getUser, logout as logoutMutation } from '@/server/mutations/auth'
+import { logout as logoutMutation } from '@/server/mutations/auth'
 import type { User } from '@/shared/hooks/use-auth'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { useAuth } from '@/shared/hooks/use-auth'
+import { getUser } from '@/server/queries'
 
 type UserContextType = {
 	user: User | null
@@ -45,7 +46,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
 		try {
 			setIsLoading(true)
 			const response = await logoutMutation()
-			
+
 			if (response.success) {
 				updateUserState(null)
 				toast.success('Successfully logged out')

@@ -1,7 +1,7 @@
 'use server'
 
 import { cookies } from 'next/headers'
-import prisma from '@/server/db'
+import { db } from '@/server/db'
 
 export async function logout() {
 	try {
@@ -22,7 +22,7 @@ export async function logout() {
 					typeof payload === 'object' &&
 					'sessionToken' in payload
 				) {
-					await prisma.session.delete({
+					await db.session.delete({
 						where: {
 							id: payload.sessionToken as string
 						}

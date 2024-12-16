@@ -4,7 +4,7 @@ import { cookies } from 'next/headers'
 import { SignJWT } from 'jose'
 import { v4 as uuidv4 } from 'uuid'
 import bcrypt from 'bcryptjs'
-import prisma from '@/server/db'
+import { prisma } from '@/server/db'
 import type { RegisterResponse } from './types'
 
 export async function register(formData: FormData): Promise<RegisterResponse> {
