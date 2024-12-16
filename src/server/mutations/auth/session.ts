@@ -1,7 +1,7 @@
 'use server'
 
 import { v4 as uuidv4 } from 'uuid'
-import prisma from '@/server/db'
+import db from '@/server/db'
 import { AUTH_CONFIG } from '@/core/config/auth'
 import type { SessionResponse } from './user/types'
 
@@ -10,7 +10,7 @@ export async function createSession(userId: number): Promise<SessionResponse> {
 		const sessionToken = uuidv4()
 		const expiresAt = new Date(Date.now() + AUTH_CONFIG.session.maxAge)
 
-		await prisma.session.create({
+		await db.session.create({
 			data: {
 				id: sessionToken,
 				userId,
@@ -38,7 +38,7 @@ export async function deleteSession(
 	sessionToken: string
 ): Promise<SessionResponse> {
 	try {
-		await prisma.session.delete({
+		await db.session.delete({
 			where: { id: sessionToken }
 		})
 

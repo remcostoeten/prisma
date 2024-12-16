@@ -16,9 +16,10 @@ export default function LoginPage() {
 
 	const handleLogin = async (formData: FormData): Promise<void> => {
 		const toastId = toast.loading('Logging in...')
-		
+
 		try {
 			const response = await loginAction(formData)
+			console.log('Login response:', response)
 
 			if (!response?.success || !response?.user) {
 				toast.error(response?.error || 'Authentication failed', { id: toastId })
@@ -26,22 +27,14 @@ export default function LoginPage() {
 			}
 
 			setAuthUser(response.user)
-			
 			await refreshUser()
 
 			toast.success('Successfully logged in', { id: toastId })
-			
-			await new Promise(resolve => setTimeout(resolve, 100))
-			
 			router.replace('/dashboard')
 		} catch (error) {
-			const errorMessage =
-				error instanceof Error
-					? error.message
-					: 'An unexpected error occurred'
-
-			toast.error(errorMessage, { id: toastId })
 			console.error('Login error:', error)
+			const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred'
+			toast.error(errorMessage, { id: toastId })
 		}
 	}
 

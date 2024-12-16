@@ -15,17 +15,19 @@ import { fontOptions } from '@/core/config/fonts/font-config'
 export default function FontSwitcher() {
 	const [mounted, setMounted] = useState(false)
 	const [currentFont, setCurrentFont] = useState<string>(fontOptions[0].className)
+	const [initialFontSet, setInitialFontSet] = useState(false)
 
 	// Handle initial font detection after mount
 	useEffect(() => {
 		setMounted(true)
 		try {
 			const bodyClasses = document.body.className.split(' ')
-			const currentFontClass = bodyClasses.find(className => 
+			const currentFontClass = bodyClasses.find(className =>
 				fontOptions.some(font => font.className === className)
 			)
 			if (currentFontClass) {
 				setCurrentFont(currentFontClass)
+				setInitialFontSet(true)
 			}
 		} catch (error) {
 			console.error('Error detecting initial font:', error)
@@ -39,20 +41,20 @@ export default function FontSwitcher() {
 		try {
 			const body = document.body
 			const bodyClasses = body.className.split(' ')
-			
+
 			// Remove any existing font classes
-			const updatedClasses = bodyClasses.filter(className => 
+			const updatedClasses = bodyClasses.filter(className =>
 				!fontOptions.some(font => font.className === className)
 			)
-			
+
 			// Add the new font class
 			updatedClasses.push(currentFont)
-			
+
 			// Update body classes
 			body.className = updatedClasses.join(' ')
-			
+
 			const selectedFont = fontOptions.find(f => f.className === currentFont)
-			if (selectedFont) {
+			if (selectedFont && !initialFontSet) {
 				toast.success(`Font updated to ${selectedFont.name}`)
 				console.log('Font updated:', {
 					name: selectedFont.name,
@@ -64,7 +66,7 @@ export default function FontSwitcher() {
 			console.error('Error updating font:', error)
 			toast.error('Failed to update font')
 		}
-	}, [currentFont, mounted])
+	}, [currentFont, mounted, initialFontSet])
 
 	if (!isFeatureEnabled('FONT_SWITCHER') || !mounted) {
 		return null
