@@ -9,14 +9,11 @@ import { ThemeProvider } from '@/components/theme-wrapper'
 import { UserProvider } from '@/contexts/user-context'
 import { fontVariables } from '@/core/config/fonts/font-config'
 import { rootLayoutMetadata } from '@/core/config/metadata'
+import { Toaster } from 'sonner'
 
-export { rootLayoutMetadata}
+export { rootLayoutMetadata }
 
-type RootLayoutProps = {
-	children: React.ReactNode
-}
-
-export default function RootLayout({ children }: RootLayoutProps) {
+export default function RootLayout({ children }: PageProps) {
 	return (
 		<html lang="en" suppressHydrationWarning className={fontVariables}>
 			<body
@@ -38,6 +35,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
 						>
 							<RootProvider>{children}</RootProvider>
 						</main>
+						{isFeatureEnabled('SHOW_NOTIFICATIONS') && <Toaster position="top-right" />}
 						{isFeatureEnabled('DEV_TOOLS') && <DevTools />}
 					</UserProvider>
 				</ThemeProvider>

@@ -8,7 +8,7 @@ import { useUser } from '@/contexts/user-context'
 import UserMenu from '@/components/layout/header/user-menu'
 import { Button } from '@/shared/components/ui/button'
 import { Palette } from 'lucide-react'
-import { AppearanceDialog } from '@/shared/components/appearance-dialog'
+import SettingsDialog from '@/features/settings/components/settings-dialog'
 
 type NavProps = {
 	positionFixed?: boolean
@@ -38,7 +38,7 @@ export default function Nav({ positionFixed = true }: NavProps) {
 					href={user ? '/dashboard' : '/'}
 					className="transition-opacity hover:opacity-80"
 				>
-					<Logo hasLink={false} />
+					<Logo size="sm" hasLink={false} />
 				</Link>
 				{user && (
 					<Link
@@ -73,9 +73,9 @@ export default function Nav({ positionFixed = true }: NavProps) {
 				</Button>
 			</div>
 
-			<AppearanceDialog
-				isOpen={isAppearanceOpen}
-				onClose={() => setIsAppearanceOpen(false)}
+			<SettingsDialog
+				open={isAppearanceOpen}
+				onOpenChange={setIsAppearanceOpen}
 			/>
 		</header>
 	)

@@ -1,4 +1,5 @@
 export * from './dialog'
+export * from './slider'
 export * from './popover'
 export * from './command'
 export * from './button'

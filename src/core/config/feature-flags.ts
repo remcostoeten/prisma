@@ -13,6 +13,7 @@ export const featureFlags = {
 	DEV_TOOLS: process.env.NODE_ENV === 'development',
 	PASSWORD_STRENGTH_CHECKER: true,
 	SHOW_SESSION_INDICATOR: true,
+	SHOW_NOTIFICATIONS: true,
 	FONT_SWITCHER: true
 } as const
 

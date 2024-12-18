@@ -1,23 +1,23 @@
 'use client'
 
+import { Theme } from '@/features/theme'
 import { motion } from 'framer-motion'
-import type { Theme } from '../config/themes'
 
 type ThemePreviewProps = {
   theme: Theme
   isSelected: boolean
-  onClick: () => void
+  onClickAction: () => void
 }
 
-export function ThemePreview({ theme, isSelected, onClick }: ThemePreviewProps) {
+export function ThemePreview({ theme, isSelected, onClickAction }: ThemePreviewProps) {
   return (
     <motion.button
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
-      onClick={onClick}
+      onClick={onClickAction}
       className={`relative w-full aspect-[1/1] rounded-lg p-1.5 cursor-pointer ring-offset-background transition-all
         ${isSelected ? 'ring-2 ring-ring ring-offset-2' : 'hover:ring-1 hover:ring-ring hover:ring-offset-1'}`}
-      style={{ background: theme.preview.background }}
+      style={{ background: theme.background }}
     >
       <div className="h-full w-full space-y-2">
         <div className="h-2 w-8 rounded" style={{ background: theme.preview.accent }} />
@@ -26,7 +26,7 @@ export function ThemePreview({ theme, isSelected, onClick }: ThemePreviewProps) 
       </div>
       <span
         className="absolute bottom-1.5 left-1.5 text-[11px] font-medium"
-        style={{ color: theme.preview.foreground }}
+        style={{ color: theme.foreground }}
       >
         {theme.name}
       </span>

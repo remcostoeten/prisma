@@ -1,13 +1,10 @@
 'use server'
 
-export async function loginAction(formData: FormData) {
-	const email = formData.get('email')?.toString()
-	const password = formData.get('password')?.toString()
-	const remember = formData.get('rememberMe') === 'true'
+import { login } from '@/server/mutations/login/login'
+import type { LoginResponse } from '@/server/mutations/login/types'
 
-	if (!email || !password) {
-		throw new Error('Missing required fields')
-	}
+export type LoginActionResponse = LoginResponse
 
-	return { email, password, remember }
+export async function loginAction(formData: FormData): Promise<LoginActionResponse> {
+	return login(formData)
 }

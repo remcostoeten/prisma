@@ -2,12 +2,11 @@
 
 import { AuthForm } from '@/components/auth'
 import { useRouter } from 'next/navigation'
-import { useAuth } from '@/shared/hooks/use-auth'
+import { useAuth, User } from '@/shared/hooks/use-auth'
 import { toast } from 'sonner'
 import { loginAction } from '../actions'
 import { useUser } from '@/contexts/user-context'
 import AuthLayout from '@/components/auth/auth-layout'
-import Link from 'next/link'
 
 export default function LoginPage() {
 	const router = useRouter()
@@ -26,7 +25,7 @@ export default function LoginPage() {
 				return
 			}
 
-			setAuthUser(response.user)
+			setAuthUser(response.user as User)
 			await refreshUser()
 
 			toast.success('Successfully logged in', { id: toastId })
@@ -41,19 +40,9 @@ export default function LoginPage() {
 	return (
 		<AuthLayout
 			title="Welcome back"
-			subtitle={
-				<>
-					Don&apos;t have an account?{' '}
-					<Link
-						href="/register"
-						className="underline underline-offset-4 hover:text-primary"
-					>
-						Sign up
-					</Link>
-				</>
-			}
+			subtitle="Sign in to your account"
 		>
 			<AuthForm type="login" action={handleLogin} />
-		</AuthLayout>
+		</AuthLayout >
 	)
 }

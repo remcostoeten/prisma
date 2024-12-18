@@ -1,4 +1,4 @@
-import Hero from '@/components/hero/hero'
+import Hero from '@/shared/components/Hero'
 import ToolGrid from '@/shared/components/ToolGrid'
 
 export default function Home() {

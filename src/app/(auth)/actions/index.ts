@@ -1,6 +1,6 @@
 'use server'
 
-import { loginAction } from './login.action'
-import { registerAction } from './register.action'
+import { loginAction } from './login'
+import { registerAction } from './register'
 
 export { loginAction, registerAction }

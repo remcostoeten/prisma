@@ -1,6 +1,7 @@
+'use client'
+
 import * as React from "react"
 import { Check, ChevronDown } from 'lucide-react'
-
 import { cn } from "helpers"
 import {
   Command,
@@ -15,13 +16,21 @@ import {
 } from "ui"
 import { themes, type ThemeName } from "@/features/theme/config/theme"
 
-interface ThemeSwitcherProps {
+type ThemeSwitcherProps = {
   theme: ThemeName
   changeTheme: (theme: ThemeName) => void
+  changeAccentColor: (color: string) => void
 }
 
-export function ThemeSwitcher({ theme, changeTheme }: ThemeSwitcherProps) {
+export function ThemeSwitcher({ theme, changeTheme, changeAccentColor }: ThemeSwitcherProps) {
   const [open, setOpen] = React.useState(false)
+
+  const handleThemeSelect = (selectedTheme: ThemeName) => {
+    changeTheme(selectedTheme)
+    const selectedAccentColor = themes[selectedTheme].accent // Assuming each theme has an accent property
+    changeAccentColor(selectedAccentColor)
+    setOpen(false)
+  }
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -44,10 +53,7 @@ export function ThemeSwitcher({ theme, changeTheme }: ThemeSwitcherProps) {
             {themes && Object.entries(themes).map(([key, themeValue]) => (
               <CommandItem
                 key={key}
-                onSelect={() => {
-                  changeTheme(key as ThemeName)
-                  setOpen(false)
-                }}
+                onSelect={() => handleThemeSelect(key as ThemeName)}
               >
                 <Check
                   className={cn(

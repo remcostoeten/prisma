@@ -4,10 +4,12 @@ import { cookies } from 'next/headers'
 import { jwtVerify } from 'jose'
 import { db } from '@/server/db'
 import { AUTH_CONFIG } from '@/core/config/auth'
-import type { UserResponse } from './types'
+import type { User } from '@/core/types/user'
 
-export async function getUser(): Promise<UserResponse> {
-	const token = cookies().get(AUTH_CONFIG.cookieName)?.value
+export type UserResponse = User | null
+
+export default async function getUser(): Promise<UserResponse> {
+	const token = (await cookies()).get(AUTH_CONFIG.cookieName)?.value
 
 	if (!token) return null
 
@@ -61,8 +63,10 @@ export async function getUser(): Promise<UserResponse> {
 		return user
 	} catch (error) {
 		console.error('Get user error:', error)
-		// Delete the invalid token
-		cookies().delete(AUTH_CONFIG.cookieName)
+			// Delete the invalid token
+			; (await
+				// Delete the invalid token
+				cookies()).delete(AUTH_CONFIG.cookieName)
 		return null
 	}
 }

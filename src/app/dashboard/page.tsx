@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useUser } from '@/contexts/user-context'
 import { toast } from 'sonner'
@@ -9,14 +9,17 @@ import Image from 'next/image'
 export default function Dashboard() {
 	const router = useRouter()
 	const { user, isLoading } = useUser()
+	const [hasShownError, setHasShownError] = useState(false)
 
 	useEffect(() => {
-		if (!isLoading && !user) {
+		if (!isLoading && !user && !hasShownError) {
+			setHasShownError(true)
 			toast.error('Please log in to access the dashboard')
-			router.push('/login')
+			router.replace('/login')
 		}
-	}, [user, isLoading, router])
+	}, [user, isLoading, router, hasShownError])
 
+	// Show loading state
 	if (isLoading) {
 		return (
 			<div className="flex items-center justify-center min-h-screen">
@@ -25,6 +28,7 @@ export default function Dashboard() {
 		)
 	}
 
+	// Don't render anything while checking auth
 	if (!user) {
 		return null
 	}
@@ -32,9 +36,7 @@ export default function Dashboard() {
 	return (
 		<div className="flex flex-col items-center justify-center min-h-screen text-foreground">
 			<div className="p-8 rounded-lg border border-border bg-card shadow-lg">
-				<h1 className="mb-6 text-2xl font-bold">
-					Welcome to your Dashboard
-				</h1>
+				<h1 className="mb-6 text-2xl font-bold">Welcome to your Dashboard</h1>
 				<div className="space-y-4">
 					<div className="flex items-center gap-4">
 						{user.image ? (
@@ -54,12 +56,8 @@ export default function Dashboard() {
 							</div>
 						)}
 						<div>
-							<h2 className="text-xl font-semibold">
-								{user.name}
-							</h2>
-							<p className="text-sm text-muted-foreground">
-								{user.email}
-							</p>
+							<h2 className="text-xl font-semibold">{user.name}</h2>
+							<p className="text-sm text-muted-foreground">{user.email}</p>
 						</div>
 					</div>
 					<div className="pt-4 border-t border-border">

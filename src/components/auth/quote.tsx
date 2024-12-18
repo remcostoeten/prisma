@@ -1,40 +1,115 @@
-import Image from 'next/image'
+'use client'
 
-const Quote = () => {
+import Image from 'next/image'
+import { Tooltip } from '@/shared/components/custom'
+
+type TooltipItemProps = {
+	trigger: string
+	content: string
+	style?: string
+}
+
+const authSatire = [
+	{
+		name: "useless docs",
+		description: "😮‍💨😮‍💨 nextauth, not everyone has a phd in cryptography"
+	},
+	{
+		name: "broken adapters",
+		description: "authjs? or is that the same as nextauth? 😮‍💨😮‍💨"
+	},
+	{
+		name: "vendor lock-in",
+		description: "e-penor shrinks. Auth services are like an adult cycling with training wheels"
+	},
+	{
+		name: "absurd pricing",
+		description: "Not that we will go beyond 1 user and 20 test accounts but whatever."
+	},
+	{
+		name: "feature bloat",
+		description: "have you seen google their maze.. i mean dashboard?"
+	},
+	{
+		name: "deprecation",
+		description: "All around me are familiar faces.... RiP lucia"
+	}
+] as const
+
+function TooltipItem({ trigger, content, style = '' }: TooltipItemProps) {
+	const tooltipClasses = [
+		'max-w-sm bg-[var(--background-secondary)] text-xs p-2 rounded-md',
+		'border border-[var(--input-border)] shadow-xl',
+		'after:content-[\'\'] after:absolute after:top-full',
+		'after:left-1/2 after:-ml-1 after:border-4',
+		'after:border-transparent after:border-t-[var(--background-secondary)]'
+	].join(' ')
+
 	return (
-		<aside className="bg-[rgb(15,15,15)] hidden flex-[1_1_25%] flex-col items-center justify-center box-border xl:flex">
-			<div className="relative flex flex-col gap-6 box-border">
-				<div className="absolute select-none box-border -left-11 -top-12">
-					<span className="text-[160px] leading-none box-border">
-						“
+		<Tooltip
+			content={content}
+			theme="dark"
+			placement="top"
+			className={tooltipClasses}
+
+			animate={true}
+			showDelay={100}
+		>
+			<button className={`${style} hover:text-[var(--accent-blue)]`}>
+				{trigger}
+			</button>
+		</Tooltip>
+	)
+}
+
+export default function Quote() {
+	return (
+		<aside className="bg-[var(--background-secondary)] hidden xl:flex flex-[1_1_25%] flex-col items-center justify-center">
+			<div className="relative flex flex-col gap-6 max-w-lg">
+				<div className="select-none absolute -left-11 -top-2">
+					<span className="text-[96px] leading-none text-[var(--accent-green)]/20" aria-hidden="true">
+						&ldquo;
 					</span>
 				</div>
-				<blockquote className="z-10 max-w-lg text-3xl leading-9 box-border m-0">
-					It’s fun, feels lightweight, and really quick to spin up
-					user auth and a few tables. Almost too easy! Highly
-					recommend.
+				<blockquote className="z-10 text-3xl leading-relaxed tracking-tight text-[var(--text-primary)]">
+					Finally! An auth that has NO{' '}
+					{authSatire.map((point, index) => (
+						<span key={point.name}>
+							<TooltipItem
+								trigger={point.name}
+								content={point.description}
+								style="px-1 py-0 h-auto text-[var(--accent-green)] hover:text-[var(--accent-green)]/80"
+							/>
+							{index < authSatire.length - 1 && (
+								<span className="text-[var(--text-secondary)] mx-2">or</span>
+							)}
+						</span>
+					))}
 				</blockquote>
 				<a
-					href="https://twitter.com/nerdburn/status/1356857261495214085"
+					href="https://twitter.com/remcostoeten"
 					target="_blank"
 					rel="noopener noreferrer"
-					className="flex items-center gap-4 box-border"
+					className="flex items-center gap-4 opacity-60 hover:opacity-100 transition-opacity"
 				>
 					<Image
 						src="/remco.jpeg"
-						alt="Remco"
+						alt="Avatar"
 						width={40}
 						height={40}
 						className="rounded-full"
 					/>
-					<div className="flex flex-col box-border">
-						<cite className="whitespace-nowrap font-medium box-border">
-							@nerdburn
+					<div className="flex flex-col gap-">
+						<cite className="text-[var(--text-primary)]/90 font-medium not-italic">
+							@remcostoeten
 						</cite>
+						<span className="text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)]/70 text-[16px] transition-colors">
+							Definitely not the author
+						</span>
 					</div>
 				</a>
 			</div>
 		</aside>
 	)
 }
-export default Quote
+

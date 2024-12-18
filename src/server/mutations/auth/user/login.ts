@@ -3,15 +3,21 @@
 import { cookies } from 'next/headers'
 import { SignJWT } from 'jose'
 import bcrypt from 'bcryptjs'
-import db from '@/server/db'
+import { db } from '@/server/db'
 import { AUTH_CONFIG } from '@/core/config/auth'
-import type { AuthResponse } from './types'
+import type { User } from '@/core/types/user'
 
-export async function login(formData: FormData): Promise<AuthResponse> {
-	const email = formData.get('email') as string
-	const password = formData.get('password') as string
+type LoginResponse = {
+	success: boolean
+	error?: string
+	user?: User
+}
 
-	if (!email || !password) {
+export default async function login(formData: FormData): Promise<LoginResponse> {
+	const email = formData.get('email')
+	const password = formData.get('password')
+
+	if (!email || !password || typeof email !== 'string' || typeof password !== 'string') {
 		return { success: false, error: 'Email and password are required' }
 	}
 
@@ -54,7 +60,7 @@ export async function login(formData: FormData): Promise<AuthResponse> {
 
 		const token = await new SignJWT({
 			userId: user.id,
-			sessionId: session.id,
+			sessionToken: session.id,
 			type: 'session'
 		})
 			.setProtectedHeader({ alg: 'HS256' })
@@ -62,7 +68,8 @@ export async function login(formData: FormData): Promise<AuthResponse> {
 			.setIssuedAt()
 			.sign(new TextEncoder().encode(process.env.JWT_SECRET))
 
-		cookies().set(AUTH_CONFIG.cookieName, token, {
+		const cookieStore = await cookies()
+		cookieStore.set(AUTH_CONFIG.cookieName, token, {
 			httpOnly: true,
 			expires: expiresAt,
 			secure: process.env.NODE_ENV === 'production',
@@ -75,11 +82,11 @@ export async function login(formData: FormData): Promise<AuthResponse> {
 			user: {
 				id: user.id,
 				email: user.email,
-				firstName: user.firstName ?? null,
-				lastName: user.lastName ?? null,
-				name: user.name ?? null,
-				image: user.image ?? null,
-				provider: user.provider ?? 'credentials',
+				firstName: user.firstName,
+				lastName: user.lastName,
+				name: user.name,
+				image: user.image,
+				provider: user.provider,
 				emailVerified: user.emailVerified
 			}
 		}
@@ -87,7 +94,7 @@ export async function login(formData: FormData): Promise<AuthResponse> {
 		console.error('Login error:', error)
 		return {
 			success: false,
-			error: error instanceof Error ? error.message : 'Login failed'
+			error: error instanceof Error ? error.message : 'An error occurred during login'
 		}
 	}
 }

@@ -2,7 +2,8 @@ import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 import { SignJWT } from 'jose'
 import prisma from '@/server/db'
-import { OAUTH_ENDPOINTS, OAUTH_COOKIE_NAMES, AUTH_COOKIE_NAME } from '@/server/mutations/auth/oauth/constants'
+import { OAUTH_ENDPOINTS, OAUTH_COOKIE_NAMES } from '@/server/mutations/auth/oauth/constants'
+import { AUTH_CONFIG } from '@/core/config/auth'
 
 const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID
 const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET
@@ -204,7 +205,7 @@ export async function GET(request: Request) {
 			const session = await prisma.session.create({
 				data: {
 					userId: user.id,
-					expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 1 week from now
+					expiresAt: new Date(Date.now() + AUTH_CONFIG.session.maxAge)
 				}
 			})
 
@@ -216,6 +217,7 @@ export async function GET(request: Request) {
 			})
 				.setProtectedHeader({ alg: 'HS256' })
 				.setExpirationTime(session.expiresAt.getTime() / 1000)
+				.setIssuedAt()
 				.sign(secretKey)
 
 			// Create response with redirect
@@ -225,7 +227,7 @@ export async function GET(request: Request) {
 			cookieStore.delete(OAUTH_COOKIE_NAMES.GITHUB)
 
 			// Set token cookie
-			cookieStore.set(AUTH_COOKIE_NAME, token, {
+			cookieStore.set(AUTH_CONFIG.cookieName, token, {
 				httpOnly: true,
 				secure: process.env.NODE_ENV === 'production',
 				sameSite: 'lax',

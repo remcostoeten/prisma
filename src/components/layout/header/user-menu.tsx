@@ -3,7 +3,6 @@
 import React, { Suspense, useState } from 'react'
 import {
 	LogOut,
-	Settings,
 	UserCircle,
 	ChevronDown,
 	Github,
@@ -21,12 +20,10 @@ import { useRouter } from 'next/navigation'
 import { useUser } from '@/contexts/user-context'
 import { cn } from '@/shared/helpers/utils'
 import { toast } from 'sonner'
-import { oauthLogin } from '@/server/mutations'
-import type { OAuthProvider } from '@/server/mutations'
 import Image from 'next/image'
 import Spinner from '@/shared/components/effects/spinner'
-
-type User = {
+import { oauthLogin, OAuthProvider } from '@/server/mutations/oauth'
+export type User = {
 	id: number
 	email: string
 	firstName: string | null
@@ -34,6 +31,7 @@ type User = {
 	name: string | null
 	image: string | null
 	provider: string | null
+	emailVerified: Date | null
 }
 
 type UserMenuProps = {
@@ -42,8 +40,7 @@ type UserMenuProps = {
 
 export default function UserMenu({ user }: UserMenuProps) {
 	const [isOpen, setIsOpen] = useState(false)
-	const [loadingProvider, setLoadingProvider] =
-		useState<OAuthProvider | null>(null)
+	const [loadingProvider, setLoadingProvider] = useState<OAuthProvider | null>(null)
 	const router = useRouter()
 	const { logout } = useUser()
 
@@ -167,19 +164,6 @@ export default function UserMenu({ user }: UserMenuProps) {
 						</div>
 						<DropdownMenuSeparator className="bg-gradient-to-r from-transparent via-[rgb(255_255_255_/_8%)] to-transparent mx-1" />
 						<div className="p-1">
-							<DropdownMenuItem
-								className={cn(
-									'flex items-center gap-2 px-2 py-1.5 rounded-md',
-									'text-xs text-[hsl(0deg_0%_76%)] hover:text-[hsl(0deg_0%_96%)]',
-									'hover:bg-[rgb(255_255_255_/_4%)]',
-									'cursor-pointer group',
-									'transition-all duration-200 ease-out'
-								)}
-								onClick={() => router.push('/dashboard')}
-							>
-								<Settings className="w-3.5 h-3.5 group-hover:text-emerald-400 transition-colors" />
-								<span>Dashboard</span>
-							</DropdownMenuItem>
 							<DropdownMenuItem
 								onClick={handleLogout}
 								className={cn(

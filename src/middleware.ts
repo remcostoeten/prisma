@@ -15,11 +15,16 @@ export async function middleware(request: NextRequest) {
 		const token = request.cookies.get(AUTH_CONFIG.cookieName)?.value
 		if (token && (pathname === '/login' || pathname === '/register')) {
 			try {
-				await jwtVerify(token, new TextEncoder().encode(process.env.JWT_SECRET))
+				await jwtVerify(
+					token,
+					new TextEncoder().encode(process.env.JWT_SECRET)
+				)
 				return NextResponse.redirect(new URL('/dashboard', request.url))
 			} catch {
-				// If token is invalid, let them proceed to login/register
-				return NextResponse.next()
+				// If token is invalid, clear it and let them proceed to login/register
+				const response = NextResponse.next()
+				response.cookies.delete(AUTH_CONFIG.cookieName)
+				return response
 			}
 		}
 		return NextResponse.next()
@@ -43,10 +48,26 @@ export async function middleware(request: NextRequest) {
 				new TextEncoder().encode(process.env.JWT_SECRET)
 			)
 
-			// Add user info to headers for server components
-			const response = NextResponse.next()
-			response.headers.set('x-user-id', verified.payload.userId as string)
-			response.headers.set('x-session-id', verified.payload.sessionId as string)
+			// Verify that the token payload has the expected shape
+			const payload = verified.payload
+			if (
+				typeof payload === 'object' &&
+				'userId' in payload &&
+				'type' in payload &&
+				payload.type === 'session'
+			) {
+				// Add user info to headers for server components
+				const response = NextResponse.next()
+				response.headers.set('x-user-id', String(payload.userId))
+				if ('sessionToken' in payload) {
+					response.headers.set('x-session-id', String(payload.sessionToken))
+				}
+				return response
+			}
+
+			// If token payload is invalid, clear it and redirect to login
+			const response = NextResponse.redirect(new URL('/login', request.url))
+			response.cookies.delete(AUTH_CONFIG.cookieName)
 			return response
 		} catch (error) {
 			// If token is invalid, clear it and redirect to login
@@ -61,13 +82,8 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
 	matcher: [
-		/*
-		 * Match all request paths except:
-		 * - _next/static (static files)
-		 * - _next/image (image optimization files)
-		 * - favicon.ico (favicon file)
-		 * - public folder
-		 */
-		'/((?!_next/static|_next/image|favicon.ico|public/).*)',
-	],
+		'/dashboard/:path*',
+		'/api/:path*',
+		'/((?!auth|_next/static|favicon.ico).*)'
+	]
 }

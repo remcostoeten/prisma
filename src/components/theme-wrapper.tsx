@@ -2,7 +2,6 @@
 
 import * as React from 'react'
 import { ThemeProvider as NextThemesProvider } from 'next-themes'
-import { TooltipProvider } from '@/shared/components/ui/tooltip'
 
 type ThemeProviderProps = React.ComponentProps<typeof NextThemesProvider> & {
 	children: React.ReactNode
@@ -25,11 +24,9 @@ export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
 
 	return (
 		<NextThemesProvider {...props}>
-			<TooltipProvider delayDuration={50}>
-				<div className="min-h-screen max-h-screen bg-background text-foreground transition-colors duration-300">
-					{children}
-				</div>
-			</TooltipProvider>
+			<div className="min-h-screen max-h-screen bg-background text-foreground transition-colors duration-300">
+				{children}
+			</div>
 		</NextThemesProvider>
 	)
 }

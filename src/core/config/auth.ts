@@ -1,4 +1,4 @@
-export const AUTH_COOKIE_NAME = 'token'
+export const AUTH_COOKIE_NAME = 'session_token'
 
 // Create a secure secret key for JWT signing
 export const secretKey = new TextEncoder().encode(
@@ -6,7 +6,7 @@ export const secretKey = new TextEncoder().encode(
 )
 
 export const AUTH_CONFIG = {
-	cookieName: 'token',
+	cookieName: 'session_token',
 	session: {
 		maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
 		updateAge: 24 * 60 * 60 * 1000, // 24 hours
