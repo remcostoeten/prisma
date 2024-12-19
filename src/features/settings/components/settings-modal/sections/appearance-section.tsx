@@ -1,21 +1,22 @@
 'use client';
 
-import { useSettingsStore } from '../../../stores/user-settings.store';
-import { useKeyboardShortcuts } from '../../../stores/keyboard-shortcuts.store';
 import { Slider } from '@/shared/components/ui/slider';
 import { Switch } from '@/shared/components/ui/switch';
+import { Separator } from '@/shared/components/ui/separator';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/components/ui/tabs';
 import { ThemeSelector } from '../controls/theme-selector';
 import { AccentColorPicker } from '../controls/accent-color-picker';
 import { GlassEffectControls } from '../controls/glass-effect-controls';
 import { KeyboardShortcutEditor } from '../controls/keyboard-shortcut-editor';
-import { Separator } from '@/shared/components/ui/separator';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/components/ui/tabs';
+import { useSettingsStore } from '@/stores/settings';
 
-export function AppearanceSection() {
+
+
+export default function AppearanceSection() {
   const { settings, updateSettings } = useSettingsStore((state) => ({
     settings: state.profile.settings,
     updateSettings: state.updateSettings,
-  }));
+  }))
 
   return (
     <div className="space-y-6">
@@ -25,7 +26,7 @@ export function AppearanceSection() {
           <TabsTrigger value="keyboard">Keyboard & Accessibility</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="theme" className="space-y-6 mt-6">
+        <TabsContent value="theme" className="mt-6 space-y-6">
           <div>
             <h3 className="text-lg font-medium">Theme</h3>
             <p className="text-sm text-muted-foreground">
@@ -66,10 +67,10 @@ export function AppearanceSection() {
             <h3 className="text-lg font-medium">Interface</h3>
             <div className="mt-4 space-y-4">
               <div>
-                <h4 className="text-sm font-medium mb-2">Sidebar Opacity</h4>
+                <h4 className="mb-2 text-sm font-medium">Sidebar Opacity</h4>
                 <Slider
                   value={[settings.sidebarOpacity]}
-                  onValueChange={([value]) => updateSettings({ sidebarOpacity: value })}
+                  onValueChange={([value]: [number]) => updateSettings({ sidebarOpacity: value })}
                   min={30}
                   max={100}
                   step={1}
@@ -86,14 +87,14 @@ export function AppearanceSection() {
                 </div>
                 <Switch
                   checked={settings.compactMode}
-                  onCheckedChange={(checked) => updateSettings({ compactMode: checked })}
+                  onCheckedChange={(checked: boolean) => updateSettings({ compactMode: checked })}
                 />
               </div>
             </div>
           </div>
         </TabsContent>
 
-        <TabsContent value="keyboard" className="space-y-6 mt-6">
+        <TabsContent value="keyboard" className="mt-6 space-y-6">
           <div>
             <h3 className="text-lg font-medium">Keyboard Shortcuts</h3>
             <p className="text-sm text-muted-foreground">
@@ -118,7 +119,7 @@ export function AppearanceSection() {
                 </div>
                 <Switch
                   checked={settings.reduceMotion}
-                  onCheckedChange={(checked) => updateSettings({ reduceMotion: checked })}
+                  onCheckedChange={(checked: boolean) => updateSettings({ reduceMotion: checked })}
                 />
               </div>
 
@@ -131,7 +132,7 @@ export function AppearanceSection() {
                 </div>
                 <Switch
                   checked={settings.highContrast}
-                  onCheckedChange={(checked) => updateSettings({ highContrast: checked })}
+                  onCheckedChange={(checked: boolean) => updateSettings({ highContrast: checked })}
                 />
               </div>
 
@@ -144,7 +145,7 @@ export function AppearanceSection() {
                 </div>
                 <Switch
                   checked={settings.screenReaderMode}
-                  onCheckedChange={(checked) => updateSettings({ screenReaderMode: checked })}
+                  onCheckedChange={(checked: boolean) => updateSettings({ screenReaderMode: checked })}
                 />
               </div>
             </div>
@@ -152,5 +153,5 @@ export function AppearanceSection() {
         </TabsContent>
       </Tabs>
     </div>
-  );
+  )
 }

@@ -69,7 +69,7 @@ export async function middleware(request: NextRequest) {
 			const response = NextResponse.redirect(new URL('/login', request.url))
 			response.cookies.delete(AUTH_CONFIG.cookieName)
 			return response
-		} catch (error) {
+		} catch {
 			// If token is invalid, clear it and redirect to login
 			const response = NextResponse.redirect(new URL('/login', request.url))
 			response.cookies.delete(AUTH_CONFIG.cookieName)

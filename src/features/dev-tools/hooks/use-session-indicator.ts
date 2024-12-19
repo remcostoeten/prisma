@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useUser } from '@/contexts/user-context'
+import { useUser } from '@/state/auth'
 import { isFeatureEnabled } from '@/core/config/feature-flags'
 
 export function useSessionIndicator() {

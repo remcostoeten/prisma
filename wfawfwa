@@ -1,0 +1,15 @@
+#DATABASE_URL=file:dev.db
+APP_URL=http://localhost:3000
+DATABASE_URL="file:./dev.db" # for SQLite
+# or
+# DATABASE_URL="postgresql://user:password@localhost:5432/dbname" # for PostgreSQL
+
+JWT_SECRET=SECRET=M2Mc694z6adFJp10CUVJ1NeeAPtirIzp
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+
+GOOGLE_CLIENT_ID=846708899651-5210rr35229q6ig2hm0q3rvmi8809eok.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=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
+F
+GITHUB_CLIENT_ID=Ov23liLRyGymasaVDG2q
+GITHUB_CLIENT_SECRET=52bc85207a19bb48656e6dfa992662c65166a081 Environment variables declared in this file are automatically made available to Prisma.
+

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { useUser } from '@/contexts/user-context'
+import { useUser } from '@/state/auth'
 import { toast } from 'sonner'
 import Image from 'next/image'
 

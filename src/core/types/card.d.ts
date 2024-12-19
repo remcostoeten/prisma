@@ -16,8 +16,8 @@ export interface SpotlightProps {
 }
 
 export type CardPatternProps = SpotlightProps & {
-  mouseX: number;
-  mouseY: number;
+  mouseX: number  | string
+  mouseY: number  | string
   randomString: string;
 };
 
@@ -37,3 +37,11 @@ export interface CardItemProps {
   borders?: BorderConfig
 }
 
+export interface ToolCardProps {
+  title: string
+  description: string
+  isNew?: boolean
+  isComingSoon?: boolean
+  href?: string
+  image?: string
+}

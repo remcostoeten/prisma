@@ -9,7 +9,7 @@ type ThemePreviewProps = {
   onClickAction: () => void
 }
 
-export function ThemePreview({ theme, isSelected, onClickAction }: ThemePreviewProps) {
+export default function ThemePreview({ theme, isSelected, onClickAction }: ThemePreviewProps) {
   return (
     <motion.button
       whileHover={{ scale: 1.05 }}
@@ -17,7 +17,7 @@ export function ThemePreview({ theme, isSelected, onClickAction }: ThemePreviewP
       onClick={onClickAction}
       className={`relative w-full aspect-[1/1] rounded-lg p-1.5 cursor-pointer ring-offset-background transition-all
         ${isSelected ? 'ring-2 ring-ring ring-offset-2' : 'hover:ring-1 hover:ring-ring hover:ring-offset-1'}`}
-      style={{ background: theme.background }}
+      style={{ background: theme.preview.background }}
     >
       <div className="h-full w-full space-y-2">
         <div className="h-2 w-8 rounded" style={{ background: theme.preview.accent }} />
@@ -26,7 +26,7 @@ export function ThemePreview({ theme, isSelected, onClickAction }: ThemePreviewP
       </div>
       <span
         className="absolute bottom-1.5 left-1.5 text-[11px] font-medium"
-        style={{ color: theme.foreground }}
+        style={{ color: theme.preview.foreground }}
       >
         {theme.name}
       </span>
@@ -41,4 +41,3 @@ export function ThemePreview({ theme, isSelected, onClickAction }: ThemePreviewP
     </motion.button>
   )
 }
-

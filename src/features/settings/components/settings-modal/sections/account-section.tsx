@@ -1,6 +1,6 @@
 'use client';
 
-import { useSettingsStore } from '../../../stores/user-settings.store';
+import { useSettingsStore } from '@/stores/settings';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/components/ui/select';
 import { Input } from '@/shared/components/ui/input';
 import { Button } from '@/shared/components/ui/button';

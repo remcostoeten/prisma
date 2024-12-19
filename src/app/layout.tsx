@@ -1,12 +1,17 @@
 'use client'
 
+/**
+ * @author Remco Stoeten
+ * @description Root layout component that provides authentication state to the entire application
+ */
+
 import { RootProvider } from 'fumadocs-ui/provider'
 import './globals.css'
 import Nav from '@/components/layout/header/nav'
 import DevTools from '@/features/dev-tools/_dev-tools'
 import { isFeatureEnabled } from '@/core/config/feature-flags'
 import { ThemeProvider } from '@/components/theme-wrapper'
-import { UserProvider } from '@/contexts/user-context'
+import { UserProvider } from '@/state/auth'
 import { fontVariables } from '@/core/config/fonts/font-config'
 import { rootLayoutMetadata } from '@/core/config/metadata'
 import { Toaster } from 'sonner'

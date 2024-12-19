@@ -1,7 +1,6 @@
 'use client';
 
 import { Switch } from '@/shared/components/ui/switch';
-import { useSettingsStore } from '@/stores/user-settings.store';
 export function NotificationsSection() {
   const { settings, updateSettings } = useSettingsStore((state) => ({
     settings: state.profile.settings,

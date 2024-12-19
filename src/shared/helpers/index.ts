@@ -1,2 +1,2 @@
 export * from './utils'
-export * from './generate-radom-string'
+export * from './generate-random-string'

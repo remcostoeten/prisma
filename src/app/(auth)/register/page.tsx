@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useAuth } from '@/shared/hooks/use-auth'
 import { toast } from 'sonner'
 import { registerAction, loginAction } from '../actions'
-import { useUser } from '@/contexts/user-context'
+import { useUser } from '@/state/auth'
 import Link from 'next/link'
 import AuthLayout from '@/components/auth/auth-layout'
 

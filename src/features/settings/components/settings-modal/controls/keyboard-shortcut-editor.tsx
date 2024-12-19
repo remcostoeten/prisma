@@ -12,9 +12,8 @@ export function KeyboardShortcutEditor() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [recordingKeys, setRecordingKeys] = useState<string[]>([]);
 
-  const handleKeyDown = (e: React.KeyboardEvent, shortcut: KeyboardShortcut) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     e.preventDefault();
-    
     const key = e.key === ' ' ? 'Space' : e.key;
     if (!recordingKeys.includes(key)) {
       setRecordingKeys([...recordingKeys, key]);
@@ -40,10 +39,10 @@ export function KeyboardShortcutEditor() {
         <Button
           variant="outline"
           size="sm"
-          onClick={() => resetAllShortcuts()}
+          onClick={resetAllShortcuts}
           className="text-sm"
         >
-          <RotateCcw className="w-4 h-4 mr-2" />
+          <RotateCcw className="mr-2 h-4 w-4" />
           Reset All
         </Button>
       </div>
@@ -52,7 +51,7 @@ export function KeyboardShortcutEditor() {
         {shortcuts.map((shortcut) => (
           <div
             key={shortcut.id}
-            className="flex items-center justify-between p-2 rounded-lg border bg-background"
+            className="flex items-center justify-between rounded-lg border bg-background p-2"
           >
             <div>
               <h4 className="text-sm font-medium">{shortcut.name}</h4>
@@ -65,7 +64,7 @@ export function KeyboardShortcutEditor() {
                   value={recordingKeys.join(' + ')}
                   placeholder="Type shortcut..."
                   className="w-40 text-center"
-                  onKeyDown={(e) => handleKeyDown(e, shortcut)}
+                  onKeyDown={handleKeyDown}
                   onKeyUp={() => handleKeyUp(shortcut)}
                   autoFocus
                 />
@@ -76,8 +75,7 @@ export function KeyboardShortcutEditor() {
                   onClick={() => startRecording(shortcut.id)}
                   className={cn(
                     "min-w-[160px] justify-center",
-                    shortcut.currentKeys.join('+') !== shortcut.defaultKeys.join('+') &&
-                    "border-primary"
+                    shortcut.currentKeys.join('+') !== shortcut.defaultKeys.join('+') && "border-primary"
                   )}
                 >
                   {shortcut.currentKeys.join(' + ')}
@@ -90,7 +88,7 @@ export function KeyboardShortcutEditor() {
                 onClick={() => resetShortcut(shortcut.id)}
                 disabled={shortcut.currentKeys.join('+') === shortcut.defaultKeys.join('+')}
               >
-                <RotateCcw className="w-4 h-4" />
+                <RotateCcw className="h-4 w-4" />
               </Button>
             </div>
           </div>

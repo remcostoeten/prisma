@@ -20,7 +20,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/shared/components/ui/tooltip"
-import { useUser } from '@/contexts/user-context'
+import { useUser } from '@/state/auth'
 import { Button } from '@/shared/components/ui/button'
 import { navigation } from '@/core/config/routes/dashboard-routes'
 

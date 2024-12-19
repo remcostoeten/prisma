@@ -1,15 +1,8 @@
 'use client'
 
-import { MouseEvent, ElementType, forwardRef } from 'react'
-
-type ToolCardProps = {
-	title: string
-	description: string
-	isNew?: boolean
-	isComingSoon?: boolean
-	href?: string
-	image?: string
-}
+import { ElementType, forwardRef, useState } from 'react'
+import { ToolCardProps } from '@/core/types/card'
+import { useTextScramble } from '@/core/hooks/useTextScramble'
 
 const ToolCard = forwardRef<HTMLElement, ToolCardProps>(
 	({ title, description, isNew, isComingSoon, href }, ref) => {
@@ -18,26 +11,22 @@ const ToolCard = forwardRef<HTMLElement, ToolCardProps>(
 			? { href, target: '_blank', rel: 'noopener noreferrer' }
 			: { className: 'cursor-not-allowed' }
 
-		const handleMouseMove = (e: MouseEvent<HTMLElement>) => {
+		const [isHovering, setIsHovering] = useState(false)
+		const scrambledTitle = useTextScramble({ text: title, isHovering, updateInterval: 30 })
+		const scrambledDescription = useTextScramble({ 
+			text: typeof description === 'string' ? description : '',
+			isHovering,
+			updateInterval: 20
+		})
+
+		const handleMouseMove = () => {
 			if (!ref || !('current' in ref) || !ref.current) return
-
-			const box = ref.current
-			const rect = box.getBoundingClientRect()
-
-			const x = e.clientX - rect.left
-			const y = e.clientY - rect.top
-
-			const centerX = rect.width / 2
-			const centerY = rect.height / 2
-			const radius = Math.max(rect.width, rect.height) * 0.7
-
-			const normalizedX = ((x - centerX) / radius) * 100
-			const normalizedY = ((y - centerY) / radius) * 100
-			console.log(normalizedX, normalizedY)
+			setIsHovering(true)
 		}
 
 		const handleMouseLeave = () => {
 			if (!ref || !('current' in ref) || !ref.current) return
+			setIsHovering(false)
 		}
 
 		return (
@@ -46,17 +35,16 @@ const ToolCard = forwardRef<HTMLElement, ToolCardProps>(
 				ref={ref}
 				onMouseMove={handleMouseMove}
 				onMouseLeave={handleMouseLeave}
-				className={`max-w-full inline-block w-full min-h-[269px] text-[rgb(242,240,237)] tracking-[0px] flex-col flex-1 justify-between items-stretch text-[22px] leading-[1.1em] relative bg-transparent font-normal no-underline box-border pt-[32px] pb-[24px] px-[24px] focus:outline-offset-0 hover:outline-offset-1 hover:outline-1 hover:outline-[rgb(242,240,237)] xl:inline xl:min-h-[314px] xl:pt-[40px] xl:pb-[30px] xl:px-[36px] ${
-					title === 'Platform'
+				className={`max-w-full inline-block w-full min-h-[269px] text-[rgb(242,240,237)] tracking-[0px] flex-col flex-1 justify-between items-stretch text-[22px] leading-[1.1em] relative bg-transparent font-normal no-underline box-border pt-[32px] pb-[24px] px-[24px] focus:outline-offset-0 hover:outline-offset-1 hover:outline-1 hover:outline-[rgb(242,240,237)] xl:inline xl:min-h-[314px] xl:pt-[40px] xl:pb-[30px] xl:px-[36px] ${title === 'Platform'
 						? 'z-[3] mt-[-3px] xl:pt-[107px] xl:pb-0'
 						: ''
-				} transition-all duration-300 ease-in-out hover:bg-[rgba(255,72,0,0.1)] group`}
+					} transition-all duration-300 ease-in-out hover:bg-[rgba(255,72,0,0.1)] group`}
 			>
 				<div className="z-[2] w-full text-[rgb(140,135,125)] flex-col flex-1 justify-between text-[18px] flex relative box-border h-full">
 					<div className="flex-col justify-start items-start flex relative box-border">
 						<div className="gap-[8px_14px] flex-wrap items-center flex box-border mb-[12px]">
 							<h3 className="text-[rgb(242,240,237)] tracking-[0px] uppercase text-[24px] leading-[1.24em] font-bold box-border mt-[20px] mb-0 xl:text-[19px]">
-								{title}
+								{scrambledTitle}
 							</h3>
 							{isNew && (
 								<div className="text-[rgb(13,12,12)] tracking-[0.02em] uppercase bg-[rgb(255,72,0)] text-[12px] leading-[1.4em] box-border px-[10px] py-[4px] rounded-[26px]">
@@ -70,7 +58,7 @@ const ToolCard = forwardRef<HTMLElement, ToolCardProps>(
 							)}
 						</div>
 						<div className="box-border mb-[32px]">
-							{description}
+							{typeof description === 'string' ? scrambledDescription : description}
 						</div>
 					</div>
 					{href && (

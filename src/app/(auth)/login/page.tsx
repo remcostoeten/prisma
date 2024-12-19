@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useAuth, User } from '@/shared/hooks/use-auth'
 import { toast } from 'sonner'
 import { loginAction } from '../actions'
-import { useUser } from '@/contexts/user-context'
+import { useUser } from '@/state/auth'
 import AuthLayout from '@/components/auth/auth-layout'
 
 export default function LoginPage() {
