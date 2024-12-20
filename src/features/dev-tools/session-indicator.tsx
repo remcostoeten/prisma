@@ -9,7 +9,6 @@
 
 import { cn } from '@/shared/helpers/utils'
 import { useSessionIndicator } from '@/features/dev-tools/hooks/use-session-indicator'
-import { TooltipProvider } from '@/shared/components/ui'
 
 type SessionIndicatorProps = {
 	className?: string
@@ -31,7 +30,6 @@ export default function SessionIndicator({ className }: SessionIndicatorProps) {
 	}
 
 	return (
-		<TooltipProvider>
 			<div
 				className={cn(
 					'fixed bottom-4 right-4 z-50',
@@ -134,6 +132,5 @@ export default function SessionIndicator({ className }: SessionIndicatorProps) {
 					)}
 				</div>
 			</div>
-		</TooltipProvider>
 	)
 }

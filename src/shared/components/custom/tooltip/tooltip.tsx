@@ -1,15 +1,23 @@
-'use client'
-
 /**
- * @author remcostoeten
- * @description A modular, accessible, and easy-to-use tooltip component.
+ * @file Tooltip.tsx
+ * @description A modular, accessible, and customizable tooltip component with animation support.
+ * Features include customizable themes, placements, animations, delays, optional dashed underline,
+ * and an animated dashed border bottom for the tooltip trigger.
  */
 
 import React, { useState, useRef, useEffect, ReactNode } from 'react';
 import { motion as framerMotion, AnimatePresence } from 'framer-motion';
+
+/** Available theme options for the tooltip */
 type Theme = 'light' | 'dark';
+
+/** Available placement options for the tooltip relative to its trigger */
 type Placement = 'top' | 'right' | 'bottom' | 'left';
 
+/**
+ * Props for the Tooltip component
+ * @interface TooltipProps
+ */
 interface TooltipProps {
     /** The element that triggers the tooltip */
     children: ReactNode;
@@ -29,26 +37,71 @@ interface TooltipProps {
     hideDelay?: number;
     /** The placement of the tooltip relative to the trigger */
     placement?: Placement;
+    /** Whether to show an animated dashed underline on the trigger element */
+    dashedUnderline?: boolean;
+    /** Whether to show a dashed border on the trigger element */
+    dashedBorder?: boolean;
+    /** Whether to show an animated dashed border bottom on the trigger element */
+    dashedBorderBottom?: boolean;
+    /** Background color for the tooltip */
+    bgColor?: string;
 }
 
+/**
+ * Theme configurations for the tooltip
+ * @constant themes
+ */
 const themes: Record<Theme, string> = {
     light: 'bg-white border border-gray-200 text-gray-800',
     dark: 'bg-gray-800 border border-gray-700 text-white',
 };
 
-const placements: Record<Placement, { initial: { opacity: number, x: number, y: number }, animate: { opacity: number, x: number, y: number }, exit: { opacity: number, x: number, y: number } }> = {
-    top: { initial: { opacity: 0, y: -10 }, animate: { opacity: 1, y: 0 }, exit: { opacity: 0, y: -10 } },
-    right: { initial: { opacity: 0, x: 10 }, animate: { opacity: 1, x: 0 }, exit: { opacity: 0, x: 10 } },
-    bottom: { initial: { opacity: 0, y: 10 }, animate: { opacity: 1, y: 0 }, exit: { opacity: 0, y: 10 } },
-    left: { initial: { opacity: 0, x: -10 }, animate: { opacity: 1, x: 0 }, exit: { opacity: 0, x: -10 } },
+const placements: Record<Placement, { initial: any; animate: any; exit: any }> = {
+    top: {
+        initial: { y: -10, opacity: 0, scale: 0.8 },
+        animate: { y: 0, opacity: 1, scale: 1 },
+        exit: { y: -10, opacity: 0, scale: 0.8 },
+    },
+    right: {
+        initial: { x: 10, opacity: 0, scale: 0.8 },
+        animate: { x: 0, opacity: 1, scale: 1 },
+        exit: { x: 10, opacity: 0, scale: 0.8 },
+    },
+    bottom: {
+        initial: { y: 10, opacity: 0, scale: 0.8 },
+        animate: { y: 0, opacity: 1, scale: 1 },
+        exit: { y: 10, opacity: 0, scale: 0.8 },
+    },
+    left: {
+        initial: { x: -10, opacity: 0, scale: 0.8 },
+        animate: { x: 0, opacity: 1, scale: 1 },
+        exit: { x: -10, opacity: 0, scale: 0.8 },
+    },
 };
 
 /**
- * A modular, accessible, and easy-to-use tooltip component.
+ * A modular, accessible, and customizable tooltip component.
+ * 
+ * @component
+ * @example
+ * // Basic usage
+ * <Tooltip content="Helpful tip">
+ *   Hover me
+ * </Tooltip>
  * 
  * @example
- * <Tooltip content="This is a tooltip">
- *   Hover me
+ * // Advanced usage with custom styling and animation
+ * <Tooltip
+ *   content="Custom tooltip"
+ *   theme="dark"
+ *   placement="right"
+ *   dashedUnderline
+ *   dashedBorderBottom
+ *   showDelay={200}
+ *   hideDelay={100}
+ *   bgColor="#f0f0f0"
+ * >
+ *   <button>Hover for info</button>
  * </Tooltip>
  */
 export function Tooltip({
@@ -61,84 +114,65 @@ export function Tooltip({
     showDelay = 0,
     hideDelay = 0,
     placement = 'top',
+    dashedUnderline = false,
+    dashedBorder = false,
+    dashedBorderBottom = false,
+    bgColor,
 }: TooltipProps) {
     const [isVisible, setIsVisible] = useState(false);
-    const [position, setPosition] = useState({ top: 0, left: 0 });
     const triggerRef = useRef<HTMLSpanElement>(null);
     const tooltipRef = useRef<HTMLDivElement>(null);
-    const showTimeoutRef = useRef<NodeJS.Timeout>(null);
-    const hideTimeoutRef = useRef<NodeJS.Timeout>(null);
 
     const showTooltip = () => {
-        if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
-        showTimeoutRef.current = setTimeout(() => setIsVisible(true), showDelay);
+        setTimeout(() => {
+            setIsVisible(true);
+        }, showDelay);
     };
 
     const hideTooltip = () => {
-        if (showTimeoutRef.current) clearTimeout(showTimeoutRef.current);
-        hideTimeoutRef.current = setTimeout(() => setIsVisible(false), hideDelay);
+        setTimeout(() => {
+            setIsVisible(false);
+        }, hideDelay);
     };
 
-    useEffect(() => {
-        const updatePosition = () => {
-            if (triggerRef.current && tooltipRef.current && isVisible) {
-                const triggerRect = triggerRef.current.getBoundingClientRect();
-                const tooltipRect = tooltipRef.current.getBoundingClientRect();
-                let top = 0;
-                let left = 0;
+    const position = {
+        top: triggerRef.current?.offsetTop + triggerRef.current?.offsetHeight + 10,
+        left: triggerRef.current?.offsetLeft,
+    };
 
-                switch (placement) {
-                    case 'top':
-                        top = triggerRect.top - tooltipRect.height - 10;
-                        left = triggerRect.left + triggerRect.width / 2 - tooltipRect.width / 2;
-                        break;
-                    case 'right':
-                        top = triggerRect.top + triggerRect.height / 2 - tooltipRect.height / 2;
-                        left = triggerRect.right + 10;
-                        break;
-                    case 'bottom':
-                        top = triggerRect.bottom + 10;
-                        left = triggerRect.left + triggerRect.width / 2 - tooltipRect.width / 2;
-                        break;
-                    case 'left':
-                        top = triggerRect.top + triggerRect.height / 2 - tooltipRect.height / 2;
-                        left = triggerRect.left - tooltipRect.width - 10;
-                        break;
-                }
-
-                setPosition({ top, left });
-            }
-        };
-
-        updatePosition();
-        window.addEventListener('resize', updatePosition);
-        window.addEventListener('scroll', updatePosition);
-
-        return () => {
-            window.removeEventListener('resize', updatePosition);
-            window.removeEventListener('scroll', updatePosition);
-            if (showTimeoutRef.current) clearTimeout(showTimeoutRef.current);
-            if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
-        };
-    }, [isVisible, placement]);
 
     return (
         <>
-            <span
+            <framerMotion.span
                 ref={triggerRef}
                 onMouseEnter={showTooltip}
                 onMouseLeave={hideTooltip}
                 onFocus={showTooltip}
                 onBlur={hideTooltip}
+                className={`inline-block relative ${dashedUnderline ? 'border-b border-dashed border-current' : ''}`}
+                style={{ 
+                    border: dashedBorder ? '1px dashed' : 'none',
+                    borderBottom: dashedBorderBottom ? 'none' : undefined
+                }}
+                whileHover={dashedUnderline || dashedBorderBottom ? { scale: 1.02 } : undefined}
+                transition={{ type: "spring", stiffness: 400, damping: 10 }}
             >
                 {children}
-            </span>
+                {dashedBorderBottom && (
+                    <framerMotion.span
+                        className="absolute bottom-0 left-0 w-full border-b border-dashed border-current opacity-60"
+                        initial={{ scaleX: 0 }}
+                        animate={{ scaleX: 1 }}
+                        transition={{ duration: 0.3 }}
+                    />
+                )}
+            </framerMotion.span>
             <AnimatePresence>
                 {isVisible && (
                     <framerMotion.div
                         ref={tooltipRef}
-                        className={`fixed z-50 px-4 py-2 rounded-md shadow-md ${themes[theme]} ${className}`}
-                        style={{ ...position }}
+                        className={`fixed z-50 px-4 py-2 rounded-md shadow-md ${bgColor ? '' : themes[theme]} ${className}`}
+                        style={{ ...position, backgroundColor: bgColor }}
                         initial={animate ? placements[placement].initial : undefined}
                         animate={animate ? placements[placement].animate : undefined}
                         exit={animate ? placements[placement].exit : undefined}
@@ -147,8 +181,11 @@ export function Tooltip({
                         {content}
                         {caret && (
                             <div
-                                className={`absolute w-3 h-3 transform rotate-45 ${theme === 'light' ? 'bg-white border border-gray-200' : 'bg-gray-800 border border-gray-700'
-                                    }`}
+                                className={`absolute w-3 h-3 transform rotate-45 ${
+                                    bgColor ? '' : (theme === 'light' 
+                                        ? 'bg-white border border-gray-200' 
+                                        : 'bg-gray-800 border border-gray-700')
+                                }`}
                                 style={{
                                     top: placement === 'bottom' ? '-6px' : 'auto',
                                     bottom: placement === 'top' ? '-6px' : 'auto',
@@ -156,6 +193,7 @@ export function Tooltip({
                                     right: placement === 'left' ? '-6px' : 'auto',
                                     [placement]: '50%',
                                     transform: `translate${placement === 'top' || placement === 'bottom' ? 'X' : 'Y'}(-50%) rotate(45deg)`,
+                                    backgroundColor: bgColor
                                 }}
                             />
                         )}
@@ -165,3 +203,4 @@ export function Tooltip({
         </>
     );
 }
+

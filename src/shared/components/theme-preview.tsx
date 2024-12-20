@@ -9,7 +9,7 @@ type ThemePreviewProps = {
   onClickAction: () => void
 }
 
-export default function ThemePreview({ theme, isSelected, onClickAction }: ThemePreviewProps) {
+export function ThemePreview({ theme, isSelected, onClickAction }: ThemePreviewProps) {
   return (
     <motion.button
       whileHover={{ scale: 1.05 }}
@@ -41,3 +41,5 @@ export default function ThemePreview({ theme, isSelected, onClickAction }: Theme
     </motion.button>
   )
 }
+
+>

@@ -4,33 +4,34 @@
 
 @layer base {
   :root {
+/* custom colors */
+    --bg: #0f0f0f;
+    --bg-alt: #171717;
+    --offwhite: #fafafa;
+    --text-alt: #b4b4b4;
+    --border: rgb(46, 46, 46);
+    --section: #1f1f1f;
+/* end custom colors */
+
+
+/* start shadcn colors */
     --background: 0 0% 6%;
-    /* #0f0f0f */
     --foreground: 0 0% 100%;
-    /* white */
     --card: 0 0% 14%;
-    /* #242424 */
     --card-foreground: 0 0% 100%;
     --popover: 0 0% 14%;
     --popover-foreground: 0 0% 100%;
     --primary: 157 100% 32%;
-    /* #00A36C */
     --primary-foreground: 0 0% 100%;
     --secondary: 0 0% 14%;
-    /* #242424 */
     --secondary-foreground: 0 0% 100%;
     --muted: 0 0% 20%;
-    /* #333333 */
     --muted-foreground: 0 0% 40%;
-    /* #666666 */
     --accent: 157 100% 32%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 20%;
-    /* #333333 */
     --input: 0 0% 14%;
-    /* #242424 */
     --ring: 157 100% 32%;
     --radius: 0.5rem;
   }

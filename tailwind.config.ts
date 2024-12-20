@@ -1,6 +1,6 @@
 import type { Config } from 'tailwindcss'
 
-const config = {
+const config: Config = {
 	darkMode: ['class'],
 	content: [
 		'./src/**/*.{ts,tsx}',
@@ -24,7 +24,14 @@ const config = {
 				'ibm-plex-mono': ['var(--font-ibm-plex-mono)', 'monospace']
 			},
 			colors: {
-				border: 'hsl(var(--border))',
+				bg: 'var(--bg)',
+				bgAlt: 'var(--bg-alt)',
+				offwhite: 'var(--offwhite)',
+				'text-alt': 'var(--text-alt)',
+				border: 'var(--border)',
+				section: 'var(--section)', 
+
+				// shadcn colors
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',
 				background: 'hsl(var(--background))',
@@ -56,7 +63,7 @@ const config = {
 				card: {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))',
-				},
+				}
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -78,8 +85,7 @@ const config = {
 				'accordion-up': 'accordion-up 0.2s ease-out',
 			},
 		},
-	},
-	plugins: [require('tailwindcss-animate')],
+	}
 } satisfies Config
 
 export default config

@@ -2,6 +2,7 @@
 
 import { cookies } from 'next/headers'
 import { OAUTH_STATE_COOKIE_NAME } from './constants'
+import { DURATIONS } from '@/constants/durations'
 
 export async function generateOAuthState() {
 	return Math.random().toString(36).substring(7)
@@ -12,7 +13,7 @@ export async function setOAuthState(state: string) {
 		httpOnly: true,
 		secure: process.env.NODE_ENV === 'production',
 		sameSite: 'lax',
-		maxAge: 60 * 5 // 5 minutes
+		maxAge: DURATIONS.FIVE_MINUTES 
 	})
 }
 

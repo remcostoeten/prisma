@@ -1,12 +1,13 @@
 'use client'
 
-import { AuthForm } from '@/components/auth'
+import AuthForm from '@/components/auth/auth-form'
 import { useRouter } from 'next/navigation'
 import { useAuth, User } from '@/shared/hooks/use-auth'
 import { toast } from 'sonner'
 import { loginAction } from '../actions'
 import { useUser } from '@/state/auth'
 import AuthLayout from '@/components/auth/auth-layout'
+import Link from 'next/link'
 
 export default function LoginPage() {
 	const router = useRouter()
@@ -40,9 +41,19 @@ export default function LoginPage() {
 	return (
 		<AuthLayout
 			title="Welcome back"
-			subtitle="Sign in to your account"
+			subtitle={
+				<>
+					Don&apos;t have an account?{' '}
+					<Link
+						href="/register"
+						className="underline underline-offset-4 hover:text-neutral-400"
+					>
+						Sign up
+					</Link>
+				</>
+			}
 		>
 			<AuthForm type="login" action={handleLogin} />
-		</AuthLayout >
+		</AuthLayout>
 	)
 }

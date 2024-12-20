@@ -11,9 +11,6 @@ export type User = {
   email: string;
   firstName: string;
   lastName: string;
-  name?: string;
-  image?: string | null;
-  provider?: string;
 };
 
 /**
@@ -21,8 +18,8 @@ export type User = {
  */
 export type AuthResponse = {
   success: boolean;
-  message?: string;
   user?: User;
+  error?: string;
 };
 
 /**
@@ -49,8 +46,7 @@ export type RegisterData = {
  */
 export type AuthError = {
   message: string;
-  code?: string;
-  status?: number;
+  code: string;
 };
 
 /**

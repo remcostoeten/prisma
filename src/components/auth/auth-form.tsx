@@ -1,21 +1,36 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Input } from '@/shared/components/ui/input'
 import { toast } from 'sonner'
 import Spinner from '@/shared/components/effects/spinner'
-import { EyeIcon, EyeOffIcon } from 'lucide-react'
+import { EyeIcon, EyeOffIcon, AlertCircle } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { featureFlags } from '@/core/config/feature-flags'
 import Link from 'next/link'
+import { cn } from '@/shared/lib/utils'
+import FancyCheckbox from '@/shared/components/ui/fancy-checkbox/fancy-checkbox'
 
 type AuthFormProps = {
 	type: 'login' | 'register'
 	action: (data: FormData) => Promise<void>
 }
+
+type PasswordRequirement = {
+	regex: RegExp
+	message: string
+}
+
+const passwordRequirements: PasswordRequirement[] = [
+	{ regex: /.{8,}/, message: 'At least 8 characters' },
+	{ regex: /[A-Z]/, message: 'One uppercase character' },
+	{ regex: /[a-z]/, message: 'One lowercase character' },
+	{ regex: /[0-9]/, message: 'One number' },
+	{ regex: /[^A-Za-z0-9]/, message: 'One special character' },
+]
 
 const baseSchema = {
 	email: z.string().email('Please enter a valid email'),
@@ -68,11 +83,37 @@ const inputVariants = {
 	}
 }
 
+const validationVariants = {
+	hidden: {
+		opacity: 0,
+		y: -10,
+		scale: 0.95,
+		transition: {
+			duration: 0.2,
+			ease: 'easeInOut'
+		}
+	},
+	visible: {
+		opacity: 1,
+		y: 0,
+		scale: 1,
+		transition: {
+			duration: 0.2,
+			ease: 'easeOut'
+		}
+	}
+}
+
 export default function AuthForm({ type, action }: AuthFormProps) {
 	const [showPassword, setShowPassword] = useState(false)
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 	const [isLoading, setIsLoading] = useState(false)
 	const [focusedInput, setFocusedInput] = useState<string | null>(null)
+	const [showRequirements, setShowRequirements] = useState(false)
+	const [validRequirements, setValidRequirements] = useState<boolean[]>(
+		new Array(passwordRequirements.length).fill(false)
+	)
+	const [rememberMe, setRememberMe] = useState(false)
 	const forgotPasswordEnabled = featureFlags['FORGOT_PASSWORD']
 
 	const schema = type === 'login' ? loginSchema : registerSchema
@@ -80,6 +121,7 @@ export default function AuthForm({ type, action }: AuthFormProps) {
 	const {
 		register,
 		handleSubmit,
+		watch,
 		formState: { errors }
 	} = useForm({
 		resolver: zodResolver(schema),
@@ -92,8 +134,19 @@ export default function AuthForm({ type, action }: AuthFormProps) {
 						firstName: '',
 						lastName: '',
 						confirmPassword: ''
-					}
+				  }
 	})
+
+	const password = watch('password')
+
+	useEffect(() => {
+		if (type === 'register') {
+			const newValidRequirements = passwordRequirements.map(req =>
+				req.regex.test(password || '')
+			)
+			setValidRequirements(newValidRequirements)
+		}
+	}, [password, type])
 
 	const handleFormSubmit = async (data: z.infer<typeof schema>) => {
 		try {
@@ -114,6 +167,18 @@ export default function AuthForm({ type, action }: AuthFormProps) {
 		}
 	}
 
+	const handleFocus = (field: string) => {
+		setFocusedInput(field)
+		if (field === 'password' && type === 'register') {
+			setShowRequirements(true)
+		}
+	}
+
+	const handleBlur = () => {
+		setFocusedInput(null)
+		setTimeout(() => setShowRequirements(false), 200)
+	}
+
 	return (
 		<form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
 			{type === 'register' && (
@@ -123,8 +188,8 @@ export default function AuthForm({ type, action }: AuthFormProps) {
 							errors.firstName
 								? 'error'
 								: focusedInput === 'firstName'
-									? 'focus'
-									: 'blur'
+								? 'focus'
+								: 'blur'
 						}
 						variants={inputVariants}
 						className="space-y-2"
@@ -133,8 +198,8 @@ export default function AuthForm({ type, action }: AuthFormProps) {
 							{...register('firstName')}
 							placeholder="First name"
 							autoComplete="given-name"
-							onFocus={() => setFocusedInput('firstName')}
-							onBlur={() => setFocusedInput(null)}
+							onFocus={() => handleFocus('firstName')}
+							onBlur={handleBlur}
 							className="h-10 bg-[#1f1f1f] border-inherit transition-all placeholder:text-neutral-500 focus:bg-[#2a2a2a]"
 							error={errors.firstName?.message}
 						/>
@@ -144,8 +209,8 @@ export default function AuthForm({ type, action }: AuthFormProps) {
 							errors.lastName
 								? 'error'
 								: focusedInput === 'lastName'
-									? 'focus'
-									: 'blur'
+								? 'focus'
+								: 'blur'
 						}
 						variants={inputVariants}
 						className="space-y-2"
@@ -154,8 +219,8 @@ export default function AuthForm({ type, action }: AuthFormProps) {
 							{...register('lastName')}
 							placeholder="Last name"
 							autoComplete="family-name"
-							onFocus={() => setFocusedInput('lastName')}
-							onBlur={() => setFocusedInput(null)}
+							onFocus={() => handleFocus('lastName')}
+							onBlur={handleBlur}
 							className="h-10 bg-[#1f1f1f] border-inherit transition-all placeholder:text-neutral-500 focus:bg-[#2a2a2a]"
 							error={errors.lastName?.message}
 						/>
@@ -168,8 +233,8 @@ export default function AuthForm({ type, action }: AuthFormProps) {
 					errors.email
 						? 'error'
 						: focusedInput === 'email'
-							? 'focus'
-							: 'blur'
+						? 'focus'
+						: 'blur'
 				}
 				variants={inputVariants}
 				className="space-y-2"
@@ -179,8 +244,8 @@ export default function AuthForm({ type, action }: AuthFormProps) {
 					type="email"
 					placeholder="Email"
 					autoComplete="email"
-					onFocus={() => setFocusedInput('email')}
-					onBlur={() => setFocusedInput(null)}
+					onFocus={() => handleFocus('email')}
+					onBlur={handleBlur}
 					className="h-10 bg-[#1f1f1f] border-inherit transition-all placeholder:text-neutral-500 focus:bg-[#2a2a2a]"
 					error={errors.email?.message}
 				/>
@@ -191,11 +256,11 @@ export default function AuthForm({ type, action }: AuthFormProps) {
 					errors.password
 						? 'error'
 						: focusedInput === 'password'
-							? 'focus'
-							: 'blur'
+						? 'focus'
+						: 'blur'
 				}
 				variants={inputVariants}
-				className="space-y-2"
+				className="relative space-y-2"
 			>
 				<div className="relative group">
 					<Input
@@ -207,8 +272,8 @@ export default function AuthForm({ type, action }: AuthFormProps) {
 								? 'current-password'
 								: 'new-password'
 						}
-						onFocus={() => setFocusedInput('password')}
-						onBlur={() => setFocusedInput(null)}
+						onFocus={() => handleFocus('password')}
+						onBlur={handleBlur}
 						className="h-10 bg-[#1f1f1f] border-inherit transition-all placeholder:text-neutral-500 focus:bg-[#2a2a2a] pr-10"
 						error={errors.password?.message}
 					/>
@@ -243,6 +308,58 @@ export default function AuthForm({ type, action }: AuthFormProps) {
 						</AnimatePresence>
 					</motion.button>
 				</div>
+				<AnimatePresence>
+					{type === 'register' && showRequirements && (
+						<motion.div 
+							variants={validationVariants}
+							initial="hidden"
+							animate="visible"
+							exit="hidden"
+							className="absolute left-0 right-0 top-[calc(100%+4px)] bg-[#1f1f1f] border border-[#2f2f2f] rounded-md p-2 shadow-lg z-10"
+						>
+							<div className="text-sm font-medium mb-2 text-neutral-300">Password requirements:</div>
+							<div className="space-y-1">
+								{passwordRequirements.map((req, index) => (
+									<motion.div
+										key={req.message}
+										initial={{ opacity: 0, x: -10 }}
+										animate={{ opacity: 1, x: 0 }}
+										transition={{ delay: index * 0.05 }}
+										className={cn(
+											"flex items-center gap-2 text-sm transition-colors duration-200",
+											validRequirements[index] ? "text-emerald-500" : "text-neutral-400"
+										)}
+									>
+										<div className="w-4 h-4 flex items-center justify-center">
+											<AnimatePresence mode="wait">
+												{validRequirements[index] ? (
+													<motion.div
+														key="check"
+														initial={{ scale: 0 }}
+														animate={{ scale: 1 }}
+														exit={{ scale: 0 }}
+													>
+														✓
+													</motion.div>
+												) : (
+													<motion.div
+														key="alert"
+														initial={{ scale: 0 }}
+														animate={{ scale: 1 }}
+														exit={{ scale: 0 }}
+													>
+														<AlertCircle className="w-3 h-3" />
+													</motion.div>
+												)}
+											</AnimatePresence>
+										</div>
+										{req.message}
+									</motion.div>
+								))}
+							</div>
+						</motion.div>
+					)}
+				</AnimatePresence>
 			</motion.div>
 
 			{type === 'register' && (
@@ -251,8 +368,8 @@ export default function AuthForm({ type, action }: AuthFormProps) {
 						errors.confirmPassword
 							? 'error'
 							: focusedInput === 'confirmPassword'
-								? 'focus'
-								: 'blur'
+							? 'focus'
+							: 'blur'
 					}
 					variants={inputVariants}
 					className="space-y-2"
@@ -263,8 +380,8 @@ export default function AuthForm({ type, action }: AuthFormProps) {
 							type={showConfirmPassword ? 'text' : 'password'}
 							placeholder="Confirm Password"
 							autoComplete="new-password"
-							onFocus={() => setFocusedInput('confirmPassword')}
-							onBlur={() => setFocusedInput(null)}
+							onFocus={() => handleFocus('confirmPassword')}
+							onBlur={handleBlur}
 							className="h-10 bg-[#1f1f1f] border-inherit transition-all placeholder:text-neutral-500 focus:bg-[#2a2a2a] pr-10"
 							error={errors.confirmPassword?.message}
 						/>
@@ -304,14 +421,30 @@ export default function AuthForm({ type, action }: AuthFormProps) {
 				</motion.div>
 			)}
 
-			{forgotPasswordEnabled && (
-				<div className="text-right mt-4">
-					<Link
-						href="/forgot-password"
-						className="text-blue-500 hover:text-blue-700"
-					>
-						Forgot Password?
-					</Link>
+			{type === 'login' && (
+				<div className="flex items-center justify-between text-sm">
+					<label className="group flex items-center gap-2 cursor-pointer">
+						<FancyCheckbox
+							checked={rememberMe}
+							onChange={(checked) => {
+								setRememberMe(checked)
+								const rememberMeField = register('rememberMe').onChange
+								rememberMeField({ target: { value: checked } })
+							}}
+						/>
+						<span className="text-neutral-400 group-hover:text-neutral-300 transition-colors">
+							Remember me
+						</span>
+					</label>
+
+					{forgotPasswordEnabled && (
+						<Link
+							href="/forgot-password"
+							className="text-neutral-400 hover:text-neutral-300 transition-colors"
+						>
+							Forgot password?
+						</Link>
+					)}
 				</div>
 			)}
 
@@ -319,9 +452,8 @@ export default function AuthForm({ type, action }: AuthFormProps) {
 				type="submit"
 				className="relative w-full h-10 bg-emerald-500 text-white rounded font-medium overflow-hidden"
 				disabled={isLoading}
-				whileHover="hover"
-				initial="initial"
-				animate="animate"
+				whileHover={{ scale: 1.02 }}
+				whileTap={{ scale: 0.98 }}
 			>
 				<motion.div
 					className="absolute inset-0 bg-emerald-600"

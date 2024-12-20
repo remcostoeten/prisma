@@ -51,12 +51,13 @@ function TooltipItem({ trigger, content, style = '' }: TooltipItemProps) {
 			theme="dark"
 			placement="top"
 			className={tooltipClasses}
-
 			animate={true}
 			showDelay={100}
+			dashedBorderBottom={true}
 		>
-			<button className={`${style} hover:text-[var(--accent-blue)]`}>
+			<button className={`${style} hover:text-[var(--accent-blue)] relative`}>
 				{trigger}
+				<span className="absolute bottom-0 left-0 w-full border-b border-dashed border-current opacity-60"></span>
 			</button>
 		</Tooltip>
 	)
@@ -64,10 +65,10 @@ function TooltipItem({ trigger, content, style = '' }: TooltipItemProps) {
 
 export default function Quote() {
 	return (
-		<aside className="bg-[var(--background-secondary)] hidden xl:flex flex-[1_1_25%] flex-col items-center justify-center">
-			<div className="relative flex flex-col gap-6 max-w-lg">
+		<aside className="!bg-bg border-border border-l hidden xl:flex flex-[1_1_40%] flex-col items-center justify-center">
+			<div className="relative flex flex-col gap-6 max-w-2xl">
 				<div className="select-none absolute -left-11 -top-2">
-					<span className="text-[96px] leading-none text-[var(--accent-green)]/20" aria-hidden="true">
+					<span className="text-[66px] text-balance leading-none text-[var(--accent-green)]/20" aria-hidden="true">
 						&ldquo;
 					</span>
 				</div>
@@ -87,7 +88,7 @@ export default function Quote() {
 					))}
 				</blockquote>
 				<a
-					href="https://twitter.com/remcostoeten"
+					href="https://twitter.com/yowremco"
 					target="_blank"
 					rel="noopener noreferrer"
 					className="flex items-center gap-4 opacity-60 hover:opacity-100 transition-opacity"
@@ -113,3 +114,4 @@ export default function Quote() {
 	)
 }
 
+	
