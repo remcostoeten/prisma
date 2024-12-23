@@ -1,9 +1,0 @@
-1|src/
-2|  state/
-3|    auth/
-4|      context.tsx    # Context API implementation
-5|      zustand.ts     # Zustand implementation (when switched)
-6|      index.ts       # Exports current implementation
-7|  core/
-8|    types/
-9|      auth.ts        # Shared types 

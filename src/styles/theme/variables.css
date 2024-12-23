@@ -1,0 +1,130 @@
+@layer base {
+
+    /* Default theme (Supabase-inspired dark) */
+    :root {
+        /* Custom theme colors */
+        --bg: #0f0f0f;
+        --bg-alt: #171717;
+        --offwhite: #fafafa;
+        --text-alt: #b4b4b4;
+        --border: rgb(46, 46, 46);
+        --section: #1f1f1f;
+
+        /* shadcn colors - dark default */
+        --background: 0 0% 6%;
+        --foreground: 0 0% 98%;
+        --card: 0 0% 9%;
+        --card-foreground: 0 0% 98%;
+        --popover: 0 0% 9%;
+        --popover-foreground: 0 0% 98%;
+        --primary: 157.8 72.2% 52.7%;
+        --primary-foreground: 0 0% 9%;
+        --secondary: 240 5.9% 10%;
+        --secondary-foreground: 0 0% 98%;
+        --muted: 0 0% 15%;
+        --muted-foreground: 240 5% 64.9%;
+        --accent: 240 4.8% 15.9%;
+        --accent-foreground: 0 0% 98%;
+        --destructive: 0 62.8% 30.6%;
+        --destructive-foreground: 0 0% 98%;
+        --border: 240 3.7% 15.9%;
+        --input: 240 3.7% 15.9%;
+        --ring: 157.8 72.2% 52.7%;
+    }
+
+    /* Light theme */
+    [data-theme="light"] {
+        /* Custom theme colors */
+        --bg: #f8f9fa;
+        --bg-alt: #f1f3f5;
+        --offwhite: #1f1f1f;
+        --text-alt: #4f5b76;
+        --border: rgb(229, 231, 235);
+        --section: #ffffff;
+
+        /* shadcn colors - light */
+        --background: 0 0% 97%;
+        --foreground: 0 0% 12%;
+        --card: 0 0% 100%;
+        --card-foreground: 0 0% 12%;
+        --popover: 0 0% 100%;
+        --popover-foreground: 0 0% 12%;
+        --primary: 157.8 72.2% 52.7%;
+        --primary-foreground: 0 0% 100%;
+        --secondary: 240 4.8% 95.9%;
+        --secondary-foreground: 240 5.9% 10%;
+        --muted: 240 4.8% 95.9%;
+        --muted-foreground: 240 3.8% 46.1%;
+        --accent: 240 4.8% 95.9%;
+        --accent-foreground: 240 5.9% 10%;
+        --destructive: 0 84.2% 60.2%;
+        --destructive-foreground: 0 0% 98%;
+        --border: 240 5.9% 90%;
+        --input: 240 5.9% 90%;
+        --ring: 157.8 72.2% 52.7%;
+    }
+
+    /* Tokyo Night theme */
+    [data-theme="tokyo-night"] {
+        /* Custom theme colors */
+        --bg: #1a1b26;
+        --bg-alt: #16161e;
+        --offwhite: #a9b1d6;
+        --text-alt: #787c99;
+        --border: #292e42;
+        --section: #1f2335;
+
+        /* shadcn colors - tokyo night */
+        --background: 234 35% 12%;
+        --foreground: 225 27% 85%;
+        --card: 234 35% 15%;
+        --card-foreground: 225 27% 85%;
+        --popover: 234 35% 15%;
+        --popover-foreground: 225 27% 85%;
+        --primary: 228 86% 73%;
+        --primary-foreground: 234 35% 15%;
+        --secondary: 240 25% 35%;
+        --secondary-foreground: 225 27% 85%;
+        --muted: 234 35% 18%;
+        --muted-foreground: 225 27% 65%;
+        --accent: 240 25% 35%;
+        --accent-foreground: 225 27% 85%;
+        --destructive: 0 63% 47%;
+        --destructive-foreground: 225 27% 85%;
+        --border: 234 25% 22%;
+        --input: 234 25% 22%;
+        --ring: 228 86% 73%;
+    }
+
+    /* Catppuccin Mocha theme */
+    [data-theme="catppuccin"] {
+        /* Custom theme colors */
+        --bg: #1e1e2e;
+        --bg-alt: #181825;
+        --offwhite: #cdd6f4;
+        --text-alt: #a6adc8;
+        --border: #313244;
+        --section: #24273a;
+
+        /* shadcn colors - catppuccin */
+        --background: 240 21% 15%;
+        --foreground: 226 64% 88%;
+        --card: 240 21% 18%;
+        --card-foreground: 226 64% 88%;
+        --popover: 240 21% 18%;
+        --popover-foreground: 226 64% 88%;
+        --primary: 267 84% 81%;
+        --primary-foreground: 240 21% 18%;
+        --secondary: 240 24% 24%;
+        --secondary-foreground: 226 64% 88%;
+        --muted: 240 21% 22%;
+        --muted-foreground: 226 64% 68%;
+        --accent: 240 24% 24%;
+        --accent-foreground: 226 64% 88%;
+        --destructive: 0 63% 47%;
+        --destructive-foreground: 226 64% 88%;
+        --border: 240 24% 24%;
+        --input: 240 24% 24%;
+        --ring: 267 84% 81%;
+    }
+}

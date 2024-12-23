@@ -1,0 +1,151 @@
+# Developer Toolbox 🧰
+
+An interactive CLI tool for managing and running development scripts with a user-friendly interface.
+
+## Features ✨
+
+- 🎯 Interactive script selection and execution
+- 🔍 Detailed help menu and documentation
+- 🧪 Dry-run capability for safe testing
+- 🎨 Beautiful terminal UI with colors and formatting
+- 🔄 Automatic dependency management
+- ⚡ Easy to extend with new scripts
+
+## Usage 🚀
+
+Run the toolbox using npm:
+
+```bash
+# Start interactive menu
+npm run toolbox
+
+# Show help menu
+npm run toolbox -- --help
+
+# List all available scripts
+npm run toolbox -- --list
+
+# Run a specific script
+npm run toolbox -- --script <script-id>
+
+# Dry run a script
+npm run toolbox -- --script <script-id> --dry-run
+```
+
+## Available Scripts 📜
+
+| ID       | Name                       | Category | Description                                       |
+| -------- | -------------------------- | -------- | ------------------------------------------------- |
+| webp     | Image to WebP Converter    | Media    | Convert images to WebP format with compression    |
+| turso    | Turso DB Secrets Generator | Database | Generate Turso DB credentials and update env vars |
+| ui-index | UI Import Consolidator     | Code     | Consolidate UI component imports                  |
+
+## Adding New Scripts 📝
+
+To add a new script to the toolbox, update the `scripts` dictionary in `toolbox.py`:
+
+```python
+self.scripts: Dict[str, dict] = {
+    "your-script-id": {
+        "name": "Your Script Name",
+        "path": "scripts/your-script.py",
+        "description": "What your script does",
+        "category": "Script Category",
+        "args": ["--arg1", "--arg2"]  # Optional arguments
+    }
+}
+```
+
+## Requirements 📋
+
+- Python 3.6+
+- Dependencies (automatically installed):
+  - rich>=10.0.0
+  - questionary>=1.10.0
+
+## Directory Structure 📁
+
+```
+scripts/
+├── README.md
+├── toolbox.py              # Main toolbox script
+├── compress-img-to-webp.py # Image compression script
+├── generate-turso-secrets.py # Database utilities
+└── generate-ui-index.py    # Code generation utilities
+```
+
+## Features in Detail 🔍
+
+### Interactive Mode
+
+- Beautiful terminal UI with clear categories
+- Step-by-step parameter input
+- Confirmation prompts for safety
+- Easy script selection menu
+
+### Dry Run Mode
+
+Test scripts safely by seeing what would be executed without actually running them:
+
+```bash
+npm run toolbox -- --script webp --dry-run
+```
+
+### Help System
+
+Comprehensive help system with:
+
+- Command overview
+- Script details
+- Usage examples
+- Parameter descriptions
+
+## Contributing 🤝
+
+1. Add your script to the `scripts/` directory
+2. Update the `scripts` dictionary in `toolbox.py`
+3. Add appropriate documentation
+4. Test with both interactive and direct execution modes
+
+## Best Practices 📚
+
+When adding new scripts:
+
+- Include clear documentation
+- Add meaningful script categories
+- Provide descriptive argument names
+- Include error handling
+- Support dry-run mode where applicable
+
+## Troubleshooting 🔧
+
+### Common Issues
+
+1. **Python not found**
+
+   ```bash
+   # Ensure Python 3 is installed
+   python3 --version
+   ```
+
+2. **Permission Issues**
+
+   ```bash
+   # Make script executable if needed
+   chmod +x scripts/toolbox.py
+   ```
+
+3. **Dependencies**
+   - Dependencies are installed automatically
+   - For manual installation:
+     ```bash
+     pip install rich questionary
+     ```
+
+### Getting Help
+
+Run the help command for detailed information:
+
+```bash
+npm run toolbox -- --help
+```

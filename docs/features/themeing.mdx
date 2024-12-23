@@ -1,0 +1,176 @@
+# Theming System
+
+## Overview
+
+Our application implements a flexible theming system that supports dynamic theme switching with dark/light modes and custom color schemes. Built on top of shadcn/ui, our theming system provides a seamless user experience while maintaining consistency across the application.
+
+## Key Features
+
+- 🌓 Dark/Light mode switching
+- 🎨 shadcn/ui integration
+- 💾 Theme persistence
+- ⚡ Zero-flicker implementation
+- 🔄 System theme synchronization
+- 📱 Responsive design support
+
+## Implementation
+
+### Theme Hook Usage
+
+Here's how to use the theme hook in your components:
+
+```
+tsx
+import { useTheme } from "@/shared/hooks/use-theme"
+
+export default function ThemeToggle() {
+  const { theme, setTheme } = useTheme()
+
+  return (
+    <button onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
+      Toggle theme
+    </button>
+  )
+}
+```
+
+### Theme Configuration
+
+The theme configuration is managed through `components.json`:
+
+```
+json
+{
+  "style": "default",
+  "rsc": true,
+  "tailwind": {
+    "config": "tailwind.config.js",
+    "css": "src/styles/globals.css",
+    "baseColor": "slate",
+    "cssVariables": true
+  }
+}
+```
+
+### CSS Variables
+
+Theme variables are defined in `src/styles/globals.css`:
+
+```
+css
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    /* Other light theme variables */
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 0 0% 100%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 0 0% 100%;
+
+    /* Other dark theme variables */
+  }
+}
+```
+
+## Usage Guidelines
+
+### Component Implementation
+
+When creating theme-aware components:
+
+```
+tsx
+import { cn } from "@/lib/utils"
+
+export default function Card({ className, children }) {
+  return (
+    <div className={cn(
+      "bg-background text-foreground",
+      "rounded-lg border p-4",
+      className
+    )}>
+      {children}
+    </div>
+  )
+}
+```
+
+### Theme Provider Setup
+
+Ensure your application is wrapped with the ThemeProvider:
+
+```
+tsx
+import { ThemeProvider } from "@/core/providers/theme-provider"
+
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en" suppressHydrationWarning>
+      <body>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+        >
+          {children}
+        </ThemeProvider>
+      </body>
+    </html>
+  )
+}
+```
+
+## Best Practices
+
+1. **Component Design**
+
+   - Use Tailwind's color variables (`bg-background`, `text-foreground`)
+   - Implement the `cn()` utility for class merging
+   - Test components in both light and dark modes
+
+2. **Performance**
+
+   - Use `suppressHydrationWarning` on the html element
+   - Implement proper CSS variable defaults
+   - Avoid direct color values, use theme variables
+
+3. **Accessibility**
+   - Maintain WCAG color contrast requirements
+   - Respect user system preferences
+   - Provide clear theme toggle controls
+
+## Troubleshooting
+
+Common issues and solutions:
+
+1. **Theme Flashing**
+
+   - Ensure ThemeProvider is properly configured
+   - Check for proper CSS variable implementation
+   - Verify localStorage persistence
+
+2. **Inconsistent Colors**
+
+   - Review CSS variable definitions
+   - Check Tailwind configuration
+   - Verify class usage in components
+
+3. **System Theme Issues**
+   - Check media query support
+   - Verify ThemeProvider settings
+   - Ensure proper fallback themes
+
+## Related Resources
+
+- [shadcn/ui Documentation](https://ui.shadcn.com)
+- [Tailwind CSS Dark Mode](https://tailwindcss.com/docs/dark-mode)
+- [Next.js Theme Implementation](https://nextjs.org/docs)
