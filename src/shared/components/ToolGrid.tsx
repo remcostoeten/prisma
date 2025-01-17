@@ -1,4 +1,4 @@
-import { toolData } from '../../../data/toolData'
+import { toolData } from '../../../docs/data/toolData'
 import ToolCard from './ToolCard'
 
 export default function ToolGrid() {

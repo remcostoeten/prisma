@@ -2,13 +2,14 @@
 
 import { RootProvider } from 'fumadocs-ui/provider'
 import './globals.css'
-import Nav from '@/components/layout/header/nav'
 import DevTools from '@/features/dev-tools/_dev-tools'
 import { isFeatureEnabled } from '@/core/config/feature-flags'
 import { ThemeProvider } from '@/components/theme-wrapper'
 import { UserProvider } from '@/contexts/user-context'
 import { fontVariables } from '@/core/config/fonts/font-config'
 import { rootLayoutMetadata } from '@/core/config/metadata'
+import Nav from '@/components/layout/header/nav'
+import { Header } from '@/components/layout/header'
 
 export { rootLayoutMetadata}
 
@@ -31,7 +32,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
 					themes={['light', 'dark', 'rose', 'green', 'blue']}
 				>
 					<UserProvider>
-						<Nav positionFixed={true} />
+						<Header />
 						<main
 							className="flex-grow h-screen overflow-auto"
 							style={{ maxHeight: 'calc(100vh - 64px)' }}

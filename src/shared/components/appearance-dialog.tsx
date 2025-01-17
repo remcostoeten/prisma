@@ -4,13 +4,11 @@ import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useTheme } from "next-themes"
 import { X } from 'lucide-react'
-import { Switch } from "@/shared/components/ui/switch"
-import { Button } from "@/shared/components/ui/button"
-import { Separator } from "@/shared/components/ui/separator"
+import { Button, Separator, Switch } from "@/shared/components/ui"
 import { themes, accentColors } from "../config/themes"
 import { ThemePreview } from "./theme-preview"
 import { ColorSwatch } from "./color-swatch"
-import { saveThemePreferences, loadThemePreferences } from "../services/theme-service"
+import { saveThemePreferences, loadThemePreferences } from "@/services"
 
 type AppearanceDialogProps = {
   isOpen: boolean

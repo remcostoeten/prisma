@@ -21,13 +21,15 @@ const config = {
 				'geist-mono': ['var(--font-geist-mono)', 'monospace'],
 				'inter': ['var(--font-inter)', 'sans-serif'],
 				'jetbrains-mono': ['var(--font-jetbrains-mono)', 'monospace'],
-				'ibm-plex-mono': ['var(--font-ibm-plex-mono)', 'monospace']
+						'ibm-plex-mono': ['var(--font-ibm-plex-mono)', 'monospace']
 			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',
-				background: 'hsl(var(--background))',
+				background: {
+					DEFAULT: '#050505',
+				},
 				foreground: 'hsl(var(--foreground))',
 				primary: {
 					DEFAULT: 'var(--accent-color)',
@@ -49,9 +51,9 @@ const config = {
 					DEFAULT: 'var(--accent-color)',
 					foreground: 'hsl(var(--accent-foreground))',
 				},
-				popover: {
-					DEFAULT: 'hsl(var(--popover))',
-					foreground: 'hsl(var(--popover-foreground))',
+				popover: {	
+					DEFAULT: '#0A0A0A',
+					foreground: '#0A0A0A',
 				},
 				card: {
 					DEFAULT: 'hsl(var(--card))',

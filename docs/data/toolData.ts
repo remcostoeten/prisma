@@ -1,4 +1,4 @@
-import { ToolCardProps } from '../types/toolTypes'
+import { ToolCardProps } from '../../types/toolTypes'
 
 export const toolData: ToolCardProps[] = [
 	{

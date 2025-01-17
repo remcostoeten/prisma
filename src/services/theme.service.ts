@@ -1,5 +1,6 @@
-import { themes, accentColors } from "src/shared/config/themes"
-import { AppearanceState } from "src/shared/types/theme"
+import { accentColors } from "@/shared/config/themes"
+import { themes } from "@/shared/config/themes"
+import { AppearanceState } from "../core/config/types/theme"
 
 export function getThemeByName(name: string) {
   return themes.find(theme => theme.name === name)
