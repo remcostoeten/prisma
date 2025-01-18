@@ -233,7 +233,8 @@ export default function UserMenu({ user }: UserMenuProps) {
 				</div>
 			</FancyButton>
 			<FancyButton
-				var	iant="dark"
+				var
+				iant="dark"
 				onClick={() => handleOAuthLogin('google')}
 				className="px-4 py-2"
 				disabled={loadingProvider !== null}

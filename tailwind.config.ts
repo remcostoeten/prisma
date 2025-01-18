@@ -13,75 +13,76 @@ const config = {
 			center: true,
 			padding: '2rem',
 			screens: {
-				'2xl': '1400px',
-			},
+				'2xl': '1400px'
+			}
 		},
 		extend: {
 			fontFamily: {
 				'geist-mono': ['var(--font-geist-mono)', 'monospace'],
-				'inter': ['var(--font-inter)', 'sans-serif'],
+				inter: ['var(--font-inter)', 'sans-serif'],
 				'jetbrains-mono': ['var(--font-jetbrains-mono)', 'monospace'],
-						'ibm-plex-mono': ['var(--font-ibm-plex-mono)', 'monospace']
+				'ibm-plex-mono': ['var(--font-ibm-plex-mono)', 'monospace']
 			},
 			colors: {
-				border: 'hsl(var(--border))',
-				input: 'hsl(var(--input))',
-				ring: 'hsl(var(--ring))',
+				body: 'var(--body)',
+				section: 'var(--section)',
+				block: 'var(--block)',
+				card: 'var(--card)',
+				badge: 'var(--badge)',
+				'border-trans-badge': 'var(--border-trans-badge)',
+				border: 'var(--border)',
+				'active-bg': 'var(--active-bg)',
 				background: {
-					DEFAULT: '#050505',
+					DEFAULT: '#050505'
 				},
 				foreground: 'hsl(var(--foreground))',
 				primary: {
 					DEFAULT: 'var(--accent-color)',
-					foreground: 'hsl(var(--primary-foreground))',
+					foreground: 'hsl(var(--primary-foreground))'
 				},
 				secondary: {
 					DEFAULT: 'hsl(var(--secondary))',
-					foreground: 'hsl(var(--secondary-foreground))',
+					foreground: 'hsl(var(--secondary-foreground))'
 				},
 				destructive: {
 					DEFAULT: 'hsl(var(--destructive))',
-					foreground: 'hsl(var(--destructive-foreground))',
+					foreground: 'hsl(var(--destructive-foreground))'
 				},
 				muted: {
 					DEFAULT: 'hsl(var(--muted))',
-					foreground: 'hsl(var(--muted-foreground))',
+					foreground: 'hsl(var(--muted-foreground))'
 				},
 				accent: {
 					DEFAULT: 'var(--accent-color)',
-					foreground: 'hsl(var(--accent-foreground))',
+					foreground: 'hsl(var(--accent-foreground))'
 				},
-				popover: {	
+				popover: {
 					DEFAULT: '#0A0A0A',
-					foreground: '#0A0A0A',
-				},
-				card: {
-					DEFAULT: 'hsl(var(--card))',
-					foreground: 'hsl(var(--card-foreground))',
+					foreground: '#0A0A0A'
 				},
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
-				sm: 'calc(var(--radius) - 4px)',
+				sm: 'calc(var(--radius) - 4px)'
 			},
 			keyframes: {
 				'accordion-down': {
 					from: { height: '0' },
-					to: { height: 'var(--radix-accordion-content-height)' },
+					to: { height: 'var(--radix-accordion-content-height)' }
 				},
 				'accordion-up': {
 					from: { height: 'var(--radix-accordion-content-height)' },
-					to: { height: '0' },
-				},
+					to: { height: '0' }
+				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out',
-			},
-		},
+				'accordion-up': 'accordion-up 0.2s ease-out'
+			}
+		}
 	},
-	plugins: [require('tailwindcss-animate')],
+	plugins: [require('tailwindcss-animate')]
 } satisfies Config
 
 export default config

@@ -4,6 +4,15 @@
 
 @layer base {
   :root {
+    /* custom colors */
+    --body: #1c1c1c;
+    --section: #1c1c1c;
+    --block: #232323;
+    --card: #232323;
+    --badge: #282828;
+    --border-trans-badge: #3e3e3e;
+    --border: #343434;
+    --active-bg: #282828;
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
@@ -118,7 +127,7 @@
 
 @layer base {
   * {
-    @apply border-border;
+    border-color: #343434 !important;
   }
   body {
     @apply bg-background text-foreground;

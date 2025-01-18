@@ -1,7 +1,11 @@
 import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 import { generateOAuthState } from '@/server/mutations/auth/oauth/state'
-import { OAUTH_ENDPOINTS, OAUTH_SCOPES, OAUTH_COOKIE_NAMES } from '@/server/mutations/auth/oauth/constants'
+import {
+	OAUTH_ENDPOINTS,
+	OAUTH_SCOPES,
+	OAUTH_COOKIE_NAMES
+} from '@/server/mutations/auth/oauth/constants'
 
 const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'

@@ -15,7 +15,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 		'/login',
 		'/register',
 		'/changelog',
-		'/documentation',
+		'/documentation'
 		// '/blog'
 	].map((route) => ({
 		url: `${baseUrl}${route}`,
@@ -40,17 +40,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
 	// Blog routes - medium priority, frequently updated
 	// const blogRoutes = [
-		// '/blog/introduction',
-		// '/blog/features',
-		// '/blog/security-best-practices'
+	// '/blog/introduction',
+	// '/blog/features',
+	// '/blog/security-best-practices'
 	// ].map((route) => ({
-		// url: `${baseUrl}${route}`,
-		// lastModified: new Date(),
-		// changeFrequency: 'weekly' as const,
-		// priority: 0.7
+	// url: `${baseUrl}${route}`,
+	// lastModified: new Date(),
+	// changeFrequency: 'weekly' as const,
+	// priority: 0.7
 	// }))
 
 	// Combine all routes
 	return [...staticRoutes, ...docRoutes]
 }
-

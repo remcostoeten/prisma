@@ -22,7 +22,9 @@ export default function LoginPage() {
 			console.log('Login response:', response)
 
 			if (!response?.success || !response?.user) {
-				toast.error(response?.error || 'Authentication failed', { id: toastId })
+				toast.error(response?.error || 'Authentication failed', {
+					id: toastId
+				})
 				return
 			}
 
@@ -33,7 +35,10 @@ export default function LoginPage() {
 			router.replace('/dashboard')
 		} catch (error) {
 			console.error('Login error:', error)
-			const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred'
+			const errorMessage =
+				error instanceof Error
+					? error.message
+					: 'An unexpected error occurred'
 			toast.error(errorMessage, { id: toastId })
 		}
 	}

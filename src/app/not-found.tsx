@@ -54,14 +54,14 @@ export default function NotFound() {
 					/>
 				))}
 			</div>
-			
+
 			<motion.div
 				className="relative z-10 text-center max-w-2xl mx-auto px-4"
 				variants={containerVariants}
 				initial="hidden"
 				animate="visible"
 			>
-				<motion.div 
+				<motion.div
 					className="text-[12rem] font-bold leading-none tracking-tighter mb-4 text-white opacity-10 select-none font-mono"
 					variants={glitchAnimation}
 					initial="initial"
@@ -69,8 +69,8 @@ export default function NotFound() {
 				>
 					404
 				</motion.div>
-				
-				<motion.div 
+
+				<motion.div
 					className="absolute top-0 left-0 right-0"
 					variants={itemVariants}
 				>
@@ -111,4 +111,3 @@ export default function NotFound() {
 		</div>
 	)
 }
-

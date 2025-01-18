@@ -47,9 +47,7 @@ export default function Error({ error, reset }: ErrorProps) {
 					animate={{ opacity: 1 }}
 					transition={{ delay: 0.4, duration: 0.5 }}
 				>
-					<Button
-						onClick={reset}
-					>
+					<Button onClick={reset}>
 						<RefreshCcw className="w-4 h-4 mr-2" />
 						Try again
 					</Button>

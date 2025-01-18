@@ -1,6 +1,12 @@
 'use client'
 
-import { createContext, useContext, useState, useEffect, useCallback } from 'react'
+import {
+	createContext,
+	useContext,
+	useState,
+	useEffect,
+	useCallback
+} from 'react'
 import { getUser, logout as logoutMutation } from '@/server/mutations/auth'
 import type { User } from '@/shared/hooks/use-auth'
 import { useRouter } from 'next/navigation'
@@ -23,10 +29,13 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
 	const router = useRouter()
 	const { setUser: setAuthUser } = useAuth()
 
-	const updateUserState = useCallback((newUser: User | null) => {
-		setUser(newUser)
-		setAuthUser(newUser)
-	}, [setAuthUser])
+	const updateUserState = useCallback(
+		(newUser: User | null) => {
+			setUser(newUser)
+			setAuthUser(newUser)
+		},
+		[setAuthUser]
+	)
 
 	const refreshUser = useCallback(async () => {
 		try {
@@ -45,7 +54,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
 		try {
 			setIsLoading(true)
 			const response = await logoutMutation()
-			
+
 			if (response.success) {
 				updateUserState(null)
 				toast.success('Successfully logged out')
@@ -85,7 +94,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
 				setUser: updateUserState,
 				isLoading,
 				logout,
-				refreshUser,
+				refreshUser
 			}}
 		>
 			{children}

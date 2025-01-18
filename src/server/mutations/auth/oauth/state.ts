@@ -8,7 +8,7 @@ export async function generateOAuthState() {
 }
 
 export async function setOAuthState(state: string) {
-	; (await cookies()).set(OAUTH_STATE_COOKIE_NAME, state, {
+	;(await cookies()).set(OAUTH_STATE_COOKIE_NAME, state, {
 		httpOnly: true,
 		secure: process.env.NODE_ENV === 'production',
 		sameSite: 'lax',
@@ -21,5 +21,5 @@ export async function getOAuthState() {
 }
 
 export async function clearOAuthState() {
-	; (await cookies()).delete(OAUTH_STATE_COOKIE_NAME)
+	;(await cookies()).delete(OAUTH_STATE_COOKIE_NAME)
 }

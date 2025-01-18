@@ -1,17 +1,16 @@
 'use client'
 
 import { RootProvider } from 'fumadocs-ui/provider'
-import './globals.css'
+import '@/styles/globals.css'
 import DevTools from '@/features/dev-tools/_dev-tools'
 import { isFeatureEnabled } from '@/core/config/feature-flags'
 import { ThemeProvider } from '@/components/theme-wrapper'
 import { UserProvider } from '@/contexts/user-context'
 import { fontVariables } from '@/core/config/fonts/font-config'
 import { rootLayoutMetadata } from '@/core/config/metadata'
-import Nav from '@/components/layout/header/nav'
 import { Header } from '@/components/layout/header'
 
-export { rootLayoutMetadata}
+export { rootLayoutMetadata }
 
 type RootLayoutProps = {
 	children: React.ReactNode

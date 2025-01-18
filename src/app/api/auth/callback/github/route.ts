@@ -2,7 +2,11 @@ import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 import { SignJWT } from 'jose'
 import prisma from '@/server/db'
-import { OAUTH_ENDPOINTS, OAUTH_COOKIE_NAMES, AUTH_COOKIE_NAME } from '@/server/mutations/auth/oauth/constants'
+import {
+	OAUTH_ENDPOINTS,
+	OAUTH_COOKIE_NAMES,
+	AUTH_COOKIE_NAME
+} from '@/server/mutations/auth/oauth/constants'
 
 const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID
 const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET
@@ -91,7 +95,10 @@ export async function GET(request: Request) {
 			const errorText = await tokenResponse.text()
 			console.error('Token exchange failed:', errorText)
 			return NextResponse.redirect(
-				new URL('/login?error=Failed to authenticate with GitHub', APP_URL)
+				new URL(
+					'/login?error=Failed to authenticate with GitHub',
+					APP_URL
+				)
 			)
 		}
 
@@ -219,7 +226,9 @@ export async function GET(request: Request) {
 				.sign(secretKey)
 
 			// Create response with redirect
-			const response = NextResponse.redirect(new URL('/dashboard', APP_URL))
+			const response = NextResponse.redirect(
+				new URL('/dashboard', APP_URL)
+			)
 
 			// Clear the oauth state cookie
 			cookieStore.delete(OAUTH_COOKIE_NAMES.GITHUB)
