@@ -3,7 +3,7 @@
 import { cookies } from 'next/headers'
 import { OAUTH_STATE_COOKIE_NAME } from './constants'
 
-export function generateOAuthState() {
+export async function generateOAuthState() {
 	return Math.random().toString(36).substring(7)
 }
 

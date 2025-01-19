@@ -1,0 +1,356 @@
+.container {
+    color: rgb(51, 51, 51);
+    background-color: rgb(13, 12, 12);
+    z-index: 2;
+    padding: 156px 40px;
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+.wrapper {
+    align-items: flex-start;
+    display: flex;
+    z-index: 1;
+    max-width: 1440px;
+    gap: 16px;
+    position: relative;
+    width: 100%;
+}
+
+.header {
+    max-width: 35vw;
+    flex-direction: column;
+    justify-content: space-between;
+    align-self: flex-start;
+    padding-top: 106px;
+    padding-bottom: 30px;
+    display: flex;
+    position: sticky;
+    top: 0;
+}
+
+.title {
+    color: rgb(242, 240, 237);
+    letter-spacing: -0.02em;
+    font-family: "Aeonik Fono", sans-serif;
+    font-size: 40px;
+    font-weight: 400;
+    line-height: 1.05em;
+    margin-top: 20px;
+    margin-bottom: 400px;
+}
+
+.subtitle {
+    color: rgb(140, 135, 125);
+    letter-spacing: 0.02em;
+    font-size: 20px;
+    line-height: 1.2em;
+    margin: 0;
+}
+
+.stacksLink {
+    color: rgb(207, 201, 194);
+    text-decoration: none;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    width: 100%;
+    position: relative;
+    padding-bottom: 2px;
+    padding-left: 2px;
+    z-index: 2;
+}
+
+.card {
+    position: relative;
+    padding: 32px 24px 24px;
+    min-height: 269px;
+    color: rgb(242, 240, 237);
+    display: flex;
+    flex-direction: column;
+    border-left: 1px dashed rgb(140, 135, 125);
+    border-top: 1px dashed rgb(140, 135, 125);
+}
+
+.card::before {
+    content: "";
+    position: absolute;
+    top: -1px;
+    right: 0;
+    width: 25%;
+    height: 1px;
+    background: linear-gradient(to right, rgb(140, 135, 125), rgba(13, 12, 12, 0));
+    pointer-events: none;
+}
+
+.horizontalBorder {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background-image: linear-gradient(to right,
+            rgb(140, 135, 125) 70%,
+            rgba(140, 135, 125, 0.5) 70%,
+            rgba(140, 135, 125, 0.5) 75%,
+            rgba(140, 135, 125, 0) 75%);
+    background-size: 16px 1px;
+    background-repeat: repeat-x;
+    z-index: 10;
+}
+
+.grid>*:nth-child(3n) .horizontalBorder {
+    background-image: linear-gradient(to right,
+            rgb(140, 135, 125) 50%,
+            rgba(140, 135, 125, 0.5) 50%,
+            rgba(140, 135, 125, 0.5) 60%,
+            rgba(140, 135, 125, 0) 60%);
+    background-size: 16px 1px;
+    background-repeat: repeat-x;
+}
+
+.rightBorder {
+    display: none;
+}
+
+.cardContent {
+    z-index: 2;
+    width: 100%;
+    color: rgb(140, 135, 125);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    font-size: 18px;
+    height: 100%;
+}
+
+.cardHeader {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 12px;
+}
+
+.cardTitle {
+    color: rgb(242, 240, 237);
+    letter-spacing: 0;
+    text-transform: uppercase;
+    font-family: "Aeonik Fono", sans-serif;
+    font-size: 24px;
+    line-height: 1.24em;
+    font-weight: 700;
+    margin: 0;
+}
+
+.tag {
+    padding: 4px 10px;
+    border-radius: 26px;
+    font-size: 12px;
+    line-height: 1.4em;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+.tagNew {
+    background-color: rgb(255, 72, 0);
+    color: rgb(13, 12, 12);
+}
+
+.tagSoon {
+    border: 1px solid rgb(69, 64, 61);
+    color: rgb(140, 135, 125);
+}
+
+.cardDescription {
+    margin-bottom: 32px;
+}
+
+.arrow {
+    width: 20px;
+    height: 20px;
+    color: rgb(140, 135, 125);
+    margin-top: 24px;
+}
+
+.platformCard {
+    grid-column: span 3;
+    padding: 107px 34px 0;
+    min-height: 314px;
+    border-bottom: none;
+}
+
+.platformImage {
+    display: none;
+    width: 100%;
+    height: 223px;
+    object-fit: contain;
+    object-position: 50% 100%;
+    margin-top: 20px;
+    position: relative;
+    z-index: 5;
+}
+
+.platformGradient {
+    position: absolute;
+    bottom: 1.5px;
+    left: 1px;
+    right: 1px;
+    height: 193px;
+    background-image: linear-gradient(rgba(13, 12, 12, 0), rgba(13, 12, 12, 0.6));
+    z-index: 6;
+}
+
+.platformSideGradient {
+    position: absolute;
+    top: 0;
+    bottom: 10px;
+    left: -5px;
+    width: 10px;
+    background-image: linear-gradient(rgb(13, 12, 12), rgba(13, 12, 12, 0));
+    z-index: 5;
+}
+
+.skeletonLoader {
+    width: 100%;
+    height: 223px;
+    background: linear-gradient(to right, #1a1a1a 8%, #2a2a2a 18%, #1a1a1a 33%);
+    background-size: 2000px 100%;
+    animation: shimmer 2s infinite linear;
+    margin-top: 0;
+    position: relative;
+    z-index: 1;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -1000px 0;
+    }
+
+    100% {
+        background-position: 1000px 0;
+    }
+}
+
+@media screen and (max-width: 991px) {
+    .container {
+        padding: 40px 40px 10px;
+    }
+
+    .wrapper {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .header {
+        max-width: 70vw;
+        text-align: center;
+        position: static;
+        align-items: center;
+        margin-bottom: 48px;
+    }
+
+    .title {
+        font-size: 2.5rem;
+        margin-bottom: 12px;
+    }
+
+    .subtitle {
+        font-size: 16px;
+    }
+
+    .platformCard {
+        padding: 32px 24px 24px;
+        min-height: 237px;
+    }
+
+    .platformImage {
+        height: 20vw;
+    }
+
+    .skeletonLoader {
+        height: 20vw;
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .container {
+        padding: 64px 20px 48px;
+    }
+
+    .grid {
+        grid-template-columns: 1fr;
+    }
+
+    .platformCard {
+        grid-column: span 1;
+    }
+
+    .platformGradient,
+    .platformSideGradient {
+        display: none;
+    }
+
+    .skeletonLoader {
+        height: 193px;
+    }
+}
+
+@media screen and (max-width: 479px) {
+    .title {
+        font-size: 2rem;
+    }
+}
+
+.cardSpotlight {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+            var(--spotlight-color, rgba(255, 255, 255, 0.03)) 0%,
+            transparent 35%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+    mix-blend-mode: screen;
+}
+
+.card:hover .cardSpotlight {
+    opacity: var(--spotlight-strength, 1);
+}
+
+.matrixRain {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    mask-image: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+            black 0%,
+            transparent 35%);
+    -webkit-mask-image: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+            black 0%,
+            transparent 35%);
+}
+
+.card:hover .matrixRain {
+    opacity: var(--spotlight-strength, 0.7);
+}
+
+.matrixRain canvas {
+    width: 100%;
+    height: 100%;
+}

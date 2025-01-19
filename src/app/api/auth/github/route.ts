@@ -1,33 +1,41 @@
 import { NextResponse } from 'next/server'
+import { cookies } from 'next/headers'
+import { generateOAuthState } from '@/server/mutations/auth/oauth/state'
+import {
+	OAUTH_ENDPOINTS,
+	OAUTH_SCOPES,
+	OAUTH_COOKIE_NAMES
+} from '@/server/mutations/auth/oauth/constants'
 
 const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
 
 export async function GET() {
 	if (!GITHUB_CLIENT_ID) {
+		console.error('Missing GitHub client ID')
 		return NextResponse.redirect(
 			new URL('/login?error=OAuth configuration error', APP_URL)
 		)
 	}
 
-	// State parameter to prevent CSRF attacks
-	const state = Math.random().toString(36).substring(7)
+	// Generate state parameter to prevent CSRF attacks
+	const state = generateOAuthState()
 
 	const params = new URLSearchParams({
 		client_id: GITHUB_CLIENT_ID,
 		redirect_uri: `${APP_URL}/api/auth/callback/github`,
-		scope: 'read:user user:email',
+		scope: OAUTH_SCOPES.GITHUB.join(' '),
 		state,
 		allow_signup: 'true'
 	})
 
 	// Create response with GitHub OAuth URL
 	const response = NextResponse.redirect(
-		`https://github.com/login/oauth/authorize?${params.toString()}`
+		`${OAUTH_ENDPOINTS.GITHUB.AUTH}?${params.toString()}`
 	)
 
 	// Set state cookie with proper configuration
-	response.cookies.set('github_oauth_state', state, {
+	cookies().set(OAUTH_COOKIE_NAMES.GITHUB, state, {
 		httpOnly: true,
 		secure: process.env.NODE_ENV === 'production',
 		sameSite: 'lax',

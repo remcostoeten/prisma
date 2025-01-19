@@ -4,7 +4,6 @@ import React from 'react'
 import { Variants, motion } from 'framer-motion'
 import Link from 'next/link'
 
-// Types
 export type LogoSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
 
 export type AnimationVariant =

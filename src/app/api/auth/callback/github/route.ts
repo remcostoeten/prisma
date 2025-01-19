@@ -2,6 +2,12 @@ import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 import { SignJWT } from 'jose'
 import prisma from '@/server/db'
+import {
+	OAUTH_ENDPOINTS,
+	OAUTH_COOKIE_NAMES,
+	AUTH_COOKIE_NAME
+} from '@/server/mutations/auth/oauth/constants'
+
 const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID
 const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
@@ -38,7 +44,7 @@ export async function GET(request: Request) {
 		const code = searchParams.get('code')
 		const state = searchParams.get('state')
 		const cookieStore = cookies()
-		const storedState = (await cookieStore).get('github_oauth_state')?.value
+		const storedState = cookieStore.get(OAUTH_COOKIE_NAMES.GITHUB)?.value
 
 		console.log('OAuth Callback:', {
 			code: code?.slice(0, 5) + '...',
@@ -71,22 +77,19 @@ export async function GET(request: Request) {
 		}
 
 		// Exchange code for access token
-		const tokenResponse = await fetch(
-			'https://github.com/login/oauth/access_token',
-			{
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					Accept: 'application/json'
-				},
-				body: JSON.stringify({
-					client_id: GITHUB_CLIENT_ID,
-					client_secret: GITHUB_CLIENT_SECRET,
-					code,
-					redirect_uri: `${APP_URL}/api/auth/callback/github`
-				})
-			}
-		)
+		const tokenResponse = await fetch(OAUTH_ENDPOINTS.GITHUB.TOKEN, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Accept: 'application/json'
+			},
+			body: JSON.stringify({
+				client_id: GITHUB_CLIENT_ID,
+				client_secret: GITHUB_CLIENT_SECRET,
+				code,
+				redirect_uri: `${APP_URL}/api/auth/callback/github`
+			})
+		})
 
 		if (!tokenResponse.ok) {
 			const errorText = await tokenResponse.text()
@@ -110,14 +113,16 @@ export async function GET(request: Request) {
 			console.error('GitHub token error:', tokenData)
 			return NextResponse.redirect(
 				new URL(
-					`/login?error=${encodeURIComponent(tokenData.error_description || 'Authentication failed')}`,
+					`/login?error=${encodeURIComponent(
+						tokenData.error_description || 'Authentication failed'
+					)}`,
 					APP_URL
 				)
 			)
 		}
 
 		// Get user data
-		const userResponse = await fetch('https://api.github.com/user', {
+		const userResponse = await fetch(OAUTH_ENDPOINTS.GITHUB.USER_INFO, {
 			headers: {
 				Authorization: `Bearer ${tokenData.access_token}`,
 				Accept: 'application/json'
@@ -140,15 +145,12 @@ export async function GET(request: Request) {
 		})
 
 		// Get user emails
-		const emailsResponse = await fetch(
-			'https://api.github.com/user/emails',
-			{
-				headers: {
-					Authorization: `Bearer ${tokenData.access_token}`,
-					Accept: 'application/json'
-				}
+		const emailsResponse = await fetch(OAUTH_ENDPOINTS.GITHUB.USER_EMAILS, {
+			headers: {
+				Authorization: `Bearer ${tokenData.access_token}`,
+				Accept: 'application/json'
 			}
-		)
+		})
 
 		if (!emailsResponse.ok) {
 			const errorText = await emailsResponse.text()
@@ -176,6 +178,7 @@ export async function GET(request: Request) {
 			const firstName = nameParts[0] || userData.login
 			const lastName = nameParts.slice(1).join(' ') || null
 
+			// Find or create user
 			const user = await prisma.user.upsert({
 				where: { email: primaryEmail },
 				update: {
@@ -222,11 +225,16 @@ export async function GET(request: Request) {
 				.setExpirationTime(session.expiresAt.getTime() / 1000)
 				.sign(secretKey)
 
+			// Create response with redirect
+			const response = NextResponse.redirect(
+				new URL('/dashboard', APP_URL)
+			)
+
 			// Clear the oauth state cookie
-			;(await cookieStore).delete('github_oauth_state')
+			cookieStore.delete(OAUTH_COOKIE_NAMES.GITHUB)
 
 			// Set token cookie
-			;(await cookieStore).set('token', token, {
+			cookieStore.set(AUTH_COOKIE_NAME, token, {
 				httpOnly: true,
 				secure: process.env.NODE_ENV === 'production',
 				sameSite: 'lax',
@@ -234,7 +242,7 @@ export async function GET(request: Request) {
 				expires: session.expiresAt
 			})
 
-			return NextResponse.redirect(new URL('/dashboard', APP_URL))
+			return response
 		} catch (error) {
 			console.error('Database error:', error)
 			return NextResponse.redirect(

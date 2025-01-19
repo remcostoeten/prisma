@@ -1,13 +1,18 @@
-import Hero from '@/components/hero/hero'
-import ToolGrid from '@/shared/components/ToolGrid'
+/**
+ * @description This is the landing page of the application
+ */
+
+import { Flex } from "@/shared/components/defaults"
+
+import GithubStats from "@/features/landing/components/github-stats/components/stats"
+import MatrixGrid from "@/features/landing/components/matrix-grid/components/matrix-grid"
 
 export default function Home() {
-	return (
-		<div className="bg-neutral-900">
-			<div className="text-[rgb(51,51,51)] bg-[rgba(13,12,12,0)] z-[2] relative w-full flex-col justify-center items-center flex box-border px-[40px] py-[156px]">
-				<Hero />
-				<ToolGrid />
-			</div>
-		</div>
-	)
+  return (
+    <Flex col>
+      <hr className='my-10'/>
+      <MatrixGrid />
+      <GithubStats/>
+    </Flex>
+  )
 }

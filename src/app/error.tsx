@@ -1,5 +1,6 @@
 'use client'
 
+import { Button } from '@/shared/components/ui'
 import { motion } from 'framer-motion'
 import { AlertTriangle, RefreshCcw } from 'lucide-react'
 import { useEffect } from 'react'
@@ -46,13 +47,10 @@ export default function Error({ error, reset }: ErrorProps) {
 					animate={{ opacity: 1 }}
 					transition={{ delay: 0.4, duration: 0.5 }}
 				>
-					<button
-						onClick={reset}
-						className="inline-flex items-center justify-center px-5 py-2 border border-transparent text-base font-medium rounded-md text-white bg-primary hover:bg-primary/90 transition-colors"
-					>
+					<Button onClick={reset}>
 						<RefreshCcw className="w-4 h-4 mr-2" />
 						Try again
-					</button>
+					</Button>
 				</motion.div>
 
 				{error.digest && (

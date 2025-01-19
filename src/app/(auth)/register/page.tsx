@@ -52,7 +52,7 @@ export default function RegisterPage() {
 			console.error('Registration error:', error)
 		}
 	}
-	
+
 	return (
 		<AuthLayout
 			title="Create an account"

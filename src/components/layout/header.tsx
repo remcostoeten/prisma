@@ -1,5 +1,6 @@
 'use client'
 
+import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
@@ -31,6 +32,12 @@ type User = {
 }
 
 export function Header() {
+	const pathname = usePathname()
+
+	if (pathname !== '/') {
+		return null
+	}
+
 	const [user, setUser] = useState<User | null>(null)
 	const router = useRouter()
 

@@ -21,12 +21,14 @@ export default function SessionIndicator({ className }: SessionIndicatorProps) {
 
 	if (isLoading) {
 		return (
-			<div className={cn(
-				'fixed bottom-4 right-4 z-50',
-				'h-2 w-2 rounded-full',
-				'animate-pulse bg-yellow-500/50',
-				className
-			)} />
+			<div
+				className={cn(
+					'fixed bottom-4 right-4 z-50',
+					'h-2 w-2 rounded-full',
+					'animate-pulse bg-yellow-500/50',
+					className
+				)}
+			/>
 		)
 	}
 
@@ -113,7 +115,9 @@ export default function SessionIndicator({ className }: SessionIndicatorProps) {
 											<div className="flex justify-between items-center">
 												<span>Name:</span>
 												<span className="font-mono text-xs">
-													{user.name || `${user.firstName} ${user.lastName}`.trim() || 'N/A'}
+													{user.name ||
+														`${user.firstName} ${user.lastName}`.trim() ||
+														'N/A'}
 												</span>
 											</div>
 											<div className="flex justify-between items-center">
@@ -126,7 +130,8 @@ export default function SessionIndicator({ className }: SessionIndicatorProps) {
 									</div>
 								) : (
 									<div className="text-muted-foreground text-xs">
-										No active session. Sign in to see session details.
+										No active session. Sign in to see
+										session details.
 									</div>
 								)}
 							</div>
