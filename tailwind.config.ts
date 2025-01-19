@@ -24,6 +24,11 @@ const config = {
 				'ibm-plex-mono': ['var(--font-ibm-plex-mono)', 'monospace']
 			},
 			colors: {
+				brand: 'var(--brand)',
+				primary: 'var(--text-primary)',
+				secondary: 'var(--text-secondary)',
+				muted: 'var(--text-muted)',
+				disabled: 'var(--text-disabled)',
 				body: 'var(--body)',
 				section: 'var(--section)',
 				block: 'var(--block)',
@@ -32,6 +37,7 @@ const config = {
 				'border-trans-badge': 'var(--border-trans-badge)',
 				border: 'var(--border)',
 				'active-bg': 'var(--active-bg)',
+				'white': 'rgb(220,220,220)',
 				background: {
 					DEFAULT: '#050505'
 				},

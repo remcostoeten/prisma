@@ -13,6 +13,16 @@
     --border-trans-badge: #3e3e3e;
     --border: #343434;
     --active-bg: #282828;
+
+    --brand: rgb(62,207,142); /*supabase green*/
+
+    /* custom text */
+    --text-primary: rgb(222,222,222);
+    --text-secondary: rgb(180,180,180);
+    --text-muted: rgb(137,137,137);
+    --text-disabled: rgb(57,57,57);
+
+    /* custom background */
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;

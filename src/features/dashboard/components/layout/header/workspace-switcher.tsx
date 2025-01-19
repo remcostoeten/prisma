@@ -3,18 +3,8 @@
 import * as React from 'react'
 import { Check, ChevronsUpDown, Plus } from 'lucide-react'
 import { cn } from '@/lib/utils'
-
-import {
-	Command,
-	CommandEmpty,
-	CommandGroup,
-	CommandItem,
-	CommandList,
-	CommandInput,
-	CommandSeparator,
-	PopoverContent,
-	PopoverTrigger
-} from '@/shared/components/ui'
+import { PopoverContent, PopoverTrigger } from '@/shared/components/ui/popover'
+import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList, CommandInput, CommandSeparator } from '@/shared/components/ui/command'
 
 type Workspace = {
 	label: string

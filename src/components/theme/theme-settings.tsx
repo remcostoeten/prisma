@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 import { Paintbrush, Check } from 'lucide-react'
-import { useThemeAccent } from '@/hooks/use-theme-accent'
+import { useThemeAccent } from '@/core/hooks/use-theme-accent'
 import {
 	Dialog,
 	DialogContent,

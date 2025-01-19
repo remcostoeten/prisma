@@ -9,6 +9,7 @@ import { UserProvider } from '@/contexts/user-context'
 import { fontVariables } from '@/core/config/fonts/font-config'
 import { rootLayoutMetadata } from '@/core/config/metadata'
 import { Header } from '@/components/layout/header'
+import Footer from '@/components/layout/footter'
 
 export { rootLayoutMetadata }
 
@@ -20,7 +21,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
 	return (
 		<html lang="en" suppressHydrationWarning className={fontVariables}>
 			<body
-				className="h-screen bg-background text-foreground font-geist-mono"
+				className="h-screen bg-body text-red-400 font-geist-mono"
 				style={{ maxHeight: '100vh' }}
 			>
 				<ThemeProvider
@@ -39,6 +40,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
 							<RootProvider>{children}</RootProvider>
 						</main>
 						{isFeatureEnabled('DEV_TOOLS') && <DevTools />}
+						<Footer />
 					</UserProvider>
 				</ThemeProvider>
 			</body>
